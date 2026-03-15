@@ -2,6 +2,19 @@
 <html>
 <head>
 <style>
+  body {
+  margin: 0;
+  padding: 0;
+}
+
+.page-header {
+background: linear-gradient(135deg, #0a2a3a 0%, #1a5a7a 100%);
+color: red;
+padding: 36px 40px;
+display: flex;
+align-items: center;
+gap: 20px;
+}
 body {
   margin: 0;
   padding: 0;
@@ -16,7 +29,7 @@ ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #333333;
+  background-color: #341d1d;
 }
 
 ul li {
@@ -25,7 +38,7 @@ ul li {
 
 ul li a {
   display: block;
-  color: white;
+  color: rgb(245, 236, 236);
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
@@ -34,9 +47,28 @@ ul li a {
 ul li a:hover {
   background-color: #111111;
 }
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even){background-color: #c99696f0}
+
+th {
+  background-color: #68382d;
+  color: rgb(232, 207, 207);
+}
 </style>
 </head>
 <body>
+  <header>
+  <h1>Supervisor DashBoard</h1>
+</header>
 
 <ul>
   <li><a href="#home">Home</a></li>
@@ -45,7 +77,53 @@ ul li a:hover {
   <li><a href="#about">About</a></li>
 </ul>
 
-<h2>Horizontal Navbar Using Float</h2>
+
+
+<table>
+  <tr>
+    <th>Caretaker</th>
+    <th>Task</th>
+    <th>Time</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>Sakira</td>
+    <td>Temp&humidityTest</td>
+    <td>07:00AM</td>
+    <td>Done</td>
+  </tr>
+  <tr>
+    <td>Samanta</td>
+    <td>Water Quality Log</td>
+    <td>08.00 AM</td>
+    <td>Done</td>
+  </tr>
+  <tr>
+    <td>Salman</td>
+    <td>Substrate Cleaning</td>
+    <td>09:00 AM</td>
+    <td>In Progress</td>
+  </tr>
+  <tr>
+    <td>Muzahid</td>
+    <td>Substrate Cleaning</td>
+    <td>02:00 AM</td>
+    <td>Pending</td>
+  </tr>
+  <tr>
+    <td>Nahin</td>
+    <td>Evening Report</td>
+    <td>03:00 PM</td>
+    <td>Pending</td>
+  </tr>
+  <tr>
+    <td>Nabiha</td>
+    <td>Afternoon Monitoring</td>
+    <td>09:30 AM</td>
+    <td>In Progress</td>
+</tr>
+</table>
+
 
 <p>Some text on the website.</p>
 
