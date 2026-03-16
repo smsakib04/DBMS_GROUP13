@@ -74,7 +74,7 @@ tr:hover {
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
 }
 
 .done-btn:hover {
@@ -83,6 +83,16 @@ tr:hover {
 
 .done-btn:active {
   transform: scale(0.98);
+}
+
+.done-btn.completed {
+  background-color: #2d5a2d;
+  font-size: 18px;
+  padding: 6px 12px;
+}
+
+.done-btn.completed:hover {
+  background-color: #1a3a1a;
 }
 
 .tabs-container {
@@ -184,31 +194,31 @@ tr:hover {
           <td>08:00 AM</td>
           <td>T001</td>
           <td>Vegetables</td>
-          <td><button class="done-btn">Mark Done</button></td>
+          <td><button class="done-btn" onclick="toggleDone(this)">Mark Done</button></td>
         </tr>
         <tr>
           <td>10:30 AM</td>
           <td>T002</td>
           <td>Mixed Greens</td>
-          <td><button class="done-btn">Mark Done</button></td>
+          <td><button class="done-btn" onclick="toggleDone(this)">Mark Done</button></td>
         </tr>
         <tr>
           <td>01:00 PM</td>
           <td>T003</td>
           <td>Fruits & Vegetables</td>
-          <td><button class="done-btn">Mark Done</button></td>
+          <td><button class="done-btn" onclick="toggleDone(this)">Mark Done</button></td>
         </tr>
         <tr>
           <td>03:30 PM</td>
           <td>T001</td>
           <td>Lettuce & Berries</td>
-          <td><button class="done-btn">Mark Done</button></td>
+          <td><button class="done-btn" onclick="toggleDone(this)">Mark Done</button></td>
         </tr>
         <tr>
           <td>05:00 PM</td>
           <td>T004</td>
           <td>Vegetation</td>
-          <td><button class="done-btn">Mark Done</button></td>
+          <td><button class="done-btn" onclick="toggleDone(this)">Mark Done</button></td>
         </tr>
       </tbody>
     </table>
@@ -308,6 +318,16 @@ function showTab(evt, tabName) {
   
   document.getElementById(tabName).classList.add("active");
   evt.currentTarget.classList.add("active");
+}
+
+function toggleDone(button) {
+  if (button.classList.contains("completed")) {
+    button.classList.remove("completed");
+    button.textContent = "Mark Done";
+  } else {
+    button.classList.add("completed");
+    button.textContent = "✓";
+  }
 }
 </script>
 
