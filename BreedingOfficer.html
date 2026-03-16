@@ -1,6 +1,577 @@
-<ul>
-  <li><a href="default.asp">Home</a></li>
-  <li><a href="news.asp">News</a></li>
-  <li><a href="contact.asp">Contact</a></li>
-  <li><a href="about.asp">About</a></li>
-</ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tortoise Center · Breeding Officer Dashboard</title>
+    <!-- Font Awesome 6 (free) for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #e7f0ea;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+        }
+
+        .dashboard {
+            max-width: 1600px;
+            width: 100%;
+        }
+
+        /* header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .title-section h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #1f4f3d;
+            letter-spacing: -0.02em;
+        }
+
+        .title-section p {
+            color: #3d6b58;
+            font-weight: 500;
+            margin-top: 0.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge-role {
+            background: #cfe8db;
+            padding: 0.25rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #0f4633;
+            border: 1px solid #a2cdbb;
+        }
+
+        .date-info {
+            background: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 40px;
+            box-shadow: 0 4px 8px rgba(0, 40, 20, 0.04);
+            font-weight: 500;
+            color: #23634b;
+            border: 1px solid #bcddce;
+        }
+
+        /* --- navigation bar (now under header) with table links & logout --- */
+        .navbar {
+            background: white;
+            border-radius: 60px;
+            padding: 0.8rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 12px 24px -10px rgba(28, 78, 58, 0.2);
+            border: 1px solid #c0e0d0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1f5b43;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.4rem 0;
+            border-bottom: 3px solid transparent;
+            transition: 0.1s;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            color: #34855e;
+            font-size: 1.2rem;
+        }
+
+        .nav-item.active {
+            border-bottom-color: #2a7254;
+            color: #0c402e;
+        }
+
+        .logout-btn {
+            background: #fff3ec;
+            border: 1.5px solid #f3bc9a;
+            color: #aa4e1e;
+            padding: 0.6rem 1.8rem;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: default;  /* static demo */
+            box-shadow: 0 4px 8px rgba(150, 70, 20, 0.05);
+        }
+
+        .logout-btn i {
+            font-size: 1.1rem;
+        }
+
+        /* quick summary cards (always visible) */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.2rem 1rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 20px rgba(26, 80, 60, 0.08);
+            border: 1px solid #d2eadf;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: #2c7a5a;
+            background: #e2f3ea;
+            padding: 0.8rem;
+            border-radius: 50%;
+        }
+
+        .stat-info h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #144b38;
+            line-height: 1.2;
+        }
+
+        .stat-info span {
+            color: #487a64;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* table containers (hidden by default) */
+        .table-wrapper {
+            background: white;
+            border-radius: 28px;
+            padding: 1.5rem 1.5rem 2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 18px 30px -8px rgba(28, 78, 58, 0.14);
+            border: 1px solid #cfeadb;
+            display: none;  /* hidden until nav clicked */
+        }
+
+        .table-wrapper.active-table {
+            display: block;  /* shown when active */
+        }
+
+        .table-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-header h2 {
+            font-size: 1.7rem;
+            font-weight: 600;
+            color: #1a4e3a;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .table-header h2 i {
+            color: #307a5a;
+            font-size: 1.8rem;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: white;
+            border: 1.5px solid #c0ddcf;
+            color: #215d45;
+            font-weight: 600;
+            padding: 0.6rem 1.3rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: default;
+            box-shadow: 0 2px 4px rgba(0, 30, 15, 0.02);
+        }
+
+        .btn i {
+            font-size: 1rem;
+        }
+
+        .btn-add {
+            background: #1e5f45;
+            border-color: #1e5f45;
+            color: white;
+            box-shadow: 0 6px 12px rgba(30, 95, 69, 0.2);
+        }
+
+        .btn-remove {
+            background: #fef3e9;
+            border-color: #f3bc9a;
+            color: #9b4e20;
+        }
+
+        .btn-edit {
+            background: #e6f0fe;
+            border-color: #a9c9fa;
+            color: #1e5090;
+        }
+
+        .btn-search {
+            background: #f0f6f2;
+            border-color: #b0d5c2;
+            color: #1b6144;
+        }
+
+        /* tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            color: #173e2f;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem 0.5rem 0.8rem 0.5rem;
+            font-weight: 700;
+            color: #1f5b43;
+            border-bottom: 2px solid #c6e2d4;
+            font-size: 0.9rem;
+            letter-spacing: 0.02rem;
+        }
+
+        td {
+            padding: 0.85rem 0.5rem;
+            border-bottom: 1px solid #dcf0e7;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge-status {
+            background: #daf1e8;
+            color: #176a48;
+            padding: 0.2rem 0.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        .badge-hatch {
+            background: #faeac9;
+            color: #8f5f24;
+        }
+
+        .badge-egg {
+            background: #e0defa;
+            color: #423d82;
+        }
+
+        .iot-tag {
+            background: #1b4d3b;
+            color: #cef0e0;
+            font-size: 0.7rem;
+            border-radius: 16px;
+            padding: 0.2rem 0.6rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .footer-note {
+            text-align: center;
+            color: #5e8b78;
+            font-size: 0.9rem;
+            margin: 2rem 0 0.5rem;
+        }
+
+        hr {
+            border: 1px solid #bfe0d1;
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 700px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+                text-align: center;
+            }
+            .nav-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- header (now above navbar) -->
+        <div class="header">
+            <div class="title-section">
+                <h1><i class="fas fa-leaf" style="color: #2c8f65; margin-right: 10px;"></i>Breeding Officer · Tortoise Center</h1>
+                <p><i class="fas fa-paw"></i> Pairing, nesting, incubation — full genetic management</p>
+            </div>
+            <div class="date-info">
+                <i class="far fa-calendar-alt"></i> 16 Mar 2026 · Incubation week 12
+                <span class="badge-role">BREEDING OFFICER</span>
+            </div>
+        </div>
+
+        <!-- ========== NAVIGATION BAR (UNDER HEADER) ========== -->
+        <div class="navbar">
+            <div class="nav-links" id="navLinks">
+                <span class="nav-item active" data-table="pairs"><i class="fas fa-paw"></i> Breeding pairs</span>
+                <span class="nav-item" data-table="nesting"><i class="fas fa-egg"></i> Nesting</span>
+                <span class="nav-item" data-table="incubation"><i class="fas fa-chart-line"></i> Incubation</span>
+                <span class="nav-item" data-table="observations"><i class="fas fa-clipboard-list"></i> Observations</span>
+                <span class="nav-item" data-table="environment"><i class="fas fa-temperature-high"></i> IoT environment</span>
+                <span class="nav-item" data-table="food"><i class="fas fa-apple-alt"></i> Food</span>
+            </div>
+            <div class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </div>
+        </div>
+
+        <!-- mini cards (always visible) -->
+        <div class="stats-cards">
+            <div class="stat-card"><i class="fas fa-heart"></i><div class="stat-info"><h3>14</h3><span>active pairs</span></div></div>
+            <div class="stat-card"><i class="fas fa-egg"></i><div class="stat-info"><h3>39</h3><span>eggs incubating</span></div></div>
+            <div class="stat-card"><i class="fas fa-seedling"></i><div class="stat-info"><h3>87%</h3><span>hatch rate (2026)</span></div></div>
+            <div class="stat-card"><i class="fas fa-temperature-low"></i><div class="stat-info"><h3>6</h3><span>incubators active</span></div></div>
+        </div>
+
+        <!-- ========== ALL TABLE SECTIONS (hidden by default, shown via nav) ========== -->
+
+        <!-- TABLE 1 : BREEDING PAIRS -->
+        <div class="table-wrapper" id="pairs">
+            <div class="table-header">
+                <h2><i class="fas fa-hand-holding-heart"></i> Breeding pairs</h2>
+                <div class="action-bar">
+                    <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+                    <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
+                    <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+                    <button class="btn btn-search"><i class="fas fa-magnifying-glass"></i> Search</button>
+                </div>
+            </div>
+            <table>
+                <thead><tr><th>Pair ID</th><th>Male</th><th>Female</th><th>Species</th><th>Mating date</th><th>Nest ID</th><th>Status</th></tr></thead>
+                <tbody>
+                    <tr><td>BP-021</td><td>Thor (M23)</td><td>Shelly (F09)</td><td>Aldabra</td><td>10 Jan 2026</td><td>Nest-AA4</td><td><span class="badge-status">paired</span></td></tr>
+                    <tr><td>BP-022</td><td>Groot (M07)</td><td>Tess (F12)</td><td>Leopard</td><td>03 Feb 2026</td><td>Nest-BG2</td><td><span class="badge-status">incubating</span></td></tr>
+                    <tr><td>BP-019</td><td>Spike (M11)</td><td>Marble (F04)</td><td>Sulcata</td><td>18 Dec 2025</td><td>Nest-C1R</td><td><span class="badge-status">hatched</span></td></tr>
+                    <tr><td>BP-024</td><td>Yoshi (M03)</td><td>Dot (F16)</td><td>Galápagos</td><td>27 Feb 2026</td><td>—</td><td><span class="badge-status">courting</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- TABLE 2 : NESTING & EGG COUNTS -->
+        <div class="table-wrapper" id="nesting">
+            <div class="table-header">
+                <h2><i class="fas fa-egg"></i> Nesting & egg records</h2>
+                <div class="action-bar">
+                    <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+                    <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
+                    <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+                    <button class="btn btn-search"><i class="fas fa-magnifying-glass"></i> Search</button>
+                </div>
+            </div>
+            <table>
+                <thead><tr><th>Nest ID</th><th>Pair ID</th><th>Nesting date</th><th>Egg count</th><th>Fertile</th><th>Incubator</th><th>Est. hatch</th></tr></thead>
+                <tbody>
+                    <tr><td>Nest-AA4</td><td>BP-021</td><td>12 Jan 2026</td><td>8</td><td>7</td><td>INC-3</td><td>14 Apr 2026</td></tr>
+                    <tr><td>Nest-BG2</td><td>BP-022</td><td>07 Feb 2026</td><td>12</td><td>10</td><td>INC-1</td><td>02 Jun 2026</td></tr>
+                    <tr><td>Nest-C1R</td><td>BP-019</td><td>20 Dec 2025</td><td>6</td><td>5</td><td>INC-2</td><td>hatched 03 Mar</td></tr>
+                    <tr><td>Nest-D44</td><td>—</td><td>01 Mar 2026</td><td>4</td><td>2</td><td>INC-4</td><td>20 May 2026</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- TABLE 3 : INCUBATION & HATCHING SUCCESS -->
+        <div class="table-wrapper" id="incubation">
+            <div class="table-header">
+                <h2><i class="fas fa-chart-line"></i> Incubation & hatching</h2>
+                <div class="action-bar">
+                    <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+                    <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
+                    <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+                    <button class="btn btn-search"><i class="fas fa-magnifying-glass"></i> Search</button>
+                </div>
+            </div>
+            <table>
+                <thead><tr><th>Incubator</th><th>Nest ID</th><th>Day</th><th>Temp</th><th>Humidity</th><th>Hatched</th><th>Success %</th></tr></thead>
+                <tbody>
+                    <tr><td>INC-1 <span class="iot-tag">IoT</span></td><td>BG2</td><td>38</td><td>29.5°C</td><td>74%</td><td>—</td><td>—</td></tr>
+                    <tr><td>INC-2 <span class="iot-tag">IoT</span></td><td>C1R</td><td>74</td><td>30.0°C</td><td>71%</td><td>5/6</td><td>83%</td></tr>
+                    <tr><td>INC-3</td><td>AA4</td><td>62</td><td>28.7°C</td><td>69%</td><td>—</td><td>—</td></tr>
+                    <tr><td>INC-4</td><td>D44</td><td>15</td><td>29.0°C</td><td>73%</td><td>—</td><td>—</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- TABLE 4 : BREEDING OBSERVATIONS / NOTES -->
+        <div class="table-wrapper" id="observations">
+            <div class="table-header">
+                <h2><i class="fas fa-clipboard-list"></i> Observations & history</h2>
+                <div class="action-bar">
+                    <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+                    <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
+                    <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+                    <button class="btn btn-search"><i class="fas fa-magnifying-glass"></i> Search</button>
+                </div>
+            </div>
+            <table>
+                <thead><tr><th>Date</th><th>Pair ID</th><th>Observer</th><th>Observation</th><th>Hatch note</th></tr></thead>
+                <tbody>
+                    <tr><td>15 Mar 2026</td><td>BP-022</td><td>Dr. Rivas</td><td>nest check, eggs viable</td><td><span class="badge-status badge-egg">incubating</span></td></tr>
+                    <tr><td>10 Mar 2026</td><td>BP-019</td><td>L. Chen</td><td>3 hatchlings emerged, 2 pipped</td><td><span class="badge-status badge-hatch">hatching</span></td></tr>
+                    <tr><td>02 Mar 2026</td><td>BP-021</td><td>Feeder/J.</td><td>female nesting behavior observed</td><td>—</td></tr>
+                    <tr><td>22 Feb 2026</td><td>—</td><td>IoT</td><td>incubator 3 temp spike (30.8°C), adjusted</td><td>automated</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- TABLE 5 : INCUBATOR ENVIRONMENT (IoT) -->
+        <div class="table-wrapper" id="environment">
+            <div class="table-header">
+                <h2><i class="fas fa-temperature-high"></i> Incubator environment (IoT)</h2>
+                <div class="action-bar">
+                    <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+                    <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
+                    <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+                    <button class="btn btn-search"><i class="fas fa-magnifying-glass"></i> Search</button>
+                </div>
+            </div>
+            <table>
+                <thead><tr><th>Incubator</th><th>Temp (°C)</th><th>Humidity</th><th>O₂</th><th>Last checked</th><th>Status</th></tr></thead>
+                <tbody>
+                    <tr><td>INC-1 <i class="fas fa-wifi" style="color:#318f67;"></i></td><td>29.4</td><td>74%</td><td>20.8%</td><td>08:30 today</td><td><span class="badge-status">stable</span></td></tr>
+                    <tr><td>INC-2 <i class="fas fa-wifi"></i></td><td>30.1</td><td>71%</td><td>20.5%</td><td>08:30 today</td><td><span class="badge-status">stable</span></td></tr>
+                    <tr><td>INC-3</td><td>28.5</td><td>69%</td><td>—</td><td>07:45 staff</td><td><span class="badge-status">monitor</span></td></tr>
+                    <tr><td>INC-4</td><td>29.0</td><td>73%</td><td>20.6%</td><td>08:15 IoT</td><td><span class="badge-status">stable</span></td></tr>
+                </tbody>
+            </table>
+            <hr>
+            <div style="margin-top: 0.5rem; color:#3a725b; display: flex; gap: 2rem; font-weight: 500;">
+                <span><i class="far fa-clock"></i> next rotation check: 16 Mar 14:00</span>
+                <span><i class="fas fa-tasks"></i> assigned: candling (INC‑2), nest monitoring</span>
+            </div>
+        </div>
+
+        <!-- TABLE 6 : FOOD INVENTORY (breeder supplement) -->
+        <div class="table-wrapper" id="food">
+            <div class="table-header">
+                <h2><i class="fas fa-apple-alt"></i> breeder supplement / food</h2>
+                <div class="action-bar">
+                    <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+                    <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
+                    <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+                    <button class="btn btn-search"><i class="fas fa-magnifying-glass"></i> Search</button>
+                </div>
+            </div>
+            <table>
+                <thead><tr><th>Item</th><th>For species</th><th>Current (kg)</th><th>Reorder at</th><th>Last ordered</th></tr></thead>
+                <tbody>
+                    <tr><td>Calcium blocks</td><td>all gravid ♀</td><td>3.8 kg</td><td>2 kg</td><td>01 Mar 2026</td></tr>
+                    <tr><td>Leaf eater gel</td><td>Aldabra</td><td>12 kg</td><td>5 kg</td><td>10 Mar 2026</td></tr>
+                    <tr><td>Protein mix</td><td>hatchlings</td><td>2.1 kg</td><td>3 kg</td><td>05 Mar 2026</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- footer -->
+        <div class="footer-note">
+            <i class="fas fa-shield-tortoise"></i> Breeding officer dashboard — click any nav link to show the corresponding table. (static demo)
+        </div>
+    </div>
+
+    <!-- simple JavaScript to toggle tables + active class -->
+    <script>
+        (function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const tables = {
+                pairs: document.getElementById('pairs'),
+                nesting: document.getElementById('nesting'),
+                incubation: document.getElementById('incubation'),
+                observations: document.getElementById('observations'),
+                environment: document.getElementById('environment'),
+                food: document.getElementById('food')
+            };
+
+            // Hide all tables, remove active class from nav items
+            function deactivateAll() {
+                Object.values(tables).forEach(tbl => {
+                    if (tbl) tbl.classList.remove('active-table');
+                });
+                navItems.forEach(item => item.classList.remove('active'));
+            }
+
+            // Show table by id and set active nav
+            function showTable(tableId, activeItem) {
+                deactivateAll();
+                if (tables[tableId]) {
+                    tables[tableId].classList.add('active-table');
+                }
+                if (activeItem) {
+                    activeItem.classList.add('active');
+                }
+            }
+
+            // Add click listeners
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    const tableId = this.getAttribute('data-table'); // pairs, nesting, ...
+                    showTable(tableId, this);
+                });
+            });
+
+            // Initial: show first table (pairs) and set active class on first nav
+            const firstNav = document.querySelector('.nav-item[data-table="pairs"]');
+            if (firstNav) {
+                showTable('pairs', firstNav);
+            }
+        })();
+    </script>
+</body>
+</html>
