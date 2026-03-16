@@ -67,6 +67,7 @@ th {
 .tab-buttons {
   display: flex;
   border-bottom: 1px solid #ccc;
+  gap: 10px;
 }
 
 .tab-button {
@@ -136,6 +137,30 @@ input, select {
   font-family: inherit;
   box-sizing: border-box;
 }
+
+.status-btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.status-btn.done {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.status-btn.in-progress {
+  background-color: #FF9800;
+  color: white;
+}
+
+.status-btn.pending {
+  background-color: #F44336;
+  color: white;
+}
 </style>
 </head>
 <body>
@@ -167,37 +192,37 @@ input, select {
     <td>Sakira</td>
     <td>Temp&humidityTest</td>
     <td>07:00AM</td>
-    <td>Done</td>
+    <td><button class="status-btn done" onclick="changeStatus(this)">Done</button></td>
   </tr>
   <tr>
     <td>Samanta</td>
     <td>Water Quality Log</td>
     <td>08.00 AM</td>
-    <td>Done</td>
+    <td><button class="status-btn done" onclick="changeStatus(this)">Done</button></td>
   </tr>
   <tr>
     <td>Salman</td>
     <td>Substrate Cleaning</td>
     <td>09:00 AM</td>
-    <td>In Progress</td>
+    <td><button class="status-btn in-progress" onclick="changeStatus(this)">In Progress</button></td>
   </tr>
   <tr>
     <td>Muzahid</td>
     <td>Substrate Cleaning</td>
     <td>02:00 AM</td>
-    <td>Pending</td>
+    <td><button class="status-btn pending" onclick="changeStatus(this)">Pending</button></td>
   </tr>
   <tr>
     <td>Nahin</td>
     <td>Evening Report</td>
     <td>03:00 PM</td>
-    <td>Pending</td>
+    <td><button class="status-btn pending" onclick="changeStatus(this)">Pending</button></td>
   </tr>
   <tr>
     <td>Nabiha</td>
     <td>Afternoon Monitoring</td>
     <td>09:30 AM</td>
-    <td>In Progress</td>
+    <td><button class="status-btn in-progress" onclick="changeStatus(this)">In Progress</button></td>
 </tr>
 </table>
   </div>
@@ -268,6 +293,16 @@ function showTab(tabId) {
   const buttons = document.querySelectorAll('.tab-button');
   buttons.forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
+}
+
+function changeStatus(button) {
+  const statuses = ['Done', 'In Progress', 'Pending'];
+  const classes = ['done', 'in-progress', 'pending'];
+  const currentText = button.textContent;
+  const currentIndex = statuses.indexOf(currentText);
+  const nextIndex = (currentIndex + 1) % statuses.length;
+  button.textContent = statuses[nextIndex];
+  button.className = 'status-btn ' + classes[nextIndex];
 }
 </script>
 
