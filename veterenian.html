@@ -106,6 +106,30 @@
   margin-top: 8px;
 }
 
+.search-container {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+  max-width: 500px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(10, 42, 58, 0.18);
+  background: rgba(255, 255, 255, 0.95);
+  font-size: 1rem;
+  line-height: 1.4;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: rgba(15, 122, 183, 0.85);
+  box-shadow: 0 0 0 4px rgba(15, 122, 183, 0.15);
+}
+
 .btn-primary {
   border: none;
   border-radius: 999px;
@@ -127,6 +151,12 @@
 
 .btn-primary:active {
   transform: translateY(0);
+}
+
+.search-btn {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  font-size: 0.9rem;
 }
 
 @media (max-width: 640px) {
@@ -263,10 +293,15 @@ th {
 </div>
 <div class="tab">
   <button class="tablinks active" onclick="openCity(event, 'TortoiseInfo')">Tortoise Info</button>
-  <button class="tablinks" onclick="openCity(event, 'Assessments')">New Assessment</button>
+  <button class="tablinks" onclick="openCity(event, 'Assessments')">Add new assessment</button>
 </div>
 <div id="TortoiseInfo" class="tabcontent" style="display: block;">
-  <h2>📋 Tortoise Health List</h2>
+  <h2> Tortoise Health Information List</h2>
+
+  <div class="search-container">
+    <input type="text" id="tortoise-search" placeholder="Search Tortoise Health Information" class="search-input">
+    <button type="button" id="search-btn" class="btn-primary search-btn">Search</button>
+  </div>
 
   <div class="table-container">
   <table>
@@ -277,6 +312,7 @@ th {
       <th>Gender</th>
       <th>Health</th>
       <th>Classification</th>
+      <th>Actions</th>
     </tr>
     <tr>
       <td>TRT01</td>
@@ -285,6 +321,10 @@ th {
       <td>Female</td>
       <td>Healthy</td>
       <td>Aldabra Giant Tortoise</td>
+      <td>
+        <button class="btn-primary" onclick="editTortoise('TRT01')">Edit</button>
+        <button class="btn-primary" onclick="deleteTortoise('TRT01')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
+      </td>
     </tr>
     <tr>
       <td>TRT02</td>
@@ -293,6 +333,10 @@ th {
       <td>Male</td>
       <td>On observation</td>
       <td>African Spurred Tortoise</td>
+      <td>
+        <button class="btn-primary" onclick="editTortoise('TRT02')">Edit</button>
+        <button class="btn-primary" onclick="deleteTortoise('TRT02')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
+      </td>
     </tr>
     <tr>
       <td>TRT03</td>
@@ -301,6 +345,10 @@ th {
       <td>Male</td>
       <td>Healthy</td>
       <td>Leopard Tortoise</td>
+      <td>
+        <button class="btn-primary" onclick="editTortoise('TRT03')">Edit</button>
+        <button class="btn-primary" onclick="deleteTortoise('TRT03')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
+      </td>
     </tr>
     <tr>
       <td>TRT04</td>
@@ -309,6 +357,10 @@ th {
       <td>Female</td>
       <td>Healthy</td>
       <td>Indian Star Tortoise</td>
+      <td>
+        <button class="btn-primary" onclick="editTortoise('TRT04')">Edit</button>
+        <button class="btn-primary" onclick="deleteTortoise('TRT04')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
+      </td>
     </tr>
     <tr>
       <td>TRT05</td>
@@ -317,6 +369,10 @@ th {
       <td>Female</td>
       <td>Critical</td>
       <td>Indian Star Tortoise</td>
+      <td>
+        <button class="btn-primary" onclick="editTortoise('TRT05')">Edit</button>
+        <button class="btn-primary" onclick="deleteTortoise('TRT05')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
+      </td>
     </tr>
     <tr>
       <td>TRT06</td>
@@ -325,6 +381,10 @@ th {
       <td>Male</td>
       <td>Recovering</td>
       <td>Benjamin Tortoise</td>
+      <td>
+        <button class="btn-primary" onclick="editTortoise('TRT06')">Edit</button>
+        <button class="btn-primary" onclick="deleteTortoise('TRT06')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
+      </td>
     </tr>
     <tr>
       <td>TRT07</td>
@@ -333,6 +393,10 @@ th {
       <td>Female</td>
       <td>Healthy</td>
       <td>Greek Tortoise</td>
+      <td>
+        <button class="btn-primary" onclick="editTortoise('TRT07')">Edit</button>
+        <button class="btn-primary" onclick="deleteTortoise('TRT07')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
+      </td>
     </tr>
     <tr>
       <td>TRT08</td>
@@ -341,6 +405,10 @@ th {
       <td>Male</td>
       <td>Under observation</td>
       <td>Hermann's Tortoise</td>
+      <td>
+        <button class="btn-primary" onclick="editTortoise('TRT08')">Edit</button>
+        <button class="btn-primary" onclick="deleteTortoise('TRT08')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
+      </td>
     </tr>
     <tr>
       <td>TRT09</td>
@@ -349,6 +417,10 @@ th {
       <td>Female</td>
       <td>Healthy</td>
       <td>Red-footed Tortoise</td>
+      <td>
+        <button class="btn-primary" onclick="editTortoise('TRT09')">Edit</button>
+        <button class="btn-primary" onclick="deleteTortoise('TRT09')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
+      </td>
     </tr>
     <tr>
       <td>TRT10</td>
@@ -357,6 +429,10 @@ th {
       <td>Male</td>
       <td>Healthy</td>
       <td>Russian Tortoise</td>
+      <td>
+        <button class="btn-primary" onclick="editTortoise('TRT10')">Edit</button>
+        <button class="btn-primary" onclick="deleteTortoise('TRT10')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
+      </td>
     </tr>
     <tr>
       <td>TRT11</td>
@@ -365,6 +441,10 @@ th {
       <td>Female</td>
       <td>Healthy</td>
       <td>Florida Box Turtle</td>
+      <td>
+        <button class="btn-primary" onclick="editTortoise('TRT11')">Edit</button>
+        <button class="btn-primary" onclick="deleteTortoise('TRT11')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
+      </td>
     </tr>
     <tr>
       <td>TRT12</td>
@@ -373,6 +453,10 @@ th {
       <td>Male</td>
       <td>Recovering</td>
       <td>Desert Tortoise</td>
+      <td>
+        <button class="btn-primary" onclick="editTortoise('TRT12')">Edit</button>
+        <button class="btn-primary" onclick="deleteTortoise('TRT12')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
+      </td>
     </tr>
     <tr>
       <td>TRT13</td>
@@ -381,6 +465,10 @@ th {
       <td>Female</td>
       <td>Healthy</td>
       <td>Sulcata Tortoise</td>
+      <td>
+        <button class="btn-primary" onclick="editTortoise('TRT13')">Edit</button>
+        <button class="btn-primary" onclick="deleteTortoise('TRT13')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
+      </td>
     </tr>
   </table>
   </div>
@@ -442,7 +530,7 @@ th {
       </div>
 
       <div class="assessment-actions">
-        <button type="submit" class="btn-primary">Submit Assessment</button>
+        <button type="submit" class="btn-primary">Add assessment</button>
       </div>
     </form>
   </div>
@@ -463,6 +551,62 @@ function openCity(evt, cityName) {
 document.addEventListener('DOMContentLoaded', () => {
   const defaultTab = document.querySelector('.tab button.active');
   if (defaultTab) defaultTab.click();
+});
+
+function editTortoise(tortoiseId) {
+  window.location.href = 'formEditTortoiseInfo.html?id=' + tortoiseId;
+}
+
+function deleteTortoise(tortoiseId) {
+  if (confirm('Are you sure you want to delete tortoise ' + tortoiseId + '?')) {
+    alert('Tortoise Information deleted Successfully');
+    // TODO: Implement delete functionality
+  }
+}
+
+function searchTortoises() {
+  const searchInput = document.getElementById('tortoise-search');
+  const filter = searchInput.value.toLowerCase();
+  const table = document.querySelector('#TortoiseInfo table');
+  const rows = table.getElementsByTagName('tr');
+
+  // Start from index 1 to skip the header row
+  for (let i = 1; i < rows.length; i++) {
+    const cells = rows[i].getElementsByTagName('td');
+    let match = false;
+
+    // Check all cells except the last one (Actions column)
+    for (let j = 0; j < cells.length - 1; j++) {
+      const cellText = cells[j].textContent || cells[j].innerText;
+      if (cellText.toLowerCase().indexOf(filter) > -1) {
+        match = true;
+        break;
+      }
+    }
+
+    if (match) {
+      rows[i].style.display = '';
+    } else {
+      rows[i].style.display = 'none';
+    }
+  }
+}
+
+// Add event listener for search input
+document.addEventListener('DOMContentLoaded', () => {
+  const defaultTab = document.querySelector('.tab button.active');
+  if (defaultTab) defaultTab.click();
+
+  const searchInput = document.getElementById('tortoise-search');
+  const searchBtn = document.getElementById('search-btn');
+
+  if (searchInput) {
+    searchInput.addEventListener('keyup', searchTortoises);
+  }
+
+  if (searchBtn) {
+    searchBtn.addEventListener('click', searchTortoises);
+  }
 });
 </script>
 </body>
