@@ -6,10 +6,43 @@
 body {
   margin: 0;
   padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #fff8e7 0%, #ffe5cc 50%, #ffd9a8 100%);
+  color: #2c3e50;
+  line-height: 1.6;
+  min-height: 100vh;
+  animation: fadeInBody 0.8s ease-in-out;
 }
 
-h2, p {
-  margin: 10px;
+@keyframes fadeInBody {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+h2 {
+  margin: 0 0 20px 0;
+  color: #2c3e50;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(135deg, #c85a3a 0%, #8b5a2b 100%);
+  border-radius: 2px;
 }
 
 ul {
@@ -17,7 +50,8 @@ ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #333333;
+  background-color: #2c3e50;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 ul li {
@@ -28,146 +62,531 @@ ul li a {
   display: block;
   color: white;
   text-align: center;
-  padding: 14px 16px;
+  padding: 16px 20px;
   text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
 }
 
 ul li a:hover {
-  background-color: #111111;
+  background-color: #34495e;
 }
 table {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   width: 100%;
-  margin: 20px 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 30px 0;
+  background-color: white;
+  border-radius: 12px;
+  overflow: visible;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  border: 1px solid #e1e8ed;
+  position: relative;
+}
+
+.tortoise-walker {
+  position: absolute;
+  top: -60px;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.tortoise-walker svg {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  animation: tortoiseWalkPingPong 16s ease-in-out infinite;
+}
+
+@keyframes tortoiseWalkPingPong {
+  0% { 
+    left: -70px; 
+    transform: scaleX(1);
+  }
+  50% { 
+    left: calc(100% - 0px); 
+    transform: scaleX(1);
+  }
+  50.1% { 
+    transform: scaleX(-1);
+  }
+  100% { 
+    left: -70px; 
+    transform: scaleX(-1);
+  }
 }
 
 th {
-  background: linear-gradient(135deg, #518d35 0%, #2a5a1a 100%);
+  background: linear-gradient(135deg, #c85a3a 0%, #8b5a2b 100%);
   color: white;
   text-align: left;
-  padding: 14px;
+  padding: 20px 24px;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+  position: relative;
+}
+
+th:first-child {
+  border-top-left-radius: 12px;
+}
+
+th:last-child {
+  border-top-right-radius: 12px;
 }
 
 td {
   text-align: left;
-  padding: 12px 14px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 18px 24px;
+  border-bottom: 1px solid #f1f3f4;
+  color: #2c3e50;
+  transition: all 0.2s ease;
+}
+
+tr:last-child td {
+  border-bottom: none;
 }
 
 tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f4 100%);
+}
+
+tr:nth-child(odd) {
+  background-color: white;
 }
 
 tr:hover {
-  background-color: #f0f5eb;
+  background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .done-btn {
-  background-color: #518d35;
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
   color: white;
   border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
+  padding: 12px 20px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 500;
-  transition: all 0.3s;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.done-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.done-btn:hover::before {
+  left: 100%;
 }
 
 .done-btn:hover {
-  background-color: #2a5a1a;
+  background: linear-gradient(135deg, #229954 0%, #1e8449 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(39, 174, 96, 0.4);
 }
 
 .done-btn:active {
-  transform: scale(0.98);
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
 }
 
 .done-btn.completed {
-  background-color: #2d5a2d;
+  background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
   font-size: 18px;
-  padding: 6px 12px;
+  padding: 10px 16px;
+  box-shadow: 0 4px 12px rgba(127, 140, 141, 0.3);
+  cursor: default;
 }
 
 .done-btn.completed:hover {
-  background-color: #1a3a1a;
+  background: linear-gradient(135deg, #7f8c8d 0%, #6c7b7d 100%);
+  box-shadow: 0 4px 12px rgba(127, 140, 141, 0.3);
+  transform: none;
+}
+
+.action-btn {
+  margin-right: 10px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.edit-btn {
+  background: linear-gradient(135deg, #c85a3a 0%, #8b5a2b 100%);
+  color: white;
+}
+
+.edit-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.edit-btn:hover::before {
+  left: 100%;
+}
+
+.edit-btn:hover {
+  background: linear-gradient(135deg, #b34a2a 0%, #7a4a1f 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(200, 90, 58, 0.4);
+}
+
+.delete-btn {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+}
+
+.delete-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.delete-btn:hover::before {
+  left: 100%;
+}
+
+.delete-btn:hover {
+  background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(231, 76, 60, 0.4);
 }
 
 .tabs-container {
-  margin: 20px 0;
+  margin: 0 40px 40px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.8);
+  backdrop-filter: blur(10px);
+  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .tab-buttons {
   display: flex;
-  border-bottom: 2px solid #e0e0e0;
-  background-color: #f5f5f5;
+  border-bottom: 2px solid #e1e8ed;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  position: relative;
 }
 
 .tab-btn {
-  padding: 14px 20px;
-  background-color: #f5f5f5;
+  padding: 20px 32px;
+  background-color: transparent;
   border: none;
   cursor: pointer;
-  font-size: 15px;
-  font-weight: 500;
-  color: #333;
-  transition: all 0.3s;
-  border-bottom: 3px solid transparent;
+  font-size: 16px;
+  font-weight: 600;
+  color: #6c757d;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 4px solid transparent;
+  position: relative;
+  flex: 1;
+  text-align: center;
 }
 
 .tab-btn:hover {
-  background-color: #e8e8e8;
+  background: linear-gradient(135deg, rgba(200, 90, 58, 0.1) 0%, rgba(139, 90, 43, 0.1) 100%);
+  color: #c85a3a;
+  transform: translateY(-2px);
 }
 
 .tab-btn.active {
-  color: #518d35;
-  border-bottom-color: #518d35;
-  background-color: white;
+  color: #c85a3a;
+  border-bottom-color: #c85a3a;
+  background: linear-gradient(135deg, rgba(200, 90, 58, 0.05) 0%, rgba(139, 90, 43, 0.05) 100%);
+  box-shadow: 0 4px 12px rgba(200, 90, 58, 0.15);
+  transform: translateY(-2px);
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 4px;
+  background: linear-gradient(135deg, #c85a3a 0%, #8b5a2b 100%);
+  border-radius: 2px;
 }
 
 .tab-content {
   display: none;
-  padding: 20px 0;
+  padding: 40px;
+  background-color: white;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 .tab-content.active {
   display: block;
 }
 
-.page-header {
-  background: linear-gradient(135deg, #2a1a1a 0%, #518d35 100%);
-  color: white;
-  padding: 36px 40px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.page-header .icon {
-  font-size: 52px;
+.search-container {
+  margin: 30px 0;
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid rgba(255,255,255,0.8);
+}
+
+.search-input {
+  padding: 16px 24px;
+  border: 2px solid #dee2e6;
+  border-radius: 12px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 700px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-weight: 500;
+  outline: none;
+}
+.search-input:focus {
+  border-color: #c85a3a;
+  box-shadow: 0 0 0 4px rgba(200, 90, 58, 0.15), 0 8px 24px rgba(200, 90, 58, 0.2);
+  transform: translateY(-2px);
+}
+
+.search-input::placeholder {
+  color: #adb5bd;
+  font-weight: 400;
+}
+
+.add-form {
+  margin: 40px 0;
+  padding: 32px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.8);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  backdrop-filter: blur(10px);
+}
+
+.add-form h3 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  color: #2c3e50;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  position: relative;
+}
+
+.add-form h3::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(135deg, #c85a3a 0%, #8b5a2b 100%);
+  border-radius: 2px;
+}
+
+.add-form div {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.add-form input {
+  padding: 14px 18px;
+  border: 2px solid #dee2e6;
+  border-radius: 10px;
+  font-size: 15px;
+  flex: 1;
+  min-width: 220px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  font-weight: 500;
+  outline: none;
+}
+
+.add-form input:focus {
+  border-color: #c85a3a;
+  box-shadow: 0 0 0 3px rgba(200, 90, 58, 0.1), 0 4px 12px rgba(200, 90, 58, 0.15);
+  transform: translateY(-2px);
+}
+
+.add-form input::placeholder {
+  color: #adb5bd;
+  font-weight: 400;
+}
+
+.page-header {
+  background: linear-gradient(135deg, #c85a3a 0%, #8b5a2b 100%);
+  color: white;
+  padding: 50px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  box-shadow: 0 8px 32px rgba(200, 90, 58, 0.3);
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.1;
+}
+
+.page-header .content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
 }
 
 .page-header h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 30px;
-  margin-bottom: 6px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 36px;
+  margin-bottom: 12px;
+  font-weight: 300;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .page-header p {
-  opacity: 0.8;
-  font-size: 15px;
-  font-weight: 300;
+  opacity: 0.95;
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .page-header {
+    padding: 30px 20px;
+  }
+  
+  .page-header h1 {
+    font-size: 28px;
+  }
+  
+  .page-header p {
+    font-size: 16px;
+  }
+  
+  .tabs-container {
+    margin: 0 20px 20px;
+  }
+  
+  .tab-content {
+    padding: 20px;
+  }
+  
+  .add-form {
+    padding: 20px;
+  }
+  
+  .add-form div {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .add-form input {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  table {
+    font-size: 14px;
+  }
+  
+  th, td {
+    padding: 12px 16px;
+  }
+  
+  .action-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    margin-right: 5px;
+  }
 }
 </style>
 </head>
 <body>
 
 <div class="page-header">
-  <div>
-    <h1>Feeder Management</h1>
-    <p>Manage animal feeding schedules and records</p>
+  <div class="content">
+    <h1>Feeder Management System</h1>
+    <p>Comprehensive animal feeding schedules and dietary management</p>
   </div>
 </div>
 
@@ -180,13 +599,22 @@ tr:hover {
 
   <div id="todays-plan" class="tab-content active">
     <h2>Today's Feeding Schedule</h2>
+    <div class="search-container">
+      <input type="text" class="search-input" placeholder="Search by time, tortoise ID, or food type..." onkeyup="filterTable(this, 'todays-plan')">
+    </div>
     <table>
+      <div class="tortoise-walker">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <!-- Shell --><ellipse cx="50" cy="40" rx="28" ry="32" fill="#8B7355"/><!-- Shell pattern --><ellipse cx="50" cy="40" rx="28" ry="32" fill="none" stroke="#6B5344" stroke-width="2" opacity="0.5"/><!-- Head --><circle cx="30" cy="20" r="12" fill="#A0826D"/><!-- Eye --><circle cx="28" cy="16" r="2" fill="#000"/><!-- Mouth --><path d="M 24 22 Q 26 24 28 22" fill="none" stroke="#8B7355" stroke-width="1"/><!-- Front left leg --><ellipse cx="28" cy="68" rx="6" ry="10" fill="#8B7355"/><!-- Front right leg --><ellipse cx="42" cy="70" rx="6" ry="10" fill="#8B7355"/><!-- Back left leg --><ellipse cx="58" cy="70" rx="6" ry="10" fill="#8B7355"/><!-- Back right leg --><ellipse cx="72" cy="68" rx="6" ry="10" fill="#8B7355"/><!-- Tail --><path d="M 75 48 Q 82 50 85 45" fill="none" stroke="#8B7355" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
       <thead>
         <tr>
           <th>Time</th>
           <th>Tortoise ID</th>
           <th>Food Type</th>
           <th>Done</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -195,85 +623,170 @@ tr:hover {
           <td>T001</td>
           <td>Vegetables</td>
           <td><button class="done-btn" onclick="toggleDone(this)">Mark Done</button></td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
         <tr>
           <td>10:30 AM</td>
           <td>T002</td>
           <td>Mixed Greens</td>
           <td><button class="done-btn" onclick="toggleDone(this)">Mark Done</button></td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
         <tr>
           <td>01:00 PM</td>
           <td>T003</td>
           <td>Fruits & Vegetables</td>
           <td><button class="done-btn" onclick="toggleDone(this)">Mark Done</button></td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
         <tr>
           <td>03:30 PM</td>
           <td>T001</td>
           <td>Lettuce & Berries</td>
           <td><button class="done-btn" onclick="toggleDone(this)">Mark Done</button></td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
         <tr>
           <td>05:00 PM</td>
           <td>T004</td>
           <td>Vegetation</td>
           <td><button class="done-btn" onclick="toggleDone(this)">Mark Done</button></td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
       </tbody>
     </table>
+
+    <div class="add-form">
+      <h3>Add New Schedule Entry</h3>
+      <div>
+        <input type="text" id="new-time" placeholder="Time (e.g., 07:40 AM)" />
+        <input type="text" id="new-tortoise-id" placeholder="Tortoise ID (e.g., T005)" />
+        <input type="text" id="new-food-type" placeholder="Food Type" />
+        <button class="action-btn edit-btn" onclick="addToTodaysSchedule()">Add to Table</button>
+      </div>
+    </div>
   </div>
 
   <div id="current-plan" class="tab-content">
     <h2>Current Dietary Plan</h2>
+    <div class="search-container">
+      <input type="text" class="search-input" placeholder="Search by food name or amount..." onkeyup="filterTable(this, 'current-plan')">
+    </div>
     <table>
+      <div class="tortoise-walker">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <!-- Shell --><ellipse cx="50" cy="40" rx="28" ry="32" fill="#8B7355"/><!-- Shell pattern --><ellipse cx="50" cy="40" rx="28" ry="32" fill="none" stroke="#6B5344" stroke-width="2" opacity="0.5"/><!-- Head --><circle cx="30" cy="20" r="12" fill="#A0826D"/><!-- Eye --><circle cx="28" cy="16" r="2" fill="#000"/><!-- Mouth --><path d="M 24 22 Q 26 24 28 22" fill="none" stroke="#8B7355" stroke-width="1"/><!-- Front left leg --><ellipse cx="28" cy="68" rx="6" ry="10" fill="#8B7355"/><!-- Front right leg --><ellipse cx="42" cy="70" rx="6" ry="10" fill="#8B7355"/><!-- Back left leg --><ellipse cx="58" cy="70" rx="6" ry="10" fill="#8B7355"/><!-- Back right leg --><ellipse cx="72" cy="68" rx="6" ry="10" fill="#8B7355"/><!-- Tail --><path d="M 75 48 Q 82 50 85 45" fill="none" stroke="#8B7355" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
       <thead>
         <tr>
           <th>Food/Supplements Name</th>
           <th>Amount</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>Lettuce</td>
           <td>500 grams</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
         <tr>
           <td>Spinach</td>
           <td>300 grams</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
         <tr>
           <td>Carrots</td>
           <td>250 grams</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
         <tr>
           <td>Calcium Supplement</td>
           <td>50 grams</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
         <tr>
           <td>Mixed Berries</td>
           <td>200 grams</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
         <tr>
           <td>Vitamin D3 Powder</td>
           <td>10 grams</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
         <tr>
           <td>Timothy Hay</td>
           <td>800 grams</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
       </tbody>
     </table>
+
+    <div class="add-form">
+      <h3>Add New Dietary Item</h3>
+      <div>
+        <input type="text" id="new-food-name" placeholder="Food/Supplements Name" />
+        <input type="text" id="new-amount" placeholder="Amount (e.g., 100 grams)" />
+        <button class="action-btn edit-btn" onclick="addToCurrentPlan()">Add to Table</button>
+      </div>
+    </div>
   </div>
 
   <div id="special-needs" class="tab-content">
     <h2>Special Dietary Needs</h2>
+    <div class="search-container">
+      <input type="text" class="search-input" placeholder="Search by tortoise ID, restriction, or note..." onkeyup="filterTable(this, 'special-needs')">
+    </div>
     <table>
+      <div class="tortoise-walker">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <!-- Shell --><ellipse cx="50" cy="40" rx="28" ry="32" fill="#8B7355"/><!-- Shell pattern --><ellipse cx="50" cy="40" rx="28" ry="32" fill="none" stroke="#6B5344" stroke-width="2" opacity="0.5"/><!-- Head --><circle cx="30" cy="20" r="12" fill="#A0826D"/><!-- Eye --><circle cx="28" cy="16" r="2" fill="#000"/><!-- Mouth --><path d="M 24 22 Q 26 24 28 22" fill="none" stroke="#8B7355" stroke-width="1"/><!-- Front left leg --><ellipse cx="28" cy="68" rx="6" ry="10" fill="#8B7355"/><!-- Front right leg --><ellipse cx="42" cy="70" rx="6" ry="10" fill="#8B7355"/><!-- Back left leg --><ellipse cx="58" cy="70" rx="6" ry="10" fill="#8B7355"/><!-- Back right leg --><ellipse cx="72" cy="68" rx="6" ry="10" fill="#8B7355"/><!-- Tail --><path d="M 75 48 Q 82 50 85 45" fill="none" stroke="#8B7355" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
       <thead>
         <tr>
           <th>Tortoise ID</th>
           <th>Restriction</th>
           <th>Note</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -281,24 +794,50 @@ tr:hover {
           <td>T001</td>
           <td>No Protein Foods</td>
           <td>High Calcium Deficiency - Supplement daily with Calcium Carbonate</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
         <tr>
           <td>T002</td>
           <td>Avoid Oxalates</td>
           <td>Vitamin A Deficiency - Include Carrots & Squash 3x weekly</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
         <tr>
           <td>T003</td>
           <td>Soft Diet Only</td>
           <td>Recovery Period - Feed soft vegetables and greens daily</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
         <tr>
           <td>T004</td>
           <td>Limited Fresh Food</td>
           <td>Senior Tortoise - Provide nutrient-rich mix twice daily</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
         </tr>
       </tbody>
     </table>
+
+    <div class="add-form">
+      <h3>Add New Special Dietary Need</h3>
+      <div>
+        <input type="text" id="new-tortoise-id-special" placeholder="Tortoise ID (e.g., T005)" />
+        <input type="text" id="new-restriction" placeholder="Restriction" />
+        <input type="text" id="new-note" placeholder="Note" />
+        <button class="action-btn edit-btn" onclick="addToSpecialNeeds()">Add to Table</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -329,6 +868,253 @@ function toggleDone(button) {
     button.textContent = "✓";
   }
 }
+
+function filterTable(input, tabId) {
+  var filter = input.value.toUpperCase();
+  var tab = document.getElementById(tabId);
+  var table = tab.getElementsByTagName("table")[0];
+  var tbody = table.getElementsByTagName("tbody")[0];
+  var rows = tbody.getElementsByTagName("tr");
+  
+  for (var i = 0; i < rows.length; i++) {
+    var cells = rows[i].getElementsByTagName("td");
+    var found = false;
+    
+    for (var j = 0; j < cells.length; j++) {
+      var cellText = cells[j].textContent || cells[j].innerText;
+      if (cellText.toUpperCase().indexOf(filter) > -1) {
+        found = true;
+        break;
+      }
+    }
+    
+    if (found) {
+      rows[i].style.display = "";
+    } else {
+      rows[i].style.display = "none";
+    }
+  }
+}
+
+function editRow(btn) {
+  var row = btn.closest('tr');
+  var section = row.closest('.tab-content').id;
+
+  if (section === 'todays-plan') {
+    var timeCell = row.cells[0];
+    var foodCell = row.cells[2];
+
+    var oldTime = timeCell.textContent;
+    var oldFood = foodCell.textContent;
+
+    var newTime = prompt('Edit time:', oldTime);
+    if (newTime === null) {
+      return;
+    }
+
+    var newFood = prompt('Edit food type:', oldFood);
+    if (newFood === null) {
+      return;
+    }
+
+    var confirmMsg = 'Confirm update to: Time: ' + newTime + ', Food Type: ' + newFood + '?';
+    if (confirm(confirmMsg)) {
+      timeCell.textContent = newTime;
+      foodCell.textContent = newFood;
+      alert('Schedule updated successfully.');
+    } else {
+      alert('Update canceled. No changes saved.');
+    }
+  } else if (section === 'current-plan') {
+    var amountCell = row.cells[1];
+    var oldAmount = amountCell.textContent;
+
+    var newAmount = prompt('Edit amount:', oldAmount);
+    if (newAmount === null) {
+      return;
+    }
+
+    var confirmMsg = 'Confirm update to: Amount: ' + newAmount + '?';
+    if (confirm(confirmMsg)) {
+      amountCell.textContent = newAmount;
+      alert('Amount updated successfully.');
+    } else {
+      alert('Update canceled. No changes saved.');
+    }
+  } else if (section === 'special-needs') {
+    var restrictionCell = row.cells[1];
+    var noteCell = row.cells[2];
+
+    var oldRestriction = restrictionCell.textContent;
+    var oldNote = noteCell.textContent;
+
+    var newRestriction = prompt('Edit restriction:', oldRestriction);
+    if (newRestriction === null) {
+      return;
+    }
+
+    var newNote = prompt('Edit note:', oldNote);
+    if (newNote === null) {
+      return;
+    }
+
+    var confirmMsg = 'Confirm update to: Restriction: ' + newRestriction + ', Note: ' + newNote + '?';
+    if (confirm(confirmMsg)) {
+      restrictionCell.textContent = newRestriction;
+      noteCell.textContent = newNote;
+      alert('Special dietary entry updated successfully.');
+    } else {
+      alert('Update canceled. No changes saved.');
+    }
+  }
+}
+
+function deleteRow(btn) {
+  var row = btn.closest('tr');
+  var section = row.closest('.tab-content').id;
+  var confirmDelete;
+
+  if (section === 'todays-plan') {
+    var rowInfo = 'Time: ' + row.cells[0].textContent + ', Tortoise ID: ' + row.cells[1].textContent;
+    confirmDelete = confirm('Are you sure you want to delete this schedule row?\n' + rowInfo);
+  } else if (section === 'current-plan') {
+    var rowInfo = 'Food: ' + row.cells[0].textContent + ', Amount: ' + row.cells[1].textContent;
+    confirmDelete = confirm('Are you sure you want to delete this dietary item?\n' + rowInfo);
+  } else if (section === 'special-needs') {
+    var rowInfo = 'Tortoise ID: ' + row.cells[0].textContent + ', Restriction: ' + row.cells[1].textContent;
+    confirmDelete = confirm('Are you sure you want to delete this special needs entry?\n' + rowInfo);
+  } else {
+    confirmDelete = confirm('Are you sure you want to delete this row?');
+  }
+
+  if (confirmDelete) {
+    row.remove();
+    alert('Row deleted.');
+  } else {
+    alert('Deletion canceled.');
+  }
+}
+
+function addToTodaysSchedule() {
+  var timeInput = document.getElementById('new-time');
+  var tortoiseInput = document.getElementById('new-tortoise-id');
+  var foodInput = document.getElementById('new-food-type');
+
+  var timeValue = timeInput.value.trim();
+  var tortoiseValue = tortoiseInput.value.trim();
+  var foodValue = foodInput.value.trim();
+
+  if (!timeValue || !tortoiseValue || !foodValue) {
+    alert('Please fill in all fields before adding.');
+    return;
+  }
+
+  var confirmAdd = confirm('Add new row?\nTime: ' + timeValue + '\nTortoise ID: ' + tortoiseValue + '\nFood Type: ' + foodValue);
+  if (!confirmAdd) {
+    alert('Add canceled.');
+    return;
+  }
+
+  var table = document.getElementById('todays-plan').getElementsByTagName('table')[0];
+  var tbody = table.getElementsByTagName('tbody')[0];
+  var newRow = tbody.insertRow();
+
+  var timeCell = newRow.insertCell(0);
+  var tortoiseCell = newRow.insertCell(1);
+  var foodTypeCell = newRow.insertCell(2);
+  var doneCell = newRow.insertCell(3);
+  var actionCell = newRow.insertCell(4);
+
+  timeCell.textContent = timeValue;
+  tortoiseCell.textContent = tortoiseValue;
+  foodTypeCell.textContent = foodValue;
+  doneCell.innerHTML = '<button class="done-btn" onclick="toggleDone(this)">Mark Done</button>';
+  actionCell.innerHTML = '<button class="action-btn edit-btn" onclick="editRow(this)">Edit</button> <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>';
+
+  timeInput.value = '';
+  tortoiseInput.value = '';
+  foodInput.value = '';
+
+  alert('New schedule entry added successfully.');
+}
+
+function addToCurrentPlan() {
+  var foodInput = document.getElementById('new-food-name');
+  var amountInput = document.getElementById('new-amount');
+
+  var foodValue = foodInput.value.trim();
+  var amountValue = amountInput.value.trim();
+
+  if (!foodValue || !amountValue) {
+    alert('Please fill in all fields before adding.');
+    return;
+  }
+
+  var confirmAdd = confirm('Add new dietary item?\nFood: ' + foodValue + '\nAmount: ' + amountValue);
+  if (!confirmAdd) {
+    alert('Add canceled.');
+    return;
+  }
+
+  var table = document.getElementById('current-plan').getElementsByTagName('table')[0];
+  var tbody = table.getElementsByTagName('tbody')[0];
+  var newRow = tbody.insertRow();
+
+  var foodCell = newRow.insertCell(0);
+  var amountCell = newRow.insertCell(1);
+  var actionCell = newRow.insertCell(2);
+
+  foodCell.textContent = foodValue;
+  amountCell.textContent = amountValue;
+  actionCell.innerHTML = '<button class="action-btn edit-btn" onclick="editRow(this)">Edit</button> <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>';
+
+  foodInput.value = '';
+  amountInput.value = '';
+
+  alert('New dietary item added successfully.');
+}
+
+function addToSpecialNeeds() {
+  var tortoiseInput = document.getElementById('new-tortoise-id-special');
+  var restrictionInput = document.getElementById('new-restriction');
+  var noteInput = document.getElementById('new-note');
+
+  var tortoiseValue = tortoiseInput.value.trim();
+  var restrictionValue = restrictionInput.value.trim();
+  var noteValue = noteInput.value.trim();
+
+  if (!tortoiseValue || !restrictionValue || !noteValue) {
+    alert('Please fill in all fields before adding.');
+    return;
+  }
+
+  var confirmAdd = confirm('Add new special dietary need?\nTortoise ID: ' + tortoiseValue + '\nRestriction: ' + restrictionValue + '\nNote: ' + noteValue);
+  if (!confirmAdd) {
+    alert('Add canceled.');
+    return;
+  }
+
+  var table = document.getElementById('special-needs').getElementsByTagName('table')[0];
+  var tbody = table.getElementsByTagName('tbody')[0];
+  var newRow = tbody.insertRow();
+
+  var tortoiseCell = newRow.insertCell(0);
+  var restrictionCell = newRow.insertCell(1);
+  var noteCell = newRow.insertCell(2);
+  var actionCell = newRow.insertCell(3);
+
+  tortoiseCell.textContent = tortoiseValue;
+  restrictionCell.textContent = restrictionValue;
+  noteCell.textContent = noteValue;
+  actionCell.innerHTML = '<button class="action-btn edit-btn" onclick="editRow(this)">Edit</button> <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>';
+
+  tortoiseInput.value = '';
+  restrictionInput.value = '';
+  noteInput.value = '';
+
+  alert('New special dietary need added successfully.');
+}
+
 </script>
 
 </body>
