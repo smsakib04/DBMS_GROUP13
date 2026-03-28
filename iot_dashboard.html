@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tortoise Center · IoT Device Dashboard</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #eef3f0;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+        }
+
+        .dashboard {
+            max-width: 1600px;
+            width: 100%;
+        }
+
+        /* header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .title-section h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #1a6d4e;
+            letter-spacing: -0.02em;
+        }
+
+        .title-section p {
+            color: #4a7b64;
+            font-weight: 500;
+            margin-top: 0.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge-role {
+            background: #d4efe3;
+            padding: 0.25rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1b5e44;
+            border: 1px solid #b3ddcc;
+        }
+
+        .date-info {
+            background: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 40px;
+            box-shadow: 0 4px 8px rgba(0, 40, 20, 0.04);
+            font-weight: 500;
+            color: #2b7357;
+            border: 1px solid #c6e4d8;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* navigation bar */
+        .navbar {
+            background: white;
+            border-radius: 60px;
+            padding: 0.8rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 12px 24px -10px rgba(28, 78, 58, 0.2);
+            border: 1px solid #cbe8dd;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #2b6e53;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.4rem 0;
+            border-bottom: 3px solid transparent;
+            transition: 0.1s;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            color: #3d8b6c;
+            font-size: 1.2rem;
+        }
+
+        .nav-item.active {
+            border-bottom-color: #2a8b65;
+            color: #0f543c;
+        }
+
+        .logout-btn {
+            background: #fef4ed;
+            border: 1.5px solid #f5c9ae;
+            color: #b45a2e;
+            padding: 0.6rem 1.8rem;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .logout-btn:hover {
+            background: #fde8dc;
+            transform: scale(0.98);
+        }
+
+        /* stats cards */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.2rem 1rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 20px rgba(26, 80, 60, 0.08);
+            border: 1px solid #d8efe4;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: #368f6b;
+            background: #e1f5ec;
+            padding: 0.8rem;
+            border-radius: 50%;
+        }
+
+        .stat-info h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1b6148;
+            line-height: 1.2;
+        }
+
+        .stat-info span {
+            color: #578d76;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* table containers - hidden by default */
+        .table-wrapper {
+            background: white;
+            border-radius: 28px;
+            padding: 1.5rem 1.5rem 2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 18px 30px -8px rgba(28, 78, 58, 0.14);
+            border: 1px solid #d5ece1;
+            display: none;
+        }
+
+        .table-wrapper.active-table {
+            display: block;
+        }
+
+        .table-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-header h2 {
+            font-size: 1.7rem;
+            font-weight: 600;
+            color: #216e51;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .table-header h2 i {
+            color: #3b8b69;
+            font-size: 1.8rem;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: white;
+            border: 1.5px solid #cae5d9;
+            color: #2f735a;
+            font-weight: 600;
+            padding: 0.6rem 1.3rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .btn i {
+            font-size: 1rem;
+        }
+
+        .btn-add {
+            background: #1f7356;
+            border-color: #1f7356;
+            color: white;
+        }
+
+        .btn-remove {
+            background: #fef2ea;
+            border-color: #f5caae;
+            color: #b75728;
+        }
+
+        .btn-edit {
+            background: #eaf3fe;
+            border-color: #b9d4fa;
+            color: #2a6291;
+        }
+
+        .btn-search {
+            background: #eff8f3;
+            border-color: #bddbce;
+            color: #256e4f;
+        }
+
+        .btn:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            color: #1d543f;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem 0.5rem 0.8rem 0.5rem;
+            font-weight: 700;
+            color: #286e53;
+            border-bottom: 2px solid #d0ece0;
+        }
+
+        td {
+            padding: 0.85rem 0.5rem;
+            border-bottom: 1px solid #e4f3ec;
+            vertical-align: middle;
+        }
+
+        .badge-status {
+            background: #dff0e9;
+            color: #1d734f;
+            padding: 0.2rem 0.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        .badge-warning {
+            background: #fff0e0;
+            color: #c17a2b;
+        }
+
+        .badge-critical {
+            background: #ffe5e5;
+            color: #c23d3d;
+        }
+
+        .iot-device-icon {
+            background: #1b6148;
+            color: white;
+            border-radius: 20px;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        hr {
+            border: 1px solid #d4efe3;
+            margin: 1rem 0;
+        }
+
+        .footer-note {
+            text-align: center;
+            color: #6c9b86;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 750px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+                border-radius: 32px;
+            }
+            .nav-links {
+                justify-content: center;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <!-- Header with IoT Device role -->
+    <div class="header">
+        <div class="title-section">
+            <h1><i class="fas fa-microchip" style="color: #2c8f65;"></i> IoT Device · Monitoring Dashboard</h1>
+            <p><i class="fas fa-wifi"></i> Real-time sensors · Environmental telemetry · Automated alerts</p>
+        </div>
+        <div class="date-info">
+            <i class="far fa-clock"></i> Live data · 28 Mar 2026
+            <span class="badge-role">IOT NETWORK</span>
+        </div>
+    </div>
+
+    <!-- NAVIGATION BAR (under header) -->
+    <div class="navbar">
+        <div class="nav-links" id="navLinks">
+            <span class="nav-item active" data-table="sensors"><i class="fas fa-temperature-high"></i> Active Sensors</span>
+            <span class="nav-item" data-table="enviro"><i class="fas fa-chart-line"></i> Enclosure Readings</span>
+            <span class="nav-item" data-table="incubator"><i class="fas fa-egg"></i> Incubator Data</span>
+            <span class="nav-item" data-table="alerts"><i class="fas fa-bell"></i> Alerts & Thresholds</span>
+            <span class="nav-item" data-table="water"><i class="fas fa-water"></i> Water Quality</span>
+            <span class="nav-item" data-table="deviceLogs"><i class="fas fa-history"></i> Device Logs</span>
+        </div>
+        <div class="logout-btn" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </div>
+    </div>
+
+    <!-- STATS CARDS (IoT overview) -->
+    <div class="stats-cards">
+        <div class="stat-card"><i class="fas fa-microchip"></i><div class="stat-info"><h3>24</h3><span>active devices</span></div></div>
+        <div class="stat-card"><i class="fas fa-chart-line"></i><div class="stat-info"><h3>98%</h3><span>uptime (30d)</span></div></div>
+        <div class="stat-card"><i class="fas fa-exclamation-triangle"></i><div class="stat-info"><h3>3</h3><span>active alerts</span></div></div>
+        <div class="stat-card"><i class="fas fa-database"></i><div class="stat-info"><h3>1,284</h3><span>readings today</span></div></div>
+    </div>
+
+    <!-- ========== TABLE 1 : ACTIVE SENSORS ========== -->
+    <div class="table-wrapper" id="sensors">
+        <div class="table-header">
+            <h2><i class="fas fa-microchip"></i> Active IoT sensors</h2>
+            <div class="action-bar">
+                <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+                <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
+                <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+                <button class="btn btn-search"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr><th>Device ID</th><th>Type</th><th>Location</th><th>Battery (%)</th><th>Last ping</th><th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>IOT-TH-012</td><td>Temp/Humidity</td><td>Enclosure A3</td><td>87%</td><td>08:23:15</td><td><span class="badge-status">online</span></td></tr>
+                <tr><td>IOT-TH-045</td><td>Temp/Humidity</td><td>Enclosure B7</td><td>62%</td><td>08:22:58</td><td><span class="badge-status">online</span></td></tr>
+                <tr><td>IOT-WQ-003</td><td>Water quality</td><td>Marsh pond</td><td>91%</td><td>08:20:12</td><td><span class="badge-status">online</span></td></tr>
+                <tr><td>IOT-INC-09</td><td>Incubator</td><td>Hatchery #2</td><td>74%</td><td>08:24:01</td><td><span class="badge-status">online</span></td></tr>
+                <tr><td>IOT-LUX-22</td><td>Light/UV</td><td>Sun room</td><td>53%</td><td>08:19:44</td><td><span class="badge-warning">low battery</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ========== TABLE 2 : ENCLOSURE ENVIRONMENTAL READINGS ========== -->
+    <div class="table-wrapper" id="enviro">
+        <div class="table-header">
+            <h2><i class="fas fa-chart-line"></i> Enclosure environment (IoT)</h2>
+            <div class="action-bar">
+                <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+                <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
+                <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+                <button class="btn btn-search"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr><th>Enclosure</th><th>Temp (°C)</th><th>Humidity (%)</th><th>UV index</th><th>Last update</th><th>Threshold status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Arid Zone E1</td><td>29.8</td><td>34%</td><td>5.2</td><td>08:22:10</td><td><span class="badge-status">optimal</span></td></tr>
+                <tr><td>Rainforest E3</td><td>26.2</td><td>78%</td><td>3.1</td><td>08:21:45</td><td><span class="badge-status">stable</span></td></tr>
+                <tr><td>Savanna E7</td><td>31.4</td><td>42%</td><td>6.0</td><td>08:23:02</td><td><span class="badge-warning">high temp</span></td></tr>
+                <tr><td>Wetland E12</td><td>24.5</td><td>69%</td><td>2.8</td><td>08:20:33</td><td><span class="badge-status">normal</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ========== TABLE 3 : INCUBATOR DATA ========== -->
+    <div class="table-wrapper" id="incubator">
+        <div class="table-header">
+            <h2><i class="fas fa-egg"></i> Incubator telemetry</h2>
+            <div class="action-bar">
+                <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+                <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
+                <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+                <button class="btn btn-search"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+        表格
+            <thead>
+                <tr><th>Incubator ID</th><th>Temp (°C)</th><th>Humidity (%)</th><th>CO₂ (ppm)</th><th>Egg turn cycle</th><th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>INC-01 <i class="fas fa-wifi"></i></td><td>29.4</td><td>74%</td><td>412</td><td>Auto every 4h</td><td><span class="badge-status">normal</span></td></tr>
+                <tr><td>INC-02 <i class="fas fa-wifi"></i></td><td>30.1</td><td>71%</td><td>398</td><td>Auto every 4h</td><td><span class="badge-status">stable</span></td></tr>
+                <tr><td>INC-03</td><td>28.9</td><td>68%</td><td>445</td><td>Manual</td><td><span class="badge-warning">check humidity</span></td></tr>
+                <tr><td>INC-04</td><td>29.2</td><td>73%</td><td>405</td><td>Auto every 6h</td><td><span class="badge-status">optimal</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ========== TABLE 4 : ALERTS & THRESHOLDS ========== -->
+    <div class="table-wrapper" id="alerts">
+        <div class="table-header">
+            <h2><i class="fas fa-bell"></i> Active alerts & thresholds</h2>
+            <div class="action-bar">
+                <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+                <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
+                <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+                <button class="btn btn-search"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+        表格
+            <thead>
+                <tr><th>Alert ID</th><th>Device</th><th>Parameter</th><th>Value</th><th>Threshold</th><th>Severity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>ALT-101</td><td>IOT-TH-045</td><td>Temperature</td><td>34.2°C</td><td>>33°C</td><td><span class="badge-warning">warning</span></td></tr>
+                <tr><td>ALT-102</td><td>IOT-WQ-003</td><td>pH level</td><td>8.9</td><td>>8.5</td><td><span class="badge-critical">critical</span></td></tr>
+                <tr><td>ALT-103</td><td>IOT-LUX-22</td><td>Battery</td><td>53%</td><td><60%</td><td><span class="badge-warning">maintenance</span></td></tr>
+                <tr><td>ALT-104</td><td>INC-03</td><td>Humidity</td><td>68%</td><td>70-75%</td><td><span class="badge-warning">low humidity</span></td></tr>
+            </tbody>
+        </table>
+        <hr>
+        <div><i class="fas fa-sliders-h"></i> Global thresholds configurable via dashboard</div>
+    </div>
+
+    <!-- ========== TABLE 5 : WATER QUALITY MONITORING ========== -->
+    <div class="table-wrapper" id="water">
+        <div class="table-header">
+            <h2><i class="fas fa-water"></i> Water quality parameters</h2>
+            <div class="action-bar">
+                <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+                <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
+                <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+                <button class="btn btn-search"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+        表格
+            <thead>
+                <tr><th>Source</th><th>pH</th><th>Ammonia (ppm)</th><th>Nitrate (ppm)</th><th>Turbidity</th><th>Last reading</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Marsh pond</td><td>7.2</td><td>0.02</td><td>4.5</td><td>clear</td><td>08:10</td></tr>
+                <tr><td>Rainforest stream</td><td>6.8</td><td>0.01</td><td>2.1</td><td>slight</td><td>08:12</td></tr>
+                <tr><td>Drinking pools (E1)</td><td>7.5</td><td>0.03</td><td>5.2</td><td>clear</td><td>08:15</td></tr>
+                <tr><td>Incubator humidifier</td><td>—</td><td>—</td><td>—</td><td>distilled</td><td>07:58</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ========== TABLE 6 : DEVICE COMMUNICATION LOGS ========== -->
+    <div class="table-wrapper" id="deviceLogs">
+        <div class="table-header">
+            <h2><i class="fas fa-history"></i> Device logs & telemetry history</h2>
+            <div class="action-bar">
+                <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+                <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
+                <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+                <button class="btn btn-search"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+        表格
+            <thead>
+                <tr><th>Timestamp</th><th>Device ID</th><th>Event type</th><th>Message</th><th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>2026-03-28 08:22:10</td><td>IOT-TH-012</td><td>Data push</td><td>temp:29.8°C, hum:34%</td><td>success</td></tr>
+                <tr><td>2026-03-28 08:20:45</td><td>IOT-WQ-003</td><td>Alert</td><td>pH out of range: 8.9</td><td>active</td></tr>
+                <tr><td>2026-03-28 08:15:22</td><td>IOT-INC-09</td><td>Heartbeat</td><td>firmware v2.3, battery 74%</td><td>ok</td></tr>
+                <tr><td>2026-03-28 08:05:00</td><td>IOT-LUX-22</td><td>Battery warning</td><td>53% remaining</td><td>notice</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+   
+</div>
+
+<script>
+    // Navigation: show/hide tables + active class
+    const navItems = document.querySelectorAll('.nav-item');
+    const tableSections = {
+        sensors: document.getElementById('sensors'),
+        enviro: document.getElementById('enviro'),
+        incubator: document.getElementById('incubator'),
+        alerts: document.getElementById('alerts'),
+        water: document.getElementById('water'),
+        deviceLogs: document.getElementById('deviceLogs')
+    };
+
+    function deactivateAll() {
+        Object.values(tableSections).forEach(tbl => {
+            if (tbl) tbl.classList.remove('active-table');
+        });
+        navItems.forEach(item => item.classList.remove('active'));
+    }
+
+    function showTable(tableId, activeElement) {
+        deactivateAll();
+        if (tableSections[tableId]) {
+            tableSections[tableId].classList.add('active-table');
+        }
+        if (activeElement) activeElement.classList.add('active');
+    }
+
+    navItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            const tableId = this.getAttribute('data-table');
+            if (tableId && tableSections[tableId]) {
+                showTable(tableId, this);
+            }
+        });
+    });
+
+    // initial active: sensors table
+    const defaultNav = document.querySelector('.nav-item[data-table="sensors"]');
+    if (defaultNav) showTable('sensors', defaultNav);
+
+    // Logout button simple alert demo (static)
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            alert("🔌 IoT Device session ended. Logging out from monitoring system.");
+            // In a real scenario redirect to login page
+            // window.location.href = "index.html";
+        });
+    }
+
+    // For each table's action buttons, you can add demo notifications
+    const allActionBtns = document.querySelectorAll('.btn');
+    allActionBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const action = btn.classList.contains('btn-add') ? 'Add' :
+                           btn.classList.contains('btn-edit') ? 'Edit' :
+                           btn.classList.contains('btn-remove') ? 'Remove' : 'Search';
+            alert(`🔧 IoT Dashboard: "${action}" action triggered (static demo).`);
+        });
+    });
+</script>
+</body>
+</html>
