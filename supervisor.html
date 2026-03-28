@@ -161,6 +161,78 @@ input, select {
   background-color: #F44336;
   color: white;
 }
+
+.action-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  background: transparent;
+}
+
+.action-btn.edit {
+  color: #007bff;
+  border-color: #007bff;
+}
+
+.action-btn.edit:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.action-btn.remove {
+  color: #ff6b6b;
+  border-color: #ff6b6b;
+}
+
+.action-btn.remove:hover {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.action-btn.add {
+  background-color: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+.action-btn.add:hover {
+  background-color: #218838;
+}
+
+.action-btn.search {
+  color: #20c997;
+  border-color: #20c997;
+}
+
+.action-btn.search:hover {
+  background-color: #20c997;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .action-toolbar {
+    justify-content: center;
+  }
+  .action-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
 </style>
 </head>
 <body>
@@ -178,8 +250,12 @@ input, select {
     <button class="tab-button" onclick="showTab('request-restock')">Request Restock</button>
   </div>
   <div id="staff-schedule" class="tab-content active">
-
-
+    <div class="action-toolbar">
+      <button class="action-btn edit">✏️ Edit</button>
+      <button class="action-btn remove">🗑️ Remove</button>
+      <button class="action-btn add">➕ Add</button>
+      <button class="action-btn search">🔍 Search</button>
+    </div>
 
 <table>
   <tr>
@@ -227,6 +303,12 @@ input, select {
 </table>
   </div>
   <div id="inventory" class="tab-content">
+    <div class="action-toolbar">
+      <button class="action-btn edit">✏️ Edit</button>
+      <button class="action-btn remove">🗑️ Remove</button>
+      <button class="action-btn add">➕ Add</button>
+      <button class="action-btn search">🔍 Search</button>
+    </div>
 <table>
   <tr>
     <th>Item Name</th>
@@ -261,6 +343,12 @@ input, select {
 </table>
   </div>
   <div id="request-restock" class="tab-content">
+    <div class="action-toolbar">
+      <button class="action-btn edit">✏️ Edit</button>
+      <button class="action-btn remove">🗑️ Remove</button>
+      <button class="action-btn add">➕ Add</button>
+      <button class="action-btn search">🔍 Search</button>
+    </div>
     <form>
       <label for="item-name">Item Name:</label><br>
       <input type="text" id="item-name" name="item-name" required><br><br>
