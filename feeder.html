@@ -585,16 +585,36 @@ tr:hover {
 
 <div class="page-header">
   <div class="content">
-    <h1>Feeder Management System</h1>
+    <h1>
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 15px; vertical-align: middle;">
+        <path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v10c0 1.1.9 2 2 2h2V4h-2c-1.1 0-2 .9-2 2z"/>
+      </svg>
+      Feeder Management System
+    </h1>
     <p>Comprehensive animal feeding schedules and dietary management</p>
   </div>
 </div>
 
 <div class="tabs-container">
   <div class="tab-buttons">
-    <button class="tab-btn active" onclick="showTab(event, 'todays-plan')">Today's Feeding Schedule</button>
-    <button class="tab-btn" onclick="showTab(event, 'current-plan')">Current Dietary Plan</button>
-    <button class="tab-btn" onclick="showTab(event, 'special-needs')">Special Dietary Needs</button>
+    <button class="tab-btn active" onclick="showTab(event, 'todays-plan')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px; vertical-align: middle;">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/>
+      </svg>
+      Today's Feeding Schedule
+    </button>
+    <button class="tab-btn" onclick="showTab(event, 'current-plan')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px; vertical-align: middle;">
+        <path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v10c0 1.1.9 2 2 2h2V4h-2c-1.1 0-2 .9-2 2z"/>
+      </svg>
+      Current Dietary Plan
+    </button>
+    <button class="tab-btn" onclick="showTab(event, 'special-needs')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px; vertical-align: middle;">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+      </svg>
+      Special Dietary Needs
+    </button>
   </div>
 
   <div id="todays-plan" class="tab-content active">
