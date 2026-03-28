@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tortoise Conservation Center | Management System</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js CDN for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f3ef 0%, #d4e8df 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 8px 24px rgba(0, 40, 20, 0.12);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid #c2e0d2;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo i {
+            font-size: 2.2rem;
+            color: #2a7f5c;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1c5d44;
+            letter-spacing: -0.3px;
+        }
+
+        .logo span {
+            font-weight: 400;
+            font-size: 0.85rem;
+            color: #5f8b78;
+            display: block;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .user-nav-btn {
+            background: transparent;
+            border: none;
+            padding: 0.7rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #2a5a48;
+            background: #f0f8f4;
+            border: 1px solid #cfe6dc;
+        }
+
+        .user-nav-btn i {
+            font-size: 1rem;
+            color: #3e8a6b;
+        }
+
+        .user-nav-btn:hover {
+            background: #e2f0ea;
+            transform: translateY(-2px);
+            border-color: #9ac2b0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(120deg, #1f6e4f, #2c8f68);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            border-radius: 0 0 48px 48px;
+            margin-bottom: 2rem;
+        }
+
+        .hero h2 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Main container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem 3rem;
+        }
+
+        /* Stats row */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 28px;
+            box-shadow: 0 12px 28px rgba(0, 32, 16, 0.08);
+            text-align: center;
+            border: 1px solid #d7eee2;
+            transition: transform 0.2s;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-4px);
+        }
+
+        .stat-box i {
+            font-size: 2.5rem;
+            color: #328f68;
+            background: #e3f4ed;
+            padding: 0.8rem;
+            border-radius: 60px;
+            margin-bottom: 1rem;
+        }
+
+        .stat-box h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1c5f45;
+        }
+
+        .stat-box p {
+            color: #5b8672;
+            font-weight: 500;
+        }
+
+        /* Graph & Info Section */
+        .dashboard-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 32px;
+            padding: 1.5rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 40, 20, 0.15);
+            border: 1px solid #d4ede1;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            color: #1b6349;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-left: 5px solid #369b73;
+            padding-left: 1rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+            margin-top: 0.5rem;
+        }
+
+        canvas {
+            max-height: 260px;
+            width: 100%;
+        }
+
+        .user-activity-list {
+            list-style: none;
+            margin-top: 0.5rem;
+        }
+
+        .user-activity-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.9rem 0;
+            border-bottom: 1px solid #e1f0e9;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #2c5e48;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .badge-count {
+            background: #e5f3ed;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #1f7557;
+        }
+
+        /* additional modules row */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 24px;
+            padding: 1.5rem;
+            transition: 0.2s;
+            border: 1px solid #d7eee2;
+        }
+
+        .feature-card i {
+            font-size: 2rem;
+            color: #328f68;
+            margin-bottom: 0.8rem;
+        }
+
+        .feature-card h4 {
+            font-size: 1.2rem;
+            color: #1b5c44;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            color: #5f8874;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            color: #4f7c68;
+            border-top: 1px solid #cbe2d7;
+        }
+
+        @media (max-width: 850px) {
+            .dashboard-row {
+                grid-template-columns: 1fr;
+            }
+            .hero h2 {
+                font-size: 2rem;
+            }
+            .nav-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .nav-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation Bar with all 7 Users -->
+<div class="navbar">
+    <div class="nav-container">
+        <div class="logo">
+            <i class="fas fa-shield-tortoise"></i>
+            <div>
+                <h1>Tortoise Conservation <span>Center</span></h1>
+            </div>
+        </div>
+        <div class="nav-links">
+            <button class="user-nav-btn" data-user="collecting"><i class="fas fa-clipboard-list"></i> Collecting Officer</button>
+            <button class="user-nav-btn" data-user="supervisor"><i class="fas fa-chalkboard-user"></i> Supervisor</button>
+            <button class="user-nav-btn" data-user="caretaker"><i class="fas fa-hand-holding-heart"></i> Caretaker</button>
+            <button class="user-nav-btn" data-user="feeder"><i class="fas fa-apple-alt"></i> Feeder</button>
+            <button class="user-nav-btn" data-user="veterinarian"><i class="fas fa-stethoscope"></i> Veterinarian</button>
+            <button class="user-nav-btn" data-user="breeding"><i class="fas fa-paw"></i> Breeding Officer</button>
+            <button class="user-nav-btn" data-user="iot"><i class="fas fa-microchip"></i> IoT Device</button>
+        </div>
+    </div>
+</div>
+
+<!-- Hero Section -->
+<div class="hero">
+    <h2><i class="fas fa-leaf"></i> Preserving Giants, Protecting Futures</h2>
+    <p>Integrated Management System for Tortoise Conservation — Real-time monitoring, health tracking, breeding programs, and staff coordination.</p>
+</div>
+
+<div class="main-container">
+    <!-- Key Stats Row -->
+    <div class="stats-grid">
+        <div class="stat-box">
+            <i class="fas fa-turtle"></i>
+            <h3>147</h3>
+            <p>Total Tortoises</p>
+        </div>
+        <div class="stat-box">
+            <i class="fas fa-egg"></i>
+            <h3>56</h3>
+            <p>Eggs Incubating</p>
+        </div>
+        <div class="stat-box">
+            <i class="fas fa-calendar-check"></i>
+            <h3>23</h3>
+            <p>Active Tasks</p>
+        </div>
+        <div class="stat-box">
+            <i class="fas fa-chart-line"></i>
+            <h3>94%</h3>
+            <p>Hatching Success</p>
+        </div>
+    </div>
+
+    <!-- Graph + User Data Section -->
+    <div class="dashboard-row">
+        <!-- Graph: User Activity / System Data -->
+        <div class="card">
+            <h3><i class="fas fa-chart-simple"></i> Staff & System Activity (last 30 days)</h3>
+            <div class="chart-container">
+                <canvas id="activityChart"></canvas>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.8rem; color: #5c8b74;"><i class="fas fa-chart-line"></i> Actions logged: health checks, feedings, environmental updates, breeding records</p>
+        </div>
+
+        <!-- User Metrics & Quick Overview -->
+        <div class="card">
+            <h3><i class="fas fa-users"></i> User Role Overview</h3>
+            <ul class="user-activity-list">
+                <li><span class="user-name"><i class="fas fa-clipboard-list"></i> Collecting Officer</span> <span class="badge-count">342 records</span></li>
+                <li><span class="user-name"><i class="fas fa-chalkboard-user"></i> Supervisor</span> <span class="badge-count">28 reports</span></li>
+                <li><span class="user-name"><i class="fas fa-hand-holding-heart"></i> Caretaker</span> <span class="badge-count">156 tasks</span></li>
+                <li><span class="user-name"><i class="fas fa-apple-alt"></i> Feeder</span> <span class="badge-count">89 feeding logs</span></li>
+                <li><span class="user-name"><i class="fas fa-stethoscope"></i> Veterinarian</span> <span class="badge-count">47 treatments</span></li>
+                <li><span class="user-name"><i class="fas fa-paw"></i> Breeding Officer</span> <span class="badge-count">23 clutches</span></li>
+                <li><span class="user-name"><i class="fas fa-microchip"></i> IoT Devices</span> <span class="badge-count">12 sensors active</span></li>
+            </ul>
+            <div style="margin-top: 1rem; background: #ecf9f2; border-radius: 20px; padding: 0.8rem;">
+                <i class="fas fa-chart-pie"></i> <strong>Conservation impact:</strong> 14 hatchlings this month · 3 new breeding pairs
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional cards: system highlights -->
+    <div class="feature-grid">
+        <div class="feature-card">
+            <i class="fas fa-tasks"></i>
+            <h4>Task Management</h4>
+            <p>Cleaning, feeding, health checks assigned to staff. Real-time completion tracking.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-temperature-low"></i>
+            <h4>IoT Environment</h4>
+            <p>Automated temp/humidity readings from enclosures & incubators. Instant alerts.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-chart-line"></i>
+            <h4>Breeding Analytics</h4>
+            <p>Monitor pairing success, incubation periods, and hatching rates across species.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-notes-medical"></i>
+            <h4>Health Records</h4>
+            <p>Vaccination history, injury reports, and preventive care timelines.</p>
+        </div>
+    </div>
+    <footer>
+        <i class="fas fa-shield-tortoise"></i> Tortoise Conservation Center Management System | © 2026 — Unified dashboard for all roles
+    </footer>
+</div>
+
+<script>
+    // Navigation logic: redirect to user pages (placeholders for the actual pages)
+    // Since you mentioned you've created all the user pages, we link to respective pages.
+    // Update the URLs to match your actual file names / routes.
+    const userRoutes = {
+        collecting: "collecting_officer.html",
+        supervisor: "supervisor.html",
+        caretaker: "caretaker.html",
+        feeder: "feeder.html",
+        veterinarian: "veterinarian.html",
+        breeding: "breeding_officer.html",
+        iot: "iot_dashboard.html"
+    };
+
+    // Add click listeners to all user-nav-btn buttons
+    const navButtons = document.querySelectorAll('.user-nav-btn');
+    navButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const userRole = this.getAttribute('data-user');
+            if (userRole && userRoutes[userRole]) {
+                // Navigate to the specific user's webpage
+                window.location.href = userRoutes[userRole];
+            } else {
+                console.warn("Route not defined for:", userRole);
+                // Optional fallback: alert or stay on homepage
+                alert(`Demo: Navigate to ${userRole} dashboard. (Page not configured yet)`);
+            }
+        });
+    });
+
+    // CHART.JS GRAPH: representing user activity counts or system metrics
+    // Data shows actions logged per role (e.g., tasks, records, updates)
+    const ctx = document.getElementById('activityChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Collecting', 'Supervisor', 'Caretaker', 'Feeder', 'Veterinarian', 'Breeding', 'IoT'],
+            datasets: [
+                {
+                    label: 'Actions / Records (last 30d)',
+                    data: [342, 128, 456, 289, 147, 203, 980],
+                    backgroundColor: [
+                        '#2a9d6e', '#3fb581', '#57cb99', '#7adbb0', '#9be6c2', '#bdf0d4', '#c8f5df'
+                    ],
+                    borderRadius: 12,
+                    borderSkipped: false,
+                    barPercentage: 0.65,
+                    categoryPercentage: 0.8
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: { size: 12, weight: 'bold' },
+                        color: '#2c5e48'
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#1a4d3a',
+                    titleColor: '#f0faf4',
+                    bodyColor: '#e2f0ea'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#deefe7' },
+                    title: {
+                        display: true,
+                        text: 'Number of Interactions / Records',
+                        color: '#397a5e',
+                        font: { weight: 'bold' }
+                    }
+                },
+                x: {
+                    ticks: { color: '#2f6b53', fontWeight: '500' },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // You can optionally add a second chart or realtime values
+    // For demo purposes, the chart reflects system usage per user role.
+    // Hover effects are included.
+</script>
+</body>
+</html>
