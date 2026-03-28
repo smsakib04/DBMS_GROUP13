@@ -29,10 +29,6 @@ body{
     margin-bottom:20px;
 }
 
-.header h1{
-    font-size:1.8rem;
-}
-
 .nav{
     display:flex;
     gap:15px;
@@ -82,6 +78,27 @@ button.primary{
     cursor:pointer;
 }
 
+/* ACTION BUTTONS */
+.action-bar{
+    display:flex;
+    gap:10px;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    padding:8px 14px;
+    border:none;
+    border-radius:20px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.btn-add{background:#198754;color:white;}
+.btn-edit{background:#0dcaf0;color:white;}
+.btn-remove{background:#dc3545;color:white;}
+.btn-search{background:#6c757d;color:white;}
+
 table{
     width:100%;
     border-collapse:collapse;
@@ -107,7 +124,6 @@ th{
 .good{background:#d1e7dd;color:#0f5132;}
 .warning{background:#fff3cd;color:#856404;}
 .critical{background:#f8d7da;color:#842029;}
-
 </style>
 </head>
 
@@ -160,6 +176,14 @@ th{
 <div id="records" class="section">
     <h2>Collected Tortoises</h2>
 
+    <!-- BUTTONS -->
+    <div class="action-bar">
+        <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+        <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+        <button class="btn btn-remove"><i class="fas fa-trash"></i> Remove</button>
+        <button class="btn btn-search"><i class="fas fa-search"></i> Search</button>
+    </div>
+
     <input type="text" id="search" placeholder="Search..." onkeyup="searchTable()">
 
     <table id="dataTable">
@@ -198,13 +222,20 @@ th{
             <td><span class="status critical">Injured</span></td>
             <td>15 Mar 2026</td>
         </tr>
-
     </table>
 </div>
 
 <!-- ================= TRANSPORT ================= -->
 <div id="transport" class="section">
     <h2>Transport Log</h2>
+
+    <!-- BUTTONS -->
+    <div class="action-bar">
+        <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+        <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+        <button class="btn btn-remove"><i class="fas fa-trash"></i> Remove</button>
+        <button class="btn btn-search"><i class="fas fa-search"></i> Search</button>
+    </div>
 
     <table>
         <tr>
@@ -237,14 +268,8 @@ th{
 
 // tab switch
 function openTab(id){
-    document.querySelectorAll('.section').forEach(sec=>{
-        sec.classList.remove('active');
-    });
-
-    document.querySelectorAll('.tab').forEach(btn=>{
-        btn.classList.remove('active');
-    });
-
+    document.querySelectorAll('.section').forEach(sec=>sec.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(btn=>btn.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     event.target.classList.add('active');
 }
