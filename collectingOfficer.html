@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Collecting Officer · Tortoise Center</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter', sans-serif;
+}
+
+body{
+    background:#eef6f2;
+    padding:20px;
+}
+
+.header{
+    background:linear-gradient(135deg,#0f5132,#198754);
+    color:white;
+    padding:25px;
+    border-radius:16px;
+    margin-bottom:20px;
+}
+
+.nav{
+    display:flex;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.nav button{
+    padding:10px 18px;
+    border:none;
+    border-radius:25px;
+    cursor:pointer;
+    font-weight:600;
+    background:#d1e7dd;
+}
+
+.nav button.active{
+    background:#198754;
+    color:white;
+}
+
+.section{
+    display:none;
+    background:white;
+    padding:20px;
+    border-radius:16px;
+    box-shadow:0 10px 20px rgba(0,0,0,0.08);
+}
+
+.section.active{
+    display:block;
+}
+
+input, select, textarea{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+button.primary{
+    background:#198754;
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:20px;
+    cursor:pointer;
+}
+
+/* ACTION BUTTONS */
+.action-bar{
+    display:flex;
+    gap:10px;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    padding:8px 14px;
+    border:none;
+    border-radius:20px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.btn-add{background:#198754;color:white;}
+.btn-edit{background:#0dcaf0;color:white;}
+.btn-remove{background:#dc3545;color:white;}
+.btn-search{background:#6c757d;color:white;}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+th,td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+}
+
+th{
+    background:#198754;
+    color:white;
+}
+
+.status{
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:0.8rem;
+}
+
+.good{background:#d1e7dd;color:#0f5132;}
+.warning{background:#fff3cd;color:#856404;}
+.critical{background:#f8d7da;color:#842029;}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1><i class="fas fa-truck"></i> Collecting Officer Dashboard</h1>
+    <p>Collection, transport & intake management</p>
+</div>
+
+<div class="nav">
+    <button class="tab active" onclick="openTab('collection')">New Collection</button>
+    <button class="tab" onclick="openTab('records')">Collection Records</button>
+    <button class="tab" onclick="openTab('transport')">Transport Log</button>
+</div>
+
+<!-- ================= NEW COLLECTION ================= -->
+<div id="collection" class="section active">
+    <h2>Add New Tortoise</h2>
+
+    <form id="collectionForm">
+        <input type="text" placeholder="Tortoise ID (TRT-001)" required>
+        <input type="text" placeholder="Species" required>
+        <input type="number" placeholder="Estimated Age" required>
+        
+        <select required>
+            <option value="">Source Type</option>
+            <option>Wild</option>
+            <option>Rescue</option>
+            <option>Donation</option>
+        </select>
+
+        <input type="text" placeholder="Collection Location" required>
+        <input type="date" required>
+
+        <select required>
+            <option value="">Initial Health</option>
+            <option>Healthy</option>
+            <option>Weak</option>
+            <option>Injured</option>
+        </select>
+
+        <textarea placeholder="Notes..."></textarea>
+
+        <button class="primary">Save Record</button>
+    </form>
+</div>
+
+<!-- ================= RECORD TABLE ================= -->
+<div id="records" class="section">
+    <h2>Collected Tortoises</h2>
+
+    <!-- BUTTONS -->
+    <div class="action-bar">
+        <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+        <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+        <button class="btn btn-remove"><i class="fas fa-trash"></i> Remove</button>
+        <button class="btn btn-search"><i class="fas fa-search"></i> Search</button>
+    </div>
+
+    <input type="text" id="search" placeholder="Search..." onkeyup="searchTable()">
+
+    <table id="dataTable">
+        <tr>
+            <th>ID</th>
+            <th>Species</th>
+            <th>Source</th>
+            <th>Location</th>
+            <th>Health</th>
+            <th>Date</th>
+        </tr>
+
+        <tr>
+            <td>TRT-201</td>
+            <td>Sulcata</td>
+            <td>Rescue</td>
+            <td>Dhaka</td>
+            <td><span class="status warning">Weak</span></td>
+            <td>20 Mar 2026</td>
+        </tr>
+
+        <tr>
+            <td>TRT-202</td>
+            <td>Aldabra</td>
+            <td>Donation</td>
+            <td>Chittagong</td>
+            <td><span class="status good">Healthy</span></td>
+            <td>18 Mar 2026</td>
+        </tr>
+
+        <tr>
+            <td>TRT-203</td>
+            <td>Leopard</td>
+            <td>Wild</td>
+            <td>Sylhet</td>
+            <td><span class="status critical">Injured</span></td>
+            <td>15 Mar 2026</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ================= TRANSPORT ================= -->
+<div id="transport" class="section">
+    <h2>Transport Log</h2>
+
+    <!-- BUTTONS -->
+    <div class="action-bar">
+        <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
+        <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
+        <button class="btn btn-remove"><i class="fas fa-trash"></i> Remove</button>
+        <button class="btn btn-search"><i class="fas fa-search"></i> Search</button>
+    </div>
+
+    <table>
+        <tr>
+            <th>Tortoise ID</th>
+            <th>Vehicle</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Status</th>
+        </tr>
+
+        <tr>
+            <td>TRT-201</td>
+            <td>Truck-02</td>
+            <td>Dhaka</td>
+            <td>Center</td>
+            <td>Completed</td>
+        </tr>
+
+        <tr>
+            <td>TRT-203</td>
+            <td>Van-01</td>
+            <td>Sylhet</td>
+            <td>Vet Unit</td>
+            <td>Ongoing</td>
+        </tr>
+    </table>
+</div>
+
+<script>
+
+// tab switch
+function openTab(id){
+    document.querySelectorAll('.section').forEach(sec=>sec.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(btn=>btn.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+}
+
+// search
+function searchTable(){
+    const input = document.getElementById("search").value.toLowerCase();
+    const rows = document.querySelectorAll("#dataTable tr");
+
+    rows.forEach((row, index)=>{
+        if(index===0) return;
+        row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
+    });
+}
+
+// form submit
+document.getElementById('collectionForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    alert("Collection Record Saved!");
+    this.reset();
+});
+
+</script>
+
+</body>
+</html>
