@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap');
+  :root{--green-dark:#1a3a2a;--green-mid:#2d6a4f;--green-light:#52b788;--cream:#f8f4e8;--gold:#c9a84c;--text-dark:#1a1a1a;--text-light:#5a5a5a;--blue:#2471a3;--red:#c0392b;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Source Sans 3',sans-serif;background:var(--cream);color:var(--text-dark);}
+  .page-header{background:linear-gradient(135deg,#0a2a3a 0%,#1a5a7a 100%);color:white;padding:36px 40px;display:flex;align-items:center;gap:20px;}
+  .page-header .icon{font-size:52px;}
+  .page-header h1{font-family:'Playfair Display',serif;font-size:30px;margin-bottom:6px;}
+  .page-header p{opacity:.8;font-size:15px;font-weight:300;}
+  .main{max-width:1050px;margin:0 auto;padding:30px 24px 50px;}
+  .assessment-card{background:white;border-radius:12px;padding:28px;border:1.5px solid #dde8e0;box-shadow:0 2px 12px rgba(0,0,0,.05);margin-bottom:24px;}
+  .assessment-card h2{font-family:'Playfair Display',serif;font-size:20px;color:#0a2a3a;margin-bottom:18px;border-bottom:2px solid #e8f0f5;padding-bottom:10px;}
+  label{display:block;font-size:13px;font-weight:600;color:var(--text-light);margin-bottom:5px;margin-top:14px;text-transform:uppercase;letter-spacing:.4px;}
+  input,select,textarea{width:100%;padding:10px 12px;border:1.5px solid #d0dbd3;border-radius:7px;font-size:14px;font-family:'Source Sans 3',sans-serif;background:#fafcfb;color:var(--text-dark);transition:border .2s;}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:#1a5a7a;}
+  textarea{resize:vertical;min-height:80px;}
+  .assessment-actions{display:flex;justify-content:flex-end;margin-top:18px;}
+  .btn{background:#1a5a7a;color:white;border:none;padding:11px 28px;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s;font-family:'Source Sans 3',sans-serif;}
+  .btn:hover{background:#0a2a3a;}
+  footer{background:var(--green-dark);color:#9fcfb5;text-align:center;padding:18px;font-size:13px;}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="icon">🩺</div>
+  <div>
+    <h1>Edit Assessment</h1>
+    <p>Update tortoise health assessment details</p>
+  </div>
+</div>
+
+<div class="main">
+<div class="assessment-card">
+  <h2>Assessment Details</h2>
+  <form class="assessment-form" novalidate>
+    <div>
+      <label for="assessment-id">AssessmentID</label>
+      <input id="assessment-id" name="assessmentId" type="text" placeholder="e.g. ASS-2025-001" required />
+    </div>
+
+    <div>
+      <label for="assessment-date">Date</label>
+      <input id="assessment-date" name="assessmentDate" type="text" placeholder="dd/mm/yyyy" required />
+    </div>
+
+    <div>
+      <label for="assessment-diagnosis">Diagnosis</label>
+      <textarea id="assessment-diagnosis" name="assessmentDiagnosis" placeholder="Describe diagnosis..." required></textarea>
+    </div>
+
+    <div>
+      <label for="assessment-condition">HealthCondition</label>
+      <input id="assessment-condition" name="assessmentCondition" type="text" placeholder="e.g. Healthy, Critical" required />
+    </div>
+
+    <div>
+      <label for="assessment-treatment">Treatment</label>
+      <textarea id="assessment-treatment" name="assessmentTreatment" placeholder="Describe treatment..." required></textarea>
+    </div>
+
+    <div>
+      <label for="assessment-remarks">Remarks</label>
+      <textarea id="assessment-remarks" name="assessmentRemarks" placeholder="Additional remarks..." required></textarea>
+    </div>
+
+    <div>
+      <label for="tortoise-id">TortoiseID</label>
+      <input id="tortoise-id" name="tortoiseId" type="text" placeholder="e.g. TRT-2025-004" required />
+    </div>
+
+    <div>
+      <label for="vet-id">VetID</label>
+      <input id="vet-id" name="vetId" type="text" placeholder="e.g. VET-001" required />
+    </div>
+
+    <div class="assessment-actions">
+      <button type="button" class="btn" onclick="goBack()">Cancel</button>
+      <button type="submit" class="btn" style="margin-left: 12px;">Update Assessment</button>
+    </div>
+  </form>
+</div>
+</div>
+
+<script>
+function goBack() {
+  window.history.back();
+}
+
+// Mock data structure with assessment information (in a real app, this would come from a database)
+const assessmentData = {
+  'ASS-001': { 
+    date: '15/03/2025', 
+    diagnosis: 'Respiratory infection', 
+    condition: 'Critical', 
+    treatment: 'Antibiotics and rest', 
+    remarks: 'Monitor closely for 7 days',
+    tortoiseId: 'TRT-007',
+    vetId: 'VET-001'
+  },
+  'ASS-002': { 
+    date: '14/03/2025', 
+    diagnosis: 'Shell fracture', 
+    condition: 'Recovering', 
+    treatment: 'Bandaging and calcium supplements', 
+    remarks: 'Check bandage daily',
+    tortoiseId: 'TRT-004',
+    vetId: 'VET-002'
+  },
+  'ASS-003': { 
+    date: '12/03/2025', 
+    diagnosis: 'Annual health check', 
+    condition: 'Healthy', 
+    treatment: 'None required', 
+    remarks: 'All vitals normal',
+    tortoiseId: 'TRT-001',
+    vetId: 'VET-001'
+  },
+  'ASS-004': { 
+    date: '10/03/2025', 
+    diagnosis: 'Dehydration', 
+    condition: 'Recovering', 
+    treatment: 'Fluid therapy and electrolytes', 
+    remarks: 'Monitor water intake',
+    tortoiseId: 'TRT-002',
+    vetId: 'VET-003'
+  },
+  'ASS-005': { 
+    date: '08/03/2025', 
+    diagnosis: 'Annual health check', 
+    condition: 'Healthy', 
+    treatment: 'None required', 
+    remarks: 'All parameters within normal range',
+    tortoiseId: 'TRT-003',
+    vetId: 'VET-001'
+  }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Get URL parameters to pre-fill form if editing existing assessment
+  const urlParams = new URLSearchParams(window.location.search);
+  const assessmentId = urlParams.get('id');
+  
+  if (assessmentId && assessmentData[assessmentId]) {
+    // Pre-fill form with existing data
+    const assessment = assessmentData[assessmentId];
+
+    document.getElementById('assessment-id').value = assessmentId;
+    document.getElementById('assessment-date').value = assessment.date;
+    document.getElementById('assessment-diagnosis').value = assessment.diagnosis;
+    document.getElementById('assessment-condition').value = assessment.condition;
+    document.getElementById('assessment-treatment').value = assessment.treatment;
+    document.getElementById('assessment-remarks').value = assessment.remarks;
+    document.getElementById('tortoise-id').value = assessment.tortoiseId;
+    document.getElementById('vet-id').value = assessment.vetId;
+  }
+});
+</script>
+</body>
+</html>

@@ -81,6 +81,10 @@
   .form-actions{display:flex;justify-content:flex-end;gap:1rem;margin-top:2rem;padding-top:1.5rem;border-top:1px solid #e5e7eb;}
   lucide-icon{display:inline-flex;align-items:center;justify-content:center;}
   footer{background:var(--green-dark);color:#9fcfb5;text-align:center;padding:18px;font-size:13px;}
+  .notification{position:fixed;top:20px;right:20px;background:#1a5a7a;color:white;padding:16px 20px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.2);z-index:1000;transform:translateX(400px);transition:transform 0.3s ease;font-family:'Source Sans 3',sans-serif;font-size:14px;max-width:300px;}
+  .notification.show{transform:translateX(0);}
+  .notification.success{background:#52b788;}
+  .notification.error{background:#c0392b;}
 </style>
 </head>
 <body>
@@ -155,12 +159,12 @@
       <div class="card">
         <h2> Recent Assessments</h2>
         <table>
-          <tr><th>Date</th><th>Tortoise</th><th>Remarks</th></tr>
-          <tr><td>Mar 15</td><td>TRT-007</td><td>Respiratory infection, treated</td></tr>
-          <tr><td>Mar 14</td><td>TRT-004</td><td>Shell crack, bandaged</td></tr>
-          <tr><td>Mar 12</td><td>TRT-001</td><td>Annual checkup — clear</td></tr>
-          <tr><td>Mar 10</td><td>TRT-002</td><td>Recovering from dehydration</td></tr>
-          <tr><td>Mar 08</td><td>TRT-003</td><td>Annual checkup — clear</td></tr>
+          <tr><th>Date</th><th>Tortoise</th><th>Remarks</th><th>Actions</th></tr>
+          <tr><td>Mar 15</td><td>TRT-007</td><td>Respiratory infection, treated</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editAssessment('ASS-001')">Edit</button><button class="btn btn-danger" onclick="deleteAssessment('ASS-001')">Delete</button></div></td></tr>
+          <tr><td>Mar 14</td><td>TRT-004</td><td>Shell crack, bandaged</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editAssessment('ASS-002')">Edit</button><button class="btn btn-danger" onclick="deleteAssessment('ASS-002')">Delete</button></div></td></tr>
+          <tr><td>Mar 12</td><td>TRT-001</td><td>Annual checkup — clear</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editAssessment('ASS-003')">Edit</button><button class="btn btn-danger" onclick="deleteAssessment('ASS-003')">Delete</button></div></td></tr>
+          <tr><td>Mar 10</td><td>TRT-002</td><td>Recovering from dehydration</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editAssessment('ASS-004')">Edit</button><button class="btn btn-danger" onclick="deleteAssessment('ASS-004')">Delete</button></div></td></tr>
+          <tr><td>Mar 08</td><td>TRT-003</td><td>Annual checkup — clear</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editAssessment('ASS-005')">Edit</button><button class="btn btn-danger" onclick="deleteAssessment('ASS-005')">Delete</button></div></td></tr>
         </table>
       </div>
     </div>
@@ -171,6 +175,8 @@
 <div style="text-align: center; margin: 10px 0;">
   <button class="btn" onclick="window.location.href='homepage.html'">Home</button>
 </div>
+
+<div id="notification" class="notification"></div>
 
 <script>
 function switchTab(name) {
@@ -184,11 +190,33 @@ function editTortoise(tortoiseId) {
   window.location.href = 'formEditTortoiseInfo.html?id=' + tortoiseId;
 }
 
+function editAssessment(assessmentId) {
+  window.location.href = 'formEditAssessment.html?id=' + assessmentId;
+}
+
 function deleteTortoise(tortoiseId) {
   if (confirm('Are you sure you want to delete tortoise ' + tortoiseId + '? This action cannot be undone.')) {
-    alert('Tortoise Information deleted Successfully');
+    showNotification('Tortoise Information deleted Successfully', 'success');
     // TODO: Implement actual delete functionality
   }
+}
+
+function deleteAssessment(assessmentId) {
+  if (confirm('Are you sure you want to delete assessment ' + assessmentId + '? This action cannot be undone.')) {
+    showNotification('Assessment deleted Successfully', 'success');
+    // TODO: Implement actual delete functionality
+  }
+}
+
+function showNotification(message, type = 'success') {
+  const notification = document.getElementById('notification');
+  notification.textContent = message;
+  notification.className = 'notification ' + type;
+  notification.classList.add('show');
+  
+  setTimeout(() => {
+    notification.classList.remove('show');
+  }, 3000);
 }
 </script>
 </body>
