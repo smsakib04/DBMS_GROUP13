@@ -8,7 +8,7 @@
   padding: 0;
 }
 
-.page-header{background:linear-gradient(135deg,#2a1a1a 0%,#6a3a2d 100%);color:white;padding:36px 40px;display:flex;align-items:center;gap:20px;}
+.page-header{background:linear-gradient(135deg,#2a1a1a 0%,#6a3a2d 100%);color:white;padding:36px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;}
   .page-header h1{font-family:'Playfair Display',serif;font-size:30px;margin-bottom:6px;}
   .page-header p{opacity:.8;font-size:15px;font-weight:300;}
 body {
@@ -161,6 +161,99 @@ input, select {
   background-color: #F44336;
   color: white;
 }
+
+.action-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  background: transparent;
+}
+
+.action-btn.edit {
+  color: #007bff;
+  border-color: #007bff;
+}
+
+.action-btn.edit:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.action-btn.remove {
+  color: #ff6b6b;
+  border-color: #ff6b6b;
+}
+
+.action-btn.remove:hover {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.action-btn.add {
+  background-color: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+.action-btn.add:hover {
+  background-color: #218838;
+}
+
+.action-btn.search {
+  color: #20c997;
+  border-color: #20c997;
+}
+
+.action-btn.search:hover {
+  background-color: #20c997;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .action-toolbar {
+    justify-content: center;
+  }
+  .action-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: transparent;
+  color: #ffffff;
+  border: 2px solid #ffcc80;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: none;
+}
+
+.logout-btn:hover {
+  background-color: rgba(255, 204, 128, 0.2);
+  border-color: #ffb366;
+}
 </style>
 </head>
 <body>
@@ -169,6 +262,14 @@ input, select {
       <h1>Supervisor Dashboard</h1>
       <p>Manage your team and tasks efficiently</p>
     </div>
+    <button class="logout-btn" onclick="logout()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16,17 21,12 16,7"/>
+        <line x1="21" x2="9" y1="12" y2="12"/>
+      </svg>
+      Logout
+    </button>
   </header>
 
 <div class="tab-container">
@@ -178,8 +279,12 @@ input, select {
     <button class="tab-button" onclick="showTab('request-restock')">Request Restock</button>
   </div>
   <div id="staff-schedule" class="tab-content active">
-
-
+    <div class="action-toolbar">
+      <button class="action-btn edit">✏️ Edit</button>
+      <button class="action-btn remove">🗑️ Remove</button>
+      <button class="action-btn add">➕ Add</button>
+      <button class="action-btn search">🔍 Search</button>
+    </div>
 
 <table>
   <tr>
@@ -227,6 +332,12 @@ input, select {
 </table>
   </div>
   <div id="inventory" class="tab-content">
+    <div class="action-toolbar">
+      <button class="action-btn edit">✏️ Edit</button>
+      <button class="action-btn remove">🗑️ Remove</button>
+      <button class="action-btn add">➕ Add</button>
+      <button class="action-btn search">🔍 Search</button>
+    </div>
 <table>
   <tr>
     <th>Item Name</th>
@@ -261,6 +372,12 @@ input, select {
 </table>
   </div>
   <div id="request-restock" class="tab-content">
+    <div class="action-toolbar">
+      <button class="action-btn edit">✏️ Edit</button>
+      <button class="action-btn remove">🗑️ Remove</button>
+      <button class="action-btn add">➕ Add</button>
+      <button class="action-btn search">🔍 Search</button>
+    </div>
     <form>
       <label for="item-name">Item Name:</label><br>
       <input type="text" id="item-name" name="item-name" required><br><br>
@@ -303,6 +420,12 @@ function changeStatus(button) {
   const nextIndex = (currentIndex + 1) % statuses.length;
   button.textContent = statuses[nextIndex];
   button.className = 'status-btn ' + classes[nextIndex];
+}
+
+function logout() {
+  // Add logout logic here, e.g., redirect to login page
+  alert('Logging out...');
+  window.location.href = 'login.html'; // Assuming login.html exists
 }
 </script>
 
