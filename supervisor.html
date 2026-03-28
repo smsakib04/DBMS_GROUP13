@@ -8,7 +8,7 @@
   padding: 0;
 }
 
-.page-header{background:linear-gradient(135deg,#2a1a1a 0%,#6a3a2d 100%);color:white;padding:36px 40px;display:flex;align-items:center;gap:20px;}
+.page-header{background:linear-gradient(135deg,#2a1a1a 0%,#6a3a2d 100%);color:white;padding:36px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;}
   .page-header h1{font-family:'Playfair Display',serif;font-size:30px;margin-bottom:6px;}
   .page-header p{opacity:.8;font-size:15px;font-weight:300;}
 body {
@@ -233,6 +233,27 @@ input, select {
     font-size: 12px;
   }
 }
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: transparent;
+  color: #ffffff;
+  border: 2px solid #ffcc80;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: none;
+}
+
+.logout-btn:hover {
+  background-color: rgba(255, 204, 128, 0.2);
+  border-color: #ffb366;
+}
 </style>
 </head>
 <body>
@@ -241,6 +262,14 @@ input, select {
       <h1>Supervisor Dashboard</h1>
       <p>Manage your team and tasks efficiently</p>
     </div>
+    <button class="logout-btn" onclick="logout()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16,17 21,12 16,7"/>
+        <line x1="21" x2="9" y1="12" y2="12"/>
+      </svg>
+      Logout
+    </button>
   </header>
 
 <div class="tab-container">
@@ -391,6 +420,12 @@ function changeStatus(button) {
   const nextIndex = (currentIndex + 1) % statuses.length;
   button.textContent = statuses[nextIndex];
   button.className = 'status-btn ' + classes[nextIndex];
+}
+
+function logout() {
+  // Add logout logic here, e.g., redirect to login page
+  alert('Logging out...');
+  window.location.href = 'login.html'; // Assuming login.html exists
 }
 </script>
 
