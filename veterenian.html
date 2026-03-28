@@ -1,615 +1,192 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veterinarian | TCCMS</title>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 <style>
-* {box-sizing: border-box}
-
-.tab {
-  display: flex;
-  gap: 10px;
-  padding: 12px;
-  background: rgba(10, 42, 58, 0.15);
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-  margin: 24px 0;
-}
-
-.tab button {
-  flex: 1;
-  background: rgba(255, 255, 255, 0.65);
-  color: #0a2a3a;
-  padding: 12px 16px;
-  border: 1px solid rgba(10, 42, 58, 0.25);
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  transition: transform 0.15s ease, background 0.2s ease;
-}
-
-.tab button:hover {
-  background: rgba(255, 255, 255, 0.9);
-  transform: translateY(-1px);
-}
-
-.tab button.active {
-  background: linear-gradient(135deg, #0a2a3a 0%, #1a5a7a 100%);
-  color: white;
-  box-shadow: 0 10px 24px rgba(10, 42, 58, 0.25);
-}
-
-.tabcontent {
-  display: none;
-}
-
-.assessment-card {
-  max-width: 860px;
-  margin: 0 auto 32px;
-  padding: 26px 26px 30px;
-  background: rgba(255, 255, 255, 0.92);
-  border-radius: 20px;
-  box-shadow: 0 14px 40px rgba(10, 42, 58, 0.12);
-  border: 1px solid rgba(10, 42, 58, 0.12);
-}
-
-.assessment-card h2 {
-  margin: 0 0 18px;
-  font-size: 1.7rem;
-  letter-spacing: 0.02em;
-  color: #0a2a3a;
-}
-
-.assessment-form {
-  display: grid;
-  gap: 16px;
-}
-
-.assessment-form label {
-  display: block;
-  font-weight: 600;
-  color: rgba(10, 42, 58, 0.85);
-  margin-bottom: 6px;
-  font-size: 0.95rem;
-}
-
-.assessment-form input,
-.assessment-form select,
-.assessment-form textarea {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(10, 42, 58, 0.18);
-  background: rgba(255, 255, 255, 0.95);
-  font-size: 1rem;
-  line-height: 1.4;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
-}
-
-.assessment-form input:focus,
-.assessment-form select:focus,
-.assessment-form textarea:focus {
-  outline: none;
-  border-color: rgba(15, 122, 183, 0.85);
-  box-shadow: 0 0 0 4px rgba(15, 122, 183, 0.15);
-}
-
-.assessment-form textarea {
-  min-height: 120px;
-  resize: vertical;
-}
-
-.assessment-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 8px;
-}
-
-.search-container {
-  margin: 20px 0;
-  display: flex;
-  gap: 10px;
-  max-width: 500px;
-}
-
-.search-input {
-  flex: 1;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(10, 42, 58, 0.18);
-  background: rgba(255, 255, 255, 0.95);
-  font-size: 1rem;
-  line-height: 1.4;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: rgba(15, 122, 183, 0.85);
-  box-shadow: 0 0 0 4px rgba(15, 122, 183, 0.15);
-}
-
-.btn-primary {
-  border: none;
-  border-radius: 999px;
-  padding: 12px 20px;
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: white;
-  background: linear-gradient(135deg, #0a8ecb 0%, #0a2a3a 100%);
-  cursor: pointer;
-  box-shadow: 0 12px 22px rgba(10, 42, 58, 0.22);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 16px 26px rgba(10, 42, 58, 0.26);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-}
-
-.search-btn {
-  flex-shrink: 0;
-  padding: 12px 16px;
-  font-size: 0.9rem;
-}
-
-@media (max-width: 640px) {
-  .assessment-card {
-    padding: 20px 18px 24px;
-  }
-
-  .assessment-card h2 {
-    font-size: 1.5rem;
-  }
-}
-
-body {
-  margin: 0;
-  padding: 0;
-}
-
-h2, p {
-  margin: 10px;
-}
-
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  background-color: #333333;
-  display: flex;
-}
-
-ul li a {
-  display: block;
-  color: white;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-ul li a:hover:not(.active) {
-  background-color: #111111;
-}
-
-ul li a.active {
-  background-color: #04AA6D;
-}
-.page-header {
-  background: linear-gradient(135deg, #0a2a3a 0%, #1a5a7a 100%);
-  color: white;
-  padding: 36px 40px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.page-header .icon {
-  font-size: 2.5rem;
-} 
-</style>
-<style>
-body {
-  margin: 0;
-  padding: 0;
-}
-
-h2, p {
-  margin: 10px;
-}
-
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333333;
-}
-
-ul li {
-  float: left;
-}
-
-ul li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-ul li a:hover {
-  background-color: #111111;
-}
-.table-container {
-  overflow-x: auto;
-  margin: 24px 0;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-  min-width: 900px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
-  overflow: hidden;
-}
-
-th, td {
-  text-align: left;
-  padding: 14px 12px;
-}
-
-tr:nth-child(even) {
-  background-color: #f7f9fc;
-}
-
-tr:hover {
-  background-color: rgba(10, 42, 58, 0.06);
-}
-
-th {
-  background-color: #0a2a3a;
-  color: white;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  font-size: 0.9rem;
-}
-</style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap');
+  :root{--green-dark:#1a3a2a;--green-mid:#2d6a4f;--green-light:#52b788;--cream:#f8f4e8;--gold:#c9a84c;--text-dark:#1a1a1a;--text-light:#5a5a5a;--blue:#2471a3;--red:#c0392b;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Source Sans 3',sans-serif;background:var(--cream);color:var(--text-dark);}
+  nav{background:var(--green-dark);}
+  nav ul{list-style:none;overflow:hidden;display:flex;flex-wrap:wrap;}
+  nav ul li a{display:block;color:#cde8d8;padding:14px 18px;text-decoration:none;font-size:13px;font-weight:600;transition:background .2s;}
+  nav ul li a:hover{background:var(--green-mid);color:white;}
+  nav ul li a.active{background:var(--green-light);color:white;}
+  .page-header{background:linear-gradient(135deg,#0a2a3a 0%,#1a5a7a 100%);color:white;padding:36px 40px;display:flex;align-items:center;gap:20px;}
+  .page-header .icon{font-size:52px;}
+  .page-header h1{font-family:'Playfair Display',serif;font-size:30px;margin-bottom:6px;}
+  .page-header p{opacity:.8;font-size:15px;font-weight:300;}
+  .main{max-width:1050px;margin:0 auto;padding:30px 24px 50px;}
+  .tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid #dde8e0;}
+  .tab{padding:10px 22px;cursor:pointer;font-size:14px;font-weight:600;color:var(--text-light);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;}
+  .tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+  .tab:hover{color:var(--blue);}
+  .tab-content{display:none;}
+  .tab-content.active{display:block;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+  @media(max-width:700px){.two-col{grid-template-columns:1fr;}}
+  .card{background:white;border-radius:12px;padding:28px;border:1.5px solid #dde8e0;box-shadow:0 2px 12px rgba(0,0,0,.05);margin-bottom:24px;}
+  .card h2{font-family:'Playfair Display',serif;font-size:20px;color:#0a2a3a;margin-bottom:18px;border-bottom:2px solid #e8f0f5;padding-bottom:10px;}
+  label{display:block;font-size:13px;font-weight:600;color:var(--text-light);margin-bottom:5px;margin-top:14px;text-transform:uppercase;letter-spacing:.4px;}
+  input,select,textarea{width:100%;padding:10px 12px;border:1.5px solid #d0dbd3;border-radius:7px;font-size:14px;font-family:'Source Sans 3',sans-serif;background:#fafcfb;color:var(--text-dark);transition:border .2s;}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:#1a5a7a;}
+  textarea{resize:vertical;min-height:80px;}
+  .btn{background:#1a5a7a;color:white;border:none;padding:11px 28px;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;margin-top:18px;transition:background .2s;font-family:'Source Sans 3',sans-serif;}
+  .btn:hover{background:#0a2a3a;}
+  table{border-collapse:collapse;width:100%;margin-top:10px;}
+  th,td{text-align:left;padding:10px 14px;font-size:13.5px;}
+  tr:nth-child(even){background:#f0f6fa;}
+  th{background:#1a5a7a;color:white;font-weight:600;}
+  td{border-bottom:1px solid #e4ece6;}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+  .badge-healthy{background:#d4edda;color:#155724;}
+  .badge-obs{background:#fff3cd;color:#856404;}
+  .badge-critical{background:#f8d7da;color:#721c24;}
+  .badge-recovering{background:#d1ecf1;color:#0c5460;}
+  .health-profile{background:#f0f6fa;border-radius:10px;padding:16px 18px;margin-bottom:14px;}
+  .health-profile .name{font-family:'Playfair Display',serif;font-size:17px;color:#0a2a3a;margin-bottom:8px;}
+  .health-profile .row{display:flex;gap:20px;flex-wrap:wrap;}
+  .health-profile .item{font-size:13px;color:var(--text-light);}<br>
+  .health-profile .item strong{color:var(--text-dark);}
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-bottom:2rem;}
+  .stat-card{background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);border:1px solid #bae6fd;border-radius:12px;padding:1.5rem;text-align:center;}
+  .stat-icon{margin-bottom:0.5rem;}
+  .stat-number{font-size:2rem;font-weight:700;color:#0369a1;margin-bottom:0.5rem;}
+  .stat-label{font-size:0.9rem;color:#374151;font-weight:500;}
+  .search-section{margin-bottom:2rem;}
+  .search-container{display:flex;gap:1rem;max-width:600px;}
+  .search-input{flex:1;padding:0.875rem 1.25rem;border:2px solid #e2e8f0;border-radius:12px;font-size:1rem;background:white;transition:all 0.2s;font-family:'Source Sans 3',sans-serif;}
+  .search-input:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
+  .search-input::placeholder{color:#94a3b8;}
+  .search-btn{padding:0.875rem 1.5rem;background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%);color:white;border:none;border-radius:12px;font-weight:600;font-size:0.95rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:0.5rem;box-shadow:0 4px 12px rgba(59,130,246,0.2);}
+  .search-btn:hover{background:linear-gradient(135deg,#2563eb 0%,#1e40af 100%);transform:translateY(-1px);box-shadow:0 6px 16px rgba(59,130,246,0.3);}
+  .table-container{overflow-x:auto;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.06);}
+  .status-badge{display:inline-flex;align-items:center;padding:0.375rem 0.875rem;border-radius:20px;font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.025em;}
+  .status-healthy{background:#dcfce7;color:#166534;border:1px solid #bbf7d0;}
+  .status-recovering{background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe;}
+  .status-observation{background:#fef3c7;color:#92400e;border:1px solid #fde68a;}
+  .status-critical{background:#fee2e2;color:#dc2626;border:1px solid #fecaca;}
+  .action-buttons{display:flex;gap:0.5rem;}
+  .btn-primary{background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%);color:white;box-shadow:0 2px 8px rgba(59,130,246,0.2);}
+  .btn-primary:hover{background:linear-gradient(135deg,#2563eb 0%,#1e40af 100%);transform:translateY(-1px);box-shadow:0 4px 12px rgba(59,130,246,0.3);}
+  .btn-danger{background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);color:white;box-shadow:0 2px 8px rgba(239,68,68,0.2);}
+  .btn-danger:hover{background:linear-gradient(135deg,#dc2626 0%,#b91c1c 100%);transform:translateY(-1px);box-shadow:0 4px 12px rgba(239,68,68,0.3);}
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;}
+  .form-group{display:flex;flex-direction:column;}
+  .form-label{font-weight:600;color:#374151;margin-bottom:0.5rem;font-size:0.95rem;}
+  .form-input,.form-select,.form-textarea{padding:0.875rem 1rem;border:2px solid #e5e7eb;border-radius:10px;font-size:1rem;font-family:'Source Sans 3',sans-serif;background:white;transition:all 0.2s;}
+  .form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
+  .form-textarea{resize:vertical;min-height:120px;}
+  .form-actions{display:flex;justify-content:flex-end;gap:1rem;margin-top:2rem;padding-top:1.5rem;border-top:1px solid #e5e7eb;}
+  lucide-icon{display:inline-flex;align-items:center;justify-content:center;}
+  footer{background:var(--green-dark);color:#9fcfb5;text-align:center;padding:18px;font-size:13px;}
 </style>
 </head>
 <body>
+
 <div class="page-header">
   <div class="icon">🩺</div>
   <div>
     <h1>Veterinarian Portal</h1>
-  </div>
-</div>
-<div class="tab">
-  <button class="tablinks active" onclick="openCity(event, 'TortoiseInfo')">Tortoise Info</button>
-  <button class="tablinks" onclick="openCity(event, 'Assessments')">Add new assessment</button>
-</div>
-<div id="TortoiseInfo" class="tabcontent" style="display: block;">
-  <h2> Tortoise Health Information List</h2>
-
-  <div class="search-container">
-    <input type="text" id="tortoise-search" placeholder="Search Tortoise Health Information" class="search-input">
-    <button type="button" id="search-btn" class="btn-primary search-btn">Search</button>
-  </div>
-
-  <div class="table-container">
-  <table>
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Age(yr)</th>
-      <th>Gender</th>
-      <th>Health</th>
-      <th>Classification</th>
-      <th>Actions</th>
-    </tr>
-    <tr>
-      <td>TRT01</td>
-      <td>Pengu</td>
-      <td>12</td>
-      <td>Female</td>
-      <td>Healthy</td>
-      <td>Aldabra Giant Tortoise</td>
-      <td>
-        <button class="btn-primary" onclick="editTortoise('TRT01')">Edit</button>
-        <button class="btn-primary" onclick="deleteTortoise('TRT01')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
-      </td>
-    </tr>
-    <tr>
-      <td>TRT02</td>
-      <td>Griffin</td>
-      <td>8</td>
-      <td>Male</td>
-      <td>On observation</td>
-      <td>African Spurred Tortoise</td>
-      <td>
-        <button class="btn-primary" onclick="editTortoise('TRT02')">Edit</button>
-        <button class="btn-primary" onclick="deleteTortoise('TRT02')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
-      </td>
-    </tr>
-    <tr>
-      <td>TRT03</td>
-      <td>Swanson</td>
-      <td>15</td>
-      <td>Male</td>
-      <td>Healthy</td>
-      <td>Leopard Tortoise</td>
-      <td>
-        <button class="btn-primary" onclick="editTortoise('TRT03')">Edit</button>
-        <button class="btn-primary" onclick="deleteTortoise('TRT03')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
-      </td>
-    </tr>
-    <tr>
-      <td>TRT04</td>
-      <td>Brown</td>
-      <td>9</td>
-      <td>Female</td>
-      <td>Healthy</td>
-      <td>Indian Star Tortoise</td>
-      <td>
-        <button class="btn-primary" onclick="editTortoise('TRT04')">Edit</button>
-        <button class="btn-primary" onclick="deleteTortoise('TRT04')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
-      </td>
-    </tr>
-    <tr>
-      <td>TRT05</td>
-      <td>Brown</td>
-      <td>7</td>
-      <td>Female</td>
-      <td>Critical</td>
-      <td>Indian Star Tortoise</td>
-      <td>
-        <button class="btn-primary" onclick="editTortoise('TRT05')">Edit</button>
-        <button class="btn-primary" onclick="deleteTortoise('TRT05')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
-      </td>
-    </tr>
-    <tr>
-      <td>TRT06</td>
-      <td>Bruce lee</td>
-      <td>11</td>
-      <td>Male</td>
-      <td>Recovering</td>
-      <td>Benjamin Tortoise</td>
-      <td>
-        <button class="btn-primary" onclick="editTortoise('TRT06')">Edit</button>
-        <button class="btn-primary" onclick="deleteTortoise('TRT06')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
-      </td>
-    </tr>
-    <tr>
-      <td>TRT07</td>
-      <td>Myrtle</td>
-      <td>14</td>
-      <td>Female</td>
-      <td>Healthy</td>
-      <td>Greek Tortoise</td>
-      <td>
-        <button class="btn-primary" onclick="editTortoise('TRT07')">Edit</button>
-        <button class="btn-primary" onclick="deleteTortoise('TRT07')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
-      </td>
-    </tr>
-    <tr>
-      <td>TRT08</td>
-      <td>Spike</td>
-      <td>10</td>
-      <td>Male</td>
-      <td>Under observation</td>
-      <td>Hermann's Tortoise</td>
-      <td>
-        <button class="btn-primary" onclick="editTortoise('TRT08')">Edit</button>
-        <button class="btn-primary" onclick="deleteTortoise('TRT08')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
-      </td>
-    </tr>
-    <tr>
-      <td>TRT09</td>
-      <td>Luna</td>
-      <td>8</td>
-      <td>Female</td>
-      <td>Healthy</td>
-      <td>Red-footed Tortoise</td>
-      <td>
-        <button class="btn-primary" onclick="editTortoise('TRT09')">Edit</button>
-        <button class="btn-primary" onclick="deleteTortoise('TRT09')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
-      </td>
-    </tr>
-    <tr>
-      <td>TRT10</td>
-      <td>Rocky</td>
-      <td>12</td>
-      <td>Male</td>
-      <td>Healthy</td>
-      <td>Russian Tortoise</td>
-      <td>
-        <button class="btn-primary" onclick="editTortoise('TRT10')">Edit</button>
-        <button class="btn-primary" onclick="deleteTortoise('TRT10')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
-      </td>
-    </tr>
-    <tr>
-      <td>TRT11</td>
-      <td>Pepper</td>
-      <td>9</td>
-      <td>Female</td>
-      <td>Healthy</td>
-      <td>Florida Box Turtle</td>
-      <td>
-        <button class="btn-primary" onclick="editTortoise('TRT11')">Edit</button>
-        <button class="btn-primary" onclick="deleteTortoise('TRT11')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
-      </td>
-    </tr>
-    <tr>
-      <td>TRT12</td>
-      <td>Tank</td>
-      <td>13</td>
-      <td>Male</td>
-      <td>Recovering</td>
-      <td>Desert Tortoise</td>
-      <td>
-        <button class="btn-primary" onclick="editTortoise('TRT12')">Edit</button>
-        <button class="btn-primary" onclick="deleteTortoise('TRT12')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
-      </td>
-    </tr>
-    <tr>
-      <td>TRT13</td>
-      <td>Sunny</td>
-      <td>7</td>
-      <td>Female</td>
-      <td>Healthy</td>
-      <td>Sulcata Tortoise</td>
-      <td>
-        <button class="btn-primary" onclick="editTortoise('TRT13')">Edit</button>
-        <button class="btn-primary" onclick="deleteTortoise('TRT13')" style="background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%); margin-left: 8px;">Delete</button>
-      </td>
-    </tr>
-  </table>
+    <p>Access tortoise health records, submit assessments, and update medical histories</p>
   </div>
 </div>
 
-<div id="Assessments" class="tabcontent">
-  <div class="assessment-card">
-    <h2>Perform Health Assessment</h2>
-    <form class="assessment-form" novalidate>
-      <div>
-        <label for="tortoise-id">Tortoise ID</label>
-        <input id="tortoise-id" name="tortoiseId" type="text" placeholder="e.g. TRT03" required />
-      </div>
+<div class="main">
 
-      <div>
-        <label for="assessment-date">Assessment Date</label>
-        <input id="assessment-date" name="assessmentDate" type="date" required />
-      </div>
-
-      <div>
-        <label for="weight">Weight (kg)</label>
-        <input id="weight" name="weight" type="number" step="0.1" placeholder="e.g. 38.5" required />
-      </div>
-
-      <div>
-        <label for="respiratory">Respiratory Status</label>
-        <select id="respiratory" name="respiratoryStatus" required>
-          <option value="">Select status</option>
-          <option value="Normal">Normal</option>
-          <option value="Slight Wheezing">Slight Wheezing</option>
-          <option value="Respiratory Infection Signs">Respiratory Infection Signs</option>
-        </select>
-      </div>
-
-      <div>
-        <label for="overall-health">Overall Health Status</label>
-        <select id="overall-health" name="overallHealthStatus" required>
-          <option value="">Select status</option>
-          <option value="Healthy">Healthy</option>
-          <option value="Under Observation">Under Observation</option>
-          <option value="Recovering">Recovering</option>
-          <option value="Critical">Critical</option>
-        </select>
-      </div>
-
-      <div>
-        <label for="diagnosis">Diagnosis / Findings</label>
-        <textarea id="diagnosis" name="diagnosis" placeholder="Describe key observations (e.g., shell condition, appetite, behavior)..."></textarea>
-      </div>
-
-      <div>
-        <label for="treatment">Treatment Prescribed</label>
-        <textarea id="treatment" name="treatment" placeholder="Medications, supplements, dietary changes, or care plan..."></textarea>
-      </div>
-
-      <div>
-        <label for="follow-up">Follow-up Date</label>
-        <input id="follow-up" name="followUpDate" type="date" />
-      </div>
-
-      <div class="assessment-actions">
-        <button type="submit" class="btn-primary">Add assessment</button>
-      </div>
-    </form>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('records')">📋 Health Records</div>
+    <div class="tab" onclick="switchTab('assessment')">🩺 New Assessment</div>
   </div>
+
+  <!-- TAB: RECORDS -->
+  <div class="tab-content active" id="tab-records">
+    <div class="card">
+      <h2>🔍 Search Tortoise Health Record</h2>
+      <div style="display:flex;gap:12px;margin-bottom:20px;">
+        <input type="text" placeholder="Enter Tortoise ID (e.g. TRT-2025-007)" style="flex:1">
+        <button class="btn" style="margin-top:0">Search</button>
+      </div>
+
+      <h2 style="margin-top:10px">📋 Tortoise Health List</h2>
+      <table>
+        <tr><th>ID</th><th>Name</th><th>Age</th><th>Gender</th><th>Health Status</th><th>Classification</th><th>Actions</th></tr>
+        <tr><td>TRT-001</td><td>Pengu</td><td>14 yr</td><td>Male</td><td><span class="badge badge-healthy">Healthy</span></td><td>Aldabra Giant Tortoise</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editTortoise('TRT-001')">Edit</button><button class="btn btn-danger" onclick="deleteTortoise('TRT-001')">Delete</button></div></td></tr>
+        <tr><td>TRT-002</td><td>Griffin</td><td>9 yr</td><td>Female</td><td><span class="badge badge-recovering">Recovering</span></td><td>African Spurred Tortoise</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editTortoise('TRT-002')">Edit</button><button class="btn btn-danger" onclick="deleteTortoise('TRT-002')">Delete</button></div></td></tr>
+        <tr><td>TRT-003</td><td>Swanson</td><td>22 yr</td><td>Male</td><td><span class="badge badge-healthy">Healthy</span></td><td>Leopard Tortoise</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editTortoise('TRT-003')">Edit</button><button class="btn btn-danger" onclick="deleteTortoise('TRT-003')">Delete</button></div></td></tr>
+        <tr><td>TRT-004</td><td>Brown</td><td>7 yr</td><td>Female</td><td><span class="badge badge-obs">Under Obs.</span></td><td>Indian Star Tortoise</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editTortoise('TRT-004')">Edit</button><button class="btn btn-danger" onclick="deleteTortoise('TRT-004')">Delete</button></div></td></tr>
+        <tr><td>TRT-005</td><td>Brown</td><td>40 yr</td><td>Male</td><td><span class="badge badge-healthy">Healthy</span></td><td>Galapagos Tortoise</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editTortoise('TRT-005')">Edit</button><button class="btn btn-danger" onclick="deleteTortoise('TRT-005')">Delete</button></div></td></tr>
+        <tr><td>TRT-006</td><td>Bruce lee</td><td>5 yr</td><td>Female</td><td><span class="badge badge-critical">Critical</span></td><td>Benjamin Tortoise</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editTortoise('TRT-006')">Edit</button><button class="btn btn-danger" onclick="deleteTortoise('TRT-006')">Delete</button></div></td></tr>
+        <tr><td>TRT-007</td><td>Myrtle</td><td>14 yr</td><td>Female</td><td><span class="badge badge-healthy">Healthy</span></td><td>Greek Tortoise</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editTortoise('TRT-007')">Edit</button><button class="btn btn-danger" onclick="deleteTortoise('TRT-007')">Delete</button></div></td></tr>
+        <tr><td>TRT-008</td><td>Spike</td><td>10 yr</td><td>Male</td><td><span class="badge badge-obs">Under Obs.</span></td><td>Hermann's Tortoise</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editTortoise('TRT-008')">Edit</button><button class="btn btn-danger" onclick="deleteTortoise('TRT-008')">Delete</button></div></td></tr>
+        <tr><td>TRT-009</td><td>Luna</td><td>8 yr</td><td>Female</td><td><span class="badge badge-healthy">Healthy</span></td><td>Red-footed Tortoise</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editTortoise('TRT-009')">Edit</button><button class="btn btn-danger" onclick="deleteTortoise('TRT-009')">Delete</button></div></td></tr>
+        <tr><td>TRT-010</td><td>Rocky</td><td>12 yr</td><td>Male</td><td><span class="badge badge-healthy">Healthy</span></td><td>Russian Tortoise</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editTortoise('TRT-010')">Edit</button><button class="btn btn-danger" onclick="deleteTortoise('TRT-010')">Delete</button></div></td></tr>
+        <tr><td>TRT-011</td><td>Pepper</td><td>9 yr</td><td>Female</td><td><span class="badge badge-healthy">Healthy</span></td><td>Florida Box Turtle</td><td><div class="action-buttons"><button class="btn btn-primary" onclick="editTortoise('TRT-011')">Edit</button><button class="btn btn-danger" onclick="deleteTortoise('TRT-011')">Delete</button></div></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: ASSESSMENT -->
+  <div class="tab-content" id="tab-assessment">
+    <div class="two-col">
+      <div class="card">
+        <h2><lucide-icon name="stethoscope" size="20"></lucide-icon> Perform Health Assessment</h2>
+        <label>AssessmentID</label>
+        <input type="text" placeholder="e.g. ASS-2025-001">
+        <label>Date</label>
+        <input type="date">
+        <label>Diagnosis</label>
+        <textarea placeholder="Describe diagnosis..."></textarea>
+        <label>HealthCondition</label>
+        <input type="text" placeholder="e.g. Healthy, Critical">
+        <label>Treatment</label>
+        <textarea placeholder="Describe treatment..."></textarea>
+        <label>Remarks</label>
+        <textarea placeholder="Additional remarks..."></textarea>
+        <label>TortoiseID</label>
+        <input type="text" placeholder="e.g. TRT-2025-004">
+        <label>VetID</label>
+        <input type="text" placeholder="e.g. VET-001">
+        <button class="btn">Submit Assessment</button>
+      </div>
+
+      <div class="card">
+        <h2> Recent Assessments</h2>
+        <table>
+          <tr><th>Date</th><th>Tortoise</th><th>Vet Finding</th></tr>
+          <tr><td>Mar 15</td><td>TRT-007</td><td>Respiratory infection, treated</td></tr>
+          <tr><td>Mar 14</td><td>TRT-004</td><td>Shell crack, bandaged</td></tr>
+          <tr><td>Mar 12</td><td>TRT-001</td><td>Annual checkup — clear</td></tr>
+          <tr><td>Mar 10</td><td>TRT-002</td><td>Recovering from dehydration</td></tr>
+          <tr><td>Mar 08</td><td>TRT-003</td><td>Annual checkup — clear</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
 </div>
+
+<footer>&copy; 2025 Tortoise Conservation Centre Management System</footer>
 
 <script>
-function openCity(evt, cityName) {
-  const tabcontent = document.querySelectorAll('.tabcontent');
-  tabcontent.forEach(el => el.style.display = 'none');
-
-  const tablinks = document.querySelectorAll('.tablinks');
-  tablinks.forEach(el => el.classList.remove('active'));
-
-  document.getElementById(cityName).style.display = 'block';
-  evt.currentTarget.classList.add('active');
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const defaultTab = document.querySelector('.tab button.active');
-  if (defaultTab) defaultTab.click();
-});
 
 function editTortoise(tortoiseId) {
   window.location.href = 'formEditTortoiseInfo.html?id=' + tortoiseId;
 }
 
 function deleteTortoise(tortoiseId) {
-  if (confirm('Are you sure you want to delete tortoise ' + tortoiseId + '?')) {
+  if (confirm('Are you sure you want to delete tortoise ' + tortoiseId + '? This action cannot be undone.')) {
     alert('Tortoise Information deleted Successfully');
-    // TODO: Implement delete functionality
+    // TODO: Implement actual delete functionality
   }
 }
-
-function searchTortoises() {
-  const searchInput = document.getElementById('tortoise-search');
-  const filter = searchInput.value.toLowerCase();
-  const table = document.querySelector('#TortoiseInfo table');
-  const rows = table.getElementsByTagName('tr');
-
-  // Start from index 1 to skip the header row
-  for (let i = 1; i < rows.length; i++) {
-    const cells = rows[i].getElementsByTagName('td');
-    let match = false;
-
-    // Check all cells except the last one (Actions column)
-    for (let j = 0; j < cells.length - 1; j++) {
-      const cellText = cells[j].textContent || cells[j].innerText;
-      if (cellText.toLowerCase().indexOf(filter) > -1) {
-        match = true;
-        break;
-      }
-    }
-
-    if (match) {
-      rows[i].style.display = '';
-    } else {
-      rows[i].style.display = 'none';
-    }
-  }
-}
-
-// Add event listener for search input
-document.addEventListener('DOMContentLoaded', () => {
-  const defaultTab = document.querySelector('.tab button.active');
-  if (defaultTab) defaultTab.click();
-
-  const searchInput = document.getElementById('tortoise-search');
-  const searchBtn = document.getElementById('search-btn');
-
-  if (searchInput) {
-    searchInput.addEventListener('keyup', searchTortoises);
-  }
-
-  if (searchBtn) {
-    searchBtn.addEventListener('click', searchTortoises);
-  }
-});
 </script>
 </body>
 </html>
-
-
