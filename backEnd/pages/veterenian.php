@@ -110,6 +110,9 @@ $msg = $_GET['msg'] ?? '';
             <td><?= htmlspecialchars($row['name']) ?></td>
             <td><?= htmlspecialchars($row['remarks']) ?></td>
             <td>
+              <a href="formEditAssessment.php?id=<?= $row['assessment_id'] ?>">
+                <button class="btn" style="margin:0;padding:5px 10px">Edit</button>
+              </a>
               <a href="../process/delete_assessment.php?id=<?= $row['assessment_id'] ?>" onclick="return confirm('Delete record?')">
                 <button class="btn btn-danger" style="margin:0;padding:5px 10px">Delete</button>
               </a>
