@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Health Assessment</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+        body{background:#ecf6f1;padding:2rem;display:flex;justify-content:center;}
+        .form-card{max-width:700px;width:100%;background:white;border-radius:28px;padding:2rem;box-shadow:0 12px 28px rgba(0,0,0,0.08);}
+        h2{margin-bottom:1.5rem;color:#1a6d4e;}
+        label{display:block;margin-top:1rem;font-weight:600;color:#2b6e53;}
+        input,select,textarea{width:100%;padding:0.7rem;margin-top:0.3rem;border-radius:12px;border:1px solid #cae5d9;}
+        button{background:#1f7356;color:white;border:none;padding:0.8rem 1.5rem;border-radius:40px;margin-top:1.5rem;cursor:pointer;}
+    </style>
+    <script>
+        async function loadAssessment() {
+            const id = new URLSearchParams(window.location.search).get('id');
+            if(!id) return;
+            try {
+                const res = await fetch(`../process/get_health_assessment.php?id=${id}`);
+                const data = await res.json();
+                if(data) {
+                    document.querySelector('[name="assessment_id"]').value = data.assessment_id;
+                    document.querySelector('[name="tortoise_id"]').value = data.tortoise_id;
+                    document.querySelector('[name="vet_id"]').value = data.vet_id;
+                    document.querySelector('[name="assessment_date"]').value = data.assessment_date;
+                    document.querySelector('[name="diagnosis"]').value = data.diagnosis;
+                    document.querySelector('[name="treatment"]').value = data.treatment;
+                    document.querySelector('[name="remarks"]').value = data.remarks;
+                    document.querySelector('[name="next_checkup_date"]').value = data.next_checkup_date;
+                }
+            } catch(e) { console.error(e); }
+        }
+        window.onload = loadAssessment;
+    </script>
+</head>
+<body>
+<div class="form-card">
+    <h2>✏️ Edit Health Assessment</h2>
+    <form action="../process/edit_health_assessment.php" method="POST">
+        <input type="hidden" name="assessment_id">
+        <label>Tortoise ID</label><input type="number" name="tortoise_id" required>
+        <label>Vet ID</label><input type="number" name="vet_id" required>
+        <label>Assessment Date</label><input type="date" name="assessment_date" required>
+        <label>Diagnosis</label><textarea name="diagnosis" rows="2"></textarea>
+        <label>Treatment</label><textarea name="treatment" rows="2"></textarea>
+        <label>Remarks</label><textarea name="remarks" rows="2"></textarea>
+        <label>Next Checkup Date</label><input type="date" name="next_checkup_date">
+        <button type="submit">Update Assessment</button>
+    </form>
+</div>
+</body>
+</html>
