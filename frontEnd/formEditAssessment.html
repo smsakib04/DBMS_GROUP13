@@ -50,21 +50,6 @@
     </div>
 
     <div>
-      <label for="assessment-diagnosis">Diagnosis</label>
-      <textarea id="assessment-diagnosis" name="assessmentDiagnosis" placeholder="Describe diagnosis..." required></textarea>
-    </div>
-
-    <div>
-      <label for="assessment-condition">HealthCondition</label>
-      <input id="assessment-condition" name="assessmentCondition" type="text" placeholder="e.g. Healthy, Critical" required />
-    </div>
-
-    <div>
-      <label for="assessment-treatment">Treatment</label>
-      <textarea id="assessment-treatment" name="assessmentTreatment" placeholder="Describe treatment..." required></textarea>
-    </div>
-
-    <div>
       <label for="assessment-remarks">Remarks</label>
       <textarea id="assessment-remarks" name="assessmentRemarks" placeholder="Additional remarks..." required></textarea>
     </div>
@@ -72,11 +57,6 @@
     <div>
       <label for="tortoise-id">TortoiseID</label>
       <input id="tortoise-id" name="tortoiseId" type="text" placeholder="e.g. TRT-2025-004" required />
-    </div>
-
-    <div>
-      <label for="vet-id">VetID</label>
-      <input id="vet-id" name="vetId" type="text" placeholder="e.g. VET-001" required />
     </div>
 
     <div class="assessment-actions">
@@ -96,45 +76,30 @@ function goBack() {
 const assessmentData = {
   'ASS-001': { 
     date: '15/03/2025', 
-    diagnosis: 'Respiratory infection', 
-    condition: 'Critical', 
-    treatment: 'Antibiotics and rest', 
     remarks: 'Monitor closely for 7 days',
     tortoiseId: 'TRT-007',
     vetId: 'VET-001'
   },
   'ASS-002': { 
     date: '14/03/2025', 
-    diagnosis: 'Shell fracture', 
-    condition: 'Recovering', 
-    treatment: 'Bandaging and calcium supplements', 
     remarks: 'Check bandage daily',
     tortoiseId: 'TRT-004',
     vetId: 'VET-002'
   },
   'ASS-003': { 
     date: '12/03/2025', 
-    diagnosis: 'Annual health check', 
-    condition: 'Healthy', 
-    treatment: 'None required', 
     remarks: 'All vitals normal',
     tortoiseId: 'TRT-001',
     vetId: 'VET-001'
   },
   'ASS-004': { 
     date: '10/03/2025', 
-    diagnosis: 'Dehydration', 
-    condition: 'Recovering', 
-    treatment: 'Fluid therapy and electrolytes', 
     remarks: 'Monitor water intake',
     tortoiseId: 'TRT-002',
     vetId: 'VET-003'
   },
   'ASS-005': { 
     date: '08/03/2025', 
-    diagnosis: 'Annual health check', 
-    condition: 'Healthy', 
-    treatment: 'None required', 
     remarks: 'All parameters within normal range',
     tortoiseId: 'TRT-003',
     vetId: 'VET-001'
@@ -152,9 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('assessment-id').value = assessmentId;
     document.getElementById('assessment-date').value = assessment.date;
-    document.getElementById('assessment-diagnosis').value = assessment.diagnosis;
-    document.getElementById('assessment-condition').value = assessment.condition;
-    document.getElementById('assessment-treatment').value = assessment.treatment;
     document.getElementById('assessment-remarks').value = assessment.remarks;
     document.getElementById('tortoise-id').value = assessment.tortoiseId;
     document.getElementById('vet-id').value = assessment.vetId;
