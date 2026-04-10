@@ -145,17 +145,15 @@ INSERT INTO `feeding_schedules` (`schedule_id`, `tortoise_id`, `feeding_time`, `
 -- Table structure for table `health_assessments`
 --
 
-CREATE TABLE `health_assessments` (
-  `assessment_id` int(11) NOT NULL,
-  `tortoise_id` int(11) NOT NULL,
-  `vet_id` int(11) NOT NULL,
-  `assessment_date` date NOT NULL,
-  `diagnosis` text DEFAULT NULL,
-  `treatment` text DEFAULT NULL,
-  `remarks` text DEFAULT NULL,
-  `next_checkup_date` date DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE health_assessments (
+  assessment_id INT NOT NULL AUTO_INCREMENT,
+  assessment_code VARCHAR(50) NOT NULL, -- This is where you type "ASS-2025-001"
+  assessment_date DATE NOT NULL,
+  remarks TEXT,
+  tortoise_id INT NOT NULL,
+  PRIMARY KEY (assessment_id),
+  CONSTRAINT fk_tortoise FOREIGN KEY (tortoise_id) REFERENCES tortoises(tortoise_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `health_assessments`

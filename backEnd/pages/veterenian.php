@@ -1,369 +1,136 @@
 <?php
 require_once '../includes/session.php';
-requireLogin();
 require_once '../config/db.php';
- 
-// ─── READ: Fetch all tortoises for the top table ───────────────────────────
-$tortoises = $conn->query("
-    SELECT
-        t.tortoise_id,
-        t.microchip_id,
-        t.name,
-        t.estimated_age_years,
-        t.sex,
-        t.health_status,
-        t.classification,
-        s.common_name AS species_name
-    FROM tortoises t
-    JOIN species s ON t.species_id = s.species_id
-    ORDER BY t.tortoise_id ASC
-");
- 
-// ─── READ: Fetch all health assessments for the bottom table ──────────────
-$assessments = $conn->query("
-    SELECT
-        ha.assessment_id,
-        ha.assessment_code,
-        ha.assessment_date,
-        ha.health_condition,
-        ha.diagnosis,
-        ha.treatment,
-        ha.remarks,
-        ha.next_checkup_date,
-        t.name      AS tortoise_name,
-        t.microchip_id,
-        st.full_name AS vet_name
-    FROM health_assessments ha
-    JOIN tortoises t  ON ha.tortoise_id = t.tortoise_id
-    JOIN staff     st ON ha.vet_id      = st.staff_id
-    ORDER BY ha.assessment_date DESC
-");
- 
-// ─── For the Add Assessment form: dropdown list of tortoises ──────────────
+
+// Fetch data for the lists
+$tortoises = $conn->query("SELECT t.*, s.common_name FROM tortoises t JOIN species s ON t.species_id = s.species_id ORDER BY t.tortoise_id ASC");
 $tortoise_list = $conn->query("SELECT tortoise_id, microchip_id, name FROM tortoises ORDER BY name");
- 
-// ─── Success/error message passed after a process file redirects back ─────
+$assessments = $conn->query("SELECT ha.*, t.name FROM health_assessments ha JOIN tortoises t ON ha.tortoise_id = t.tortoise_id ORDER BY ha.assessment_date DESC");
+
 $msg = $_GET['msg'] ?? '';
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veterinarian | TCCMS</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        /* ── Base ── */
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
-        body { background:#ecf6f1; padding:2rem 1.5rem; }
-        .dashboard { max-width:1400px; margin:0 auto; }
- 
-        /* ── Header ── */
-        .page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; }
-        .page-header h1 { font-size:1.6rem; color:#1c5d44; }
-        .page-header p  { color:#5a7a6e; font-size:0.9rem; margin-top:4px; }
-        .date-badge { background:#2a7f5c; color:#fff; padding:0.5rem 1.2rem; border-radius:50px; font-size:0.85rem; }
- 
-        /* ── Navbar ── */
-        .navbar { background:#fff; border-radius:60px; padding:0.8rem 2rem;
-                  display:flex; justify-content:space-between; align-items:center;
-                  margin-bottom:2rem; box-shadow:0 2px 12px rgba(0,40,20,0.08); }
-        .nav-links { display:flex; gap:1.8rem; }
-        .nav-item  { cursor:pointer; display:flex; align-items:center; gap:0.5rem;
-                     color:#2b6e53; font-weight:600; padding-bottom:3px;
-                     border-bottom:3px solid transparent; font-size:0.9rem; }
-        .nav-item.active { border-bottom-color:#2a8b65; }
-        .logout-btn { background:#f0faf5; border:1.5px solid #c2e0d2;
-                      padding:0.5rem 1.2rem; border-radius:40px; cursor:pointer;
-                      font-size:0.85rem; color:#1c5d44; font-weight:600; }
-        .logout-btn:hover { background:#c2e0d2; }
- 
-        /* ── Notification banner ── */
-        .alert { padding:0.8rem 1.2rem; border-radius:10px; margin-bottom:1.2rem;
-                 font-weight:600; font-size:0.9rem; }
-        .alert-success { background:#d1fae5; color:#065f46; }
-        .alert-error   { background:#fee2e2; color:#991b1b; }
- 
-        /* ── Section cards ── */
-        .table-wrapper { background:#fff; border-radius:28px; padding:1.8rem;
-                         margin-bottom:2.5rem; display:none;
-                         box-shadow:0 2px 12px rgba(0,40,20,0.06); }
-        .table-wrapper.active-table { display:block; }
-        .table-header  { display:flex; justify-content:space-between; align-items:center;
-                         margin-bottom:1.4rem; flex-wrap:wrap; gap:0.8rem; }
-        .table-header h2 { font-size:1.1rem; color:#1c5d44; }
- 
-        /* ── Buttons ── */
-        .btn          { padding:0.5rem 1.2rem; border-radius:40px; cursor:pointer;
-                        font-size:0.85rem; font-weight:600; border:1.5px solid #cae5d9;
-                        background:#fff; color:#1c5d44; transition:background 0.2s; }
-        .btn:hover    { background:#c2e0d2; }
-        .btn-primary  { background:#2a7f5c; color:#fff; border-color:#2a7f5c; }
-        .btn-primary:hover { background:#1c5d44; }
-        .btn-danger   { background:#fee2e2; color:#991b1b; border-color:#fca5a5; }
-        .btn-danger:hover { background:#fca5a5; }
-        .btn-sm       { padding:0.3rem 0.8rem; font-size:0.78rem; }
- 
-        /* ── Table ── */
-        table { width:100%; border-collapse:collapse; font-size:0.88rem; }
-        th    { padding:0.7rem 0.6rem; border-bottom:2px solid #c2e0d2;
-                text-align:left; color:#2b6e53; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.04em; }
-        td    { padding:0.75rem 0.6rem; border-bottom:1px solid #e4f3ec; color:#1a1a1a; }
-        tr:hover td { background:#f5fbf8; }
-        .badge { padding:0.2rem 0.8rem; border-radius:50px; font-size:0.78rem; font-weight:600; }
-        .badge-healthy    { background:#d1fae5; color:#065f46; }
-        .badge-critical   { background:#fee2e2; color:#991b1b; }
-        .badge-observing  { background:#fef3c7; color:#92400e; }
-        .badge-recovering { background:#dbeafe; color:#1e40af; }
- 
-        /* ── Add Assessment Form ── */
-        .form-card { background:#f5fbf8; border:1.5px solid #c2e0d2; border-radius:16px;
-                     padding:1.5rem; margin-bottom:1.5rem; display:none; }
-        .form-card.open { display:block; }
-        .form-card h3 { color:#1c5d44; margin-bottom:1rem; font-size:1rem; }
-        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
-        .form-grid .full-width { grid-column:1 / -1; }
-        label { display:block; font-size:0.78rem; font-weight:600; color:#5a7a6e;
-                margin-bottom:4px; text-transform:uppercase; letter-spacing:0.04em; }
-        input, select, textarea {
-            width:100%; padding:0.6rem 0.8rem; border:1.5px solid #c2e0d2;
-            border-radius:8px; font-size:0.88rem; background:#fff; color:#1a1a1a;
-        }
-        input:focus, select:focus, textarea:focus {
-            outline:none; border-color:#2a7f5c;
-        }
-        textarea { resize:vertical; min-height:80px; }
-        .form-actions { display:flex; gap:0.8rem; margin-top:1rem; justify-content:flex-end; }
-    </style>
+<title>Veterinarian | TCCMS</title>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap');
+  :root{--green-dark:#1a3a2a;--green-mid:#2d6a4f;--green-light:#52b788;--cream:#f8f4e8;--gold:#c9a84c;--text-dark:#1a1a1a;--text-light:#5a5a5a;--blue:#2471a3;--red:#c0392b;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Source Sans 3',sans-serif;background:var(--cream);color:var(--text-dark);}
+  .page-header{background:linear-gradient(135deg,#0a2a3a 0%,#1a5a7a 100%);color:white;padding:36px 40px;display:flex;align-items:center;gap:20px;}
+  .page-header h1{font-family:'Playfair Display',serif;font-size:30px;margin-bottom:6px;}
+  .main{max-width:1100px;margin:0 auto;padding:30px 24px 50px;}
+  .tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid #dde8e0;}
+  .tab{padding:10px 22px;cursor:pointer;font-size:14px;font-weight:600;color:var(--text-light);border-bottom:3px solid transparent;}
+  .tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+  .tab-content{display:none;}
+  .tab-content.active{display:block;}
+  .card{background:white;border-radius:12px;padding:28px;border:1.5px solid #dde8e0;box-shadow:0 2px 12px rgba(0,0,0,.05);margin-bottom:24px;}
+  .two-col{display:grid;grid-template-columns:1fr 1.2fr;gap:28px;}
+  label{display:block;font-size:13px;font-weight:600;color:var(--text-light);margin-bottom:5px;margin-top:14px;text-transform:uppercase;}
+  input,select,textarea{width:100%;padding:10px 12px;border:1.5px solid #d0dbd3;border-radius:7px;font-size:14px;background:#fafcfb;}
+  .btn{background:#1a5a7a;color:white;border:none;padding:11px 28px;border-radius:7px;font-weight:600;cursor:pointer;margin-top:18px;}
+  .btn-danger{background:var(--red);}
+  table{width:100%;border-collapse:collapse;margin-top:10px;}
+  th,td{text-align:left;padding:12px;border-bottom:1px solid #e4ece6;font-size:13px;}
+  th{background:#1a5a7a;color:white;}
+  .alert{padding:15px;border-radius:8px;margin-bottom:20px;font-weight:600;text-align:center;}
+  .alert-success{background:#d4edda;color:#155724;}
+</style>
 </head>
 <body>
-<div class="dashboard">
- 
-    <!-- ── Page header ── -->
-    <div class="page-header">
-        <div>
-            <h1><i class="fas fa-stethoscope"></i> Veterinarian Portal</h1>
-            <p>Health assessments, medical records, tortoise health management</p>
-        </div>
-        <div class="date-badge"><?php echo date('d M Y'); ?> · Veterinarian</div>
+
+<div class="page-header">
+  <div class="icon">🩺</div>
+  <div><h1>Veterinarian Portal</h1><p>Tortoise Health Management System</p></div>
+</div>
+
+<div class="main">
+  <?php if ($msg === 'added'): ?><div class="alert alert-success">Assessment successfully saved to database!</div><?php endif; ?>
+  <?php if ($msg === 'deleted'): ?><div class="alert alert-success">Assessment deleted successfully.</div><?php endif; ?>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('records', this)">📋 Health Records</div>
+    <div class="tab" onclick="switchTab('assessment', this)">🩺 New Assessment</div>
+  </div>
+
+  <div class="tab-content active" id="tab-records">
+    <div class="card">
+      <h2>📋 Registered Tortoises</h2>
+      <table>
+        <tr><th>ID</th><th>Name</th><th>Species</th><th>Status</th><th>Action</th></tr>
+        <?php while($row = $tortoises->fetch_assoc()): ?>
+        <tr>
+          <td><?= $row['microchip_id'] ?></td>
+          <td><?= htmlspecialchars($row['name']) ?></td>
+          <td><?= htmlspecialchars($row['common_name']) ?></td>
+          <td><?= $row['health_status'] ?></td>
+          <td><a href="formEditTortoiseInfo.php?id=<?= $row['tortoise_id'] ?>"><button class="btn" style="margin:0;padding:5px 10px">Edit</button></a></td>
+        </tr>
+        <?php endwhile; ?>
+      </table>
     </div>
- 
-    <!-- ── Navbar ── -->
-    <div class="navbar">
-        <div class="nav-links" id="navLinks">
-            <span class="nav-item active" data-table="tortoises">
-                <i class="fas fa-list"></i> Tortoise Records
-            </span>
-            <span class="nav-item" data-table="assessments">
-                <i class="fas fa-notes-medical"></i> Health Assessments
-            </span>
-        </div>
-        <a href="../logout.php"><button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button></a>
-    </div>
- 
-    <!-- ── Flash message ── -->
-    <?php if ($msg === 'added'): ?>
-        <div class="alert alert-success"><i class="fas fa-check-circle"></i> Assessment added successfully.</div>
-    <?php elseif ($msg === 'updated'): ?>
-        <div class="alert alert-success"><i class="fas fa-check-circle"></i> Assessment updated successfully.</div>
-    <?php elseif ($msg === 'deleted'): ?>
-        <div class="alert alert-success"><i class="fas fa-check-circle"></i> Assessment deleted successfully.</div>
-    <?php elseif ($msg === 'error'): ?>
-        <div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> Something went wrong. Please try again.</div>
-    <?php endif; ?>
- 
-    <!-- ════════════════════════════════════════════════════════════
-         TABLE 1 — Tortoise Records  (READ + Edit link + Delete)
-    ═══════════════════════════════════════════════════════════════ -->
-    <div class="table-wrapper active-table" id="tortoises">
-        <div class="table-header">
-            <h2><i class="fas fa-list"></i> Tortoise Health Records</h2>
-        </div>
- 
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Microchip</th>
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>Gender</th>
-                    <th>Health Status</th>
-                    <th>Classification</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while($row = $tortoises->fetch_assoc()): ?>
-                <tr>
-                    <td><?= $row['tortoise_id'] ?></td>
-                    <td><?= htmlspecialchars($row['microchip_id']) ?></td>
-                    <td><?= htmlspecialchars($row['name']) ?></td>
-                    <td><?= $row['estimated_age_years'] ?? '—' ?> yrs</td>
-                    <td><?= $row['sex'] ?></td>
-                    <td>
-                        <?php
-                        $status = $row['health_status'];
-                        $badge  = match($status) {
-                            'Healthy'           => 'badge-healthy',
-                            'Critical'          => 'badge-critical',
-                            'Under observation' => 'badge-observing',
-                            'Recovering'        => 'badge-recovering',
-                            default             => ''
-                        };
-                        ?>
-                        <span class="badge <?= $badge ?>"><?= $status ?></span>
-                    </td>
-                    <td><?= htmlspecialchars($row['classification'] ?? '—') ?></td>
-                    <td>
-                        <!-- Edit links to formEditTortoiseInfo.php passing tortoise_id -->
-                        <a href="formEditTortoiseInfo.php?id=<?= $row['tortoise_id'] ?>">
-                            <button class="btn btn-sm">Edit</button>
-                        </a>
-                    </td>
-                </tr>
+  </div>
+
+  <div class="tab-content" id="tab-assessment">
+    <div class="two-col">
+      <div class="card">
+        <h2>🩺 Perform Health Assessment</h2>
+        <form action="../process/add_assessment.php" method="POST">
+            <label>Assessment ID</label>
+            <input type="text" name="assessment_code" placeholder="e.g. ASS-001" required>
+            
+            <label>Date</label>
+            <input type="date" name="assessment_date" value="<?= date('Y-m-d') ?>" required>
+            
+            <label>Remarks</label>
+            <textarea name="remarks" placeholder="Enter clinical notes..."></textarea>
+            
+            <label>Tortoise Selection</label>
+            <select name="tortoise_id" required>
+                <option value="">— Select Tortoise —</option>
+                <?php $tortoise_list->data_seek(0); while($t = $tortoise_list->fetch_assoc()): ?>
+                <option value="<?= $t['tortoise_id'] ?>"><?= $t['name'] ?> (<?= $t['microchip_id'] ?>)</option>
                 <?php endwhile; ?>
-            </tbody>
-        </table>
-    </div>
- 
-    <!-- ════════════════════════════════════════════════════════════
-         TABLE 2 — Health Assessments  (READ + Add form + Edit + Delete)
-    ═══════════════════════════════════════════════════════════════ -->
-    <div class="table-wrapper" id="assessments">
-        <div class="table-header">
-            <h2><i class="fas fa-notes-medical"></i> Health Assessments</h2>
-            <button class="btn btn-primary" onclick="toggleForm()">
-                <i class="fas fa-plus"></i> Add Assessment
-            </button>
-        </div>
- 
-        <!-- ── CREATE: Add Assessment Form ── -->
-        <div class="form-card" id="addForm">
-            <h3><i class="fas fa-plus-circle"></i> New Health Assessment</h3>
-            <!-- Posts to process/add_assessment.php -->
-            <form method="POST" action="../process/add_assessment.php">
-                <div class="form-grid">
- 
-                    <div>
-                        <label for="assessment_code">Assessment ID</label>
-                        <input type="text" id="assessment_code" name="assessment_code"
-                               placeholder="e.g. ASS-2025-001" required>
-                    </div>
- 
-                    <div>
-                        <label for="assessment_date">Date</label>
-                        <input type="date" id="assessment_date" name="assessment_date" required>
-                    </div>
- 
-                    <div>
-                        <label for="tortoise_id">Tortoise</label>
-                        <select id="tortoise_id" name="tortoise_id" required>
-                            <option value="">— Select tortoise —</option>
-                            <?php while($t = $tortoise_list->fetch_assoc()): ?>
-                            <option value="<?= $t['tortoise_id'] ?>">
-                                <?= htmlspecialchars($t['microchip_id'] . ' — ' . $t['name']) ?>
-                            </option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
- 
-                    <div>
-                        <label for="health_condition">Health Condition</label>
-                        <input type="text" id="health_condition" name="health_condition"
-                               placeholder="e.g. Healthy, Critical">
-                    </div>
- 
-                    <div class="full-width">
-                        <label for="diagnosis">Diagnosis</label>
-                        <textarea id="diagnosis" name="diagnosis"
-                                  placeholder="Describe diagnosis..."></textarea>
-                    </div>
- 
-                    <div class="full-width">
-                        <label for="treatment">Treatment</label>
-                        <textarea id="treatment" name="treatment"
-                                  placeholder="Describe treatment plan..."></textarea>
-                    </div>
- 
-                    <div class="full-width">
-                        <label for="remarks">Remarks</label>
-                        <textarea id="remarks" name="remarks"
-                                  placeholder="Additional remarks..."></textarea>
-                    </div>
- 
-                    <div>
-                        <label for="next_checkup_date">Next Checkup Date</label>
-                        <input type="date" id="next_checkup_date" name="next_checkup_date">
-                    </div>
- 
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn" onclick="toggleForm()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Assessment</button>
-                </div>
-            </form>
-        </div>
- 
-        <!-- ── READ: Assessments Table ── -->
+            </select>
+            
+            <button type="submit" class="btn">Submit Assessment</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Recent History</h2>
         <table>
-            <thead>
-                <tr>
-                    <th>Assess. ID</th>
-                    <th>Date</th>
-                    <th>Tortoise</th>
-                    <th>Condition</th>
-                    <th>Diagnosis</th>
-                    <th>Treatment</th>
-                    <th>Remarks</th>
-                    <th>Next Checkup</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while($row = $assessments->fetch_assoc()): ?>
-                <tr>
-                    <td><?= htmlspecialchars($row['assessment_code'] ?? '—') ?></td>
-                    <td><?= $row['assessment_date'] ?></td>
-                    <td><?= htmlspecialchars($row['tortoise_name']) ?></td>
-                    <td><?= htmlspecialchars($row['health_condition'] ?? '—') ?></td>
-                    <td><?= htmlspecialchars($row['diagnosis'] ?? '—') ?></td>
-                    <td><?= htmlspecialchars($row['treatment'] ?? '—') ?></td>
-                    <td><?= htmlspecialchars($row['remarks'] ?? '—') ?></td>
-                    <td><?= $row['next_checkup_date'] ?? '—' ?></td>
-                    <td>
-                        <!-- UPDATE: links to formEditAssessment.php -->
-                        <a href="formEditAssessment.php?id=<?= $row['assessment_id'] ?>">
-                            <button class="btn btn-sm">Edit</button>
-                        </a>
-                        <!-- DELETE: links to process/delete_assessment.php -->
-                        <a href="../process/delete_assessment.php?id=<?= $row['assessment_id'] ?>"
-                           onclick="return confirm('Delete this assessment?')">
-                            <button class="btn btn-sm btn-danger">Delete</button>
-                        </a>
-                    </td>
-                </tr>
-                <?php endwhile; ?>
-            </tbody>
+          <tr><th>Date</th><th>Tortoise</th><th>Remarks</th><th>Actions</th></tr>
+          <?php while($row = $assessments->fetch_assoc()): ?>
+          <tr>
+            <td><?= $row['assessment_date'] ?></td>
+            <td><?= htmlspecialchars($row['name']) ?></td>
+            <td><?= htmlspecialchars($row['remarks']) ?></td>
+            <td>
+              <a href="formEditAssessment.php?id=<?= $row['assessment_id'] ?>">
+                <button class="btn" style="margin:0;padding:5px 10px">Edit</button>
+              </a>
+              <a href="../process/delete_assessment.php?id=<?= $row['assessment_id'] ?>" onclick="return confirm('Delete record?')">
+                <button class="btn btn-danger" style="margin:0;padding:5px 10px">Delete</button>
+              </a>
+            </td>
+          </tr>
+          <?php endwhile; ?>
         </table>
+      </div>
     </div>
- 
-</div><!-- end .dashboard -->
- 
+  </div>
+</div>
+
 <script>
-// ── Tab navigation ──────────────────────────────────────────────
-document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', function() {
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.querySelectorAll('.table-wrapper').forEach(t => t.classList.remove('active-table'));
-        this.classList.add('active');
-        document.getElementById(this.dataset.table).classList.add('active-table');
-    });
-});
- 
-// ── Toggle Add Assessment form ───────────────────────────────────
-function toggleForm() {
-    document.getElementById('addForm').classList.toggle('open');
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  el.classList.add('active');
 }
 </script>
 </body>
