@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Tortoise</title>
+    <meta charset="UTF-8">
+    <style>
+        body{font-family:Arial; background:#ecf6f1; padding:2rem;}
+        .form-card{max-width:600px; margin:auto; background:white; border-radius:28px; padding:2rem; box-shadow:0 12px 28px rgba(0,0,0,0.08);}
+        label{display:block; margin-top:1rem; font-weight:600;}
+        input,select,textarea{width:100%; padding:0.7rem; margin-top:0.3rem; border-radius:12px; border:1px solid #ccc;}
+        button{background:#1f7356; color:white; border:none; padding:0.8rem 1.5rem; border-radius:40px; margin-top:1.5rem; cursor:pointer;}
+    </style>
+</head>
+<body>
+<div class="form-card">
+    <h2>➕ Add New Tortoise</h2>
+    <form action="../process/add_tortoise.php" method="POST">
+        <label>Microchip ID</label>
+        <input type="text" name="microchip_id" required>
+
+        <label>Name</label>
+        <input type="text" name="name">
+
+        <label>Species ID</label>
+        <input type="number" name="species_id" required>
+
+        <label>Sex</label>
+        <select name="sex">
+            <option>Male</option><option>Female</option><option>Unknown</option>
+        </select>
+
+        <label>Estimated Age (years)</label>
+        <input type="number" name="estimated_age_years">
+
+        <label>Weight (grams)</label>
+        <input type="number" step="0.01" name="weight_grams">
+
+        <label>Health Status</label>
+        <select name="health_status">
+            <option>Healthy</option><option>Under observation</option><option>Recovering</option><option>Critical</option><option>Minor injury</option>
+        </select>
+
+        <label>Enclosure ID</label>
+        <input type="number" name="enclosure_id">
+
+        <label>Acquisition Date</label>
+        <input type="date" name="acquisition_date">
+
+        <label>Acquisition Source</label>
+        <select name="acquisition_source">
+            <option>Wild</option><option>Rescue</option><option>Donation</option><option>Bred in captivity</option>
+        </select>
+
+        <label>Notes</label>
+        <textarea name="notes"></textarea>
+
+        <button type="submit">Save Tortoise</button>
+    </form>
+</div>
+</body>
+</html>

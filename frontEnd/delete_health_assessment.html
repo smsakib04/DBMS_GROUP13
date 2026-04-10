@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html><head><title>Delete Health Assessment</title></head>
+<body>
+<div class="form-card">
+    <h2>🗑️ Delete Assessment</h2>
+    <form action="../process/delete_health_assessment.php" method="POST" onsubmit="return confirm('Delete this assessment?')">
+        <label>Assessment ID</label><input type="number" name="assessment_id" required>
+        <button type="submit">Delete</button>
+    </form>
+</div>
+</body>
+</html>

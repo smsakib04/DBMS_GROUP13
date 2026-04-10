@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html><head><title>Edit Breeding Pair</title>
+<script>
+async function loadPair() {
+    const id = new URLSearchParams(window.location.search).get('id');
+    if(!id) return;
+    const res = await fetch(`../process/get_breeding_pair.php?id=${id}`);
+    const data = await res.json();
+    if(data) {
+        document.querySelector('[name="pair_id"]').value = data.pair_id;
+        document.querySelector('[name="pair_code"]').value = data.pair_code;
+        document.querySelector('[name="male_tortoise_id"]').value = data.male_tortoise_id;
+        document.querySelector('[name="female_tortoise_id"]').value = data.female_tortoise_id;
+        document.querySelector('[name="pairing_date"]').value = data.pairing_date;
+        document.querySelector('[name="status"]').value = data.status;
+        document.querySelector('[name="notes"]').value = data.notes;
+    }
+}
+window.onload = loadPair;
+</script>
+</head>
+<body>
+<div class="form-card">
+    <h2>✏️ Edit Breeding Pair</h2>
+    <form action="../process/edit_breeding_pair.php" method="POST">
+        <input type="hidden" name="pair_id">
+        <label>Pair Code</label><input type="text" name="pair_code">
+        <label>Male Tortoise ID</label><input type="number" name="male_tortoise_id" required>
+        <label>Female Tortoise ID</label><input type="number" name="female_tortoise_id" required>
+        <label>Pairing Date</label><input type="date" name="pairing_date" required>
+        <label>Status</label><select name="status">...</select>
+        <label>Notes</label><textarea name="notes"></textarea>
+        <button type="submit">Update Pair</button>
+    </form>
+</div>
+</body>
+</html>
