@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {box-sizing: border-box}
+
+.assessment-card {
+  max-width: 860px;
+  margin: 0 auto 32px;
+  padding: 26px 26px 30px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 20px;
+  box-shadow: 0 14px 40px rgba(10, 42, 58, 0.12);
+  border: 1px solid rgba(10, 42, 58, 0.12);
+}
+
+.assessment-card h2 {
+  margin: 0 0 18px;
+  font-size: 1.7rem;
+  letter-spacing: 0.02em;
+  color: #0a2a3a;
+}
+
+.assessment-form {
+  display: grid;
+  gap: 16px;
+}
+
+.assessment-form label {
+  display: block;
+  font-weight: 600;
+  color: rgba(10, 42, 58, 0.85);
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+.assessment-form input,
+.assessment-form select,
+.assessment-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(10, 42, 58, 0.18);
+  background: rgba(255, 255, 255, 0.95);
+  font-size: 1rem;
+  line-height: 1.4;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.assessment-form input:focus,
+.assessment-form select:focus,
+.assessment-form textarea:focus {
+  outline: none;
+  border-color: rgba(15, 122, 183, 0.85);
+  box-shadow: 0 0 0 4px rgba(15, 122, 183, 0.15);
+}
+
+.assessment-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.assessment-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.btn-primary {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: white;
+  background: linear-gradient(135deg, #0a8ecb 0%, #0a2a3a 100%);
+  cursor: pointer;
+  box-shadow: 0 12px 22px rgba(10, 42, 58, 0.22);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 26px rgba(10, 42, 58, 0.26);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+h2, p {
+  margin: 10px;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  background-color: #333333;
+  display: flex;
+}
+
+ul li a {
+  display: block;
+  color: white;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+ul li a:hover:not(.active) {
+  background-color: #111111;
+}
+
+ul li a.active {
+  background-color: #04AA6D;
+}
+
+.page-header {
+  background: linear-gradient(135deg, #0a2a3a 0%, #1a5a7a 100%);
+  color: white;
+  padding: 36px 40px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.page-header .icon {
+  font-size: 2.5rem;
+}
+
+@media (max-width: 640px) {
+  .assessment-card {
+    padding: 20px 18px 24px;
+  }
+
+  .assessment-card h2 {
+    font-size: 1.5rem;
+  }
+}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="icon">🐢</div>
+  <div>
+    <h1>Tortoise Information</h1>
+    <p>Update tortoise details and health information</p>
+  </div>
+</div>
+
+<div class="assessment-card">
+  <h2>Tortoise Details</h2>
+  <form class="assessment-form" novalidate>
+    <div>
+      <label for="tortoise-id">Tortoise ID</label>
+      <input id="tortoise-id" name="tortoiseId" type="text" placeholder="e.g. TRT01" required />
+    </div>
+
+    <div>
+      <label for="tortoise-name">Name</label>
+      <input id="tortoise-name" name="tortoiseName" type="text" placeholder="e.g. Pengu" required />
+    </div>
+
+    <div>
+      <label for="tortoise-age">Age (years)</label>
+      <input id="tortoise-age" name="tortoiseAge" type="number" min="0" placeholder="e.g. 12" required />
+    </div>
+
+    <div>
+      <label for="tortoise-gender">Gender</label>
+      <select id="tortoise-gender" name="tortoiseGender" required>
+        <option value="">Select gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="tortoise-health">Health Status</label>
+      <select id="tortoise-health" name="tortoiseHealth" required>
+        <option value="">Select health status</option>
+        <option value="Healthy">Healthy</option>
+        <option value="On observation">On observation</option>
+        <option value="Under observation">Under observation</option>
+        <option value="Recovering">Recovering</option>
+        <option value="Critical">Critical</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="tortoise-classification">Classification</label>
+      <select id="tortoise-classification" name="tortoiseClassification" required>
+        <option value="">Select classification</option>
+        <option value="Aldabra Giant Tortoise">Aldabra Giant Tortoise</option>
+        <option value="African Spurred Tortoise">African Spurred Tortoise</option>
+        <option value="Leopard Tortoise">Leopard Tortoise</option>
+        <option value="Indian Star Tortoise">Indian Star Tortoise</option>
+        <option value="Benjamin Tortoise">Benjamin Tortoise</option>
+        <option value="Greek Tortoise">Greek Tortoise</option>
+        <option value="Hermann's Tortoise">Hermann's Tortoise</option>
+        <option value="Red-footed Tortoise">Red-footed Tortoise</option>
+        <option value="Russian Tortoise">Russian Tortoise</option>
+        <option value="Florida Box Turtle">Florida Box Turtle</option>
+        <option value="Desert Tortoise">Desert Tortoise</option>
+        <option value="Sulcata Tortoise">Sulcata Tortoise</option>
+      </select>
+    </div>
+
+    <div class="assessment-actions">
+      <button type="button" class="btn-primary" onclick="goBack()">Cancel</button>
+      <button type="submit" class="btn-primary" style="margin-left: 12px;">Update Tortoise</button>
+    </div>
+  </form>
+</div>
+
+<script>
+function goBack() {
+  window.history.back();
+}
+
+// Mock data structure with tortoise information (in a real app, this would come from a database)
+const tortoiseData = {
+  'TRT01': { name: 'Pengu', age: 12, gender: 'Female', health: 'Healthy', classification: 'Aldabra Giant Tortoise' },
+  'TRT02': { name: 'Griffin', age: 8, gender: 'Male', health: 'On observation', classification: 'African Spurred Tortoise' },
+  'TRT03': { name: 'Swanson', age: 15, gender: 'Male', health: 'Healthy', classification: 'Leopard Tortoise' },
+  'TRT04': { name: 'Brown', age: 9, gender: 'Female', health: 'Healthy', classification: 'Indian Star Tortoise' },
+  'TRT05': { name: 'Brown', age: 7, gender: 'Female', health: 'Critical', classification: 'Indian Star Tortoise' },
+  'TRT06': { name: 'Bruce lee', age: 11, gender: 'Male', health: 'Recovering', classification: 'Benjamin Tortoise' },
+  'TRT07': { name: 'Myrtle', age: 14, gender: 'Female', health: 'Healthy', classification: 'Greek Tortoise' },
+  'TRT08': { name: 'Spike', age: 10, gender: 'Male', health: 'Under observation', classification: 'Hermann\'s Tortoise' },
+  'TRT09': { name: 'Luna', age: 8, gender: 'Female', health: 'Healthy', classification: 'Red-footed Tortoise' },
+  'TRT10': { name: 'Rocky', age: 12, gender: 'Male', health: 'Healthy', classification: 'Russian Tortoise' },
+  'TRT11': { name: 'Pepper', age: 9, gender: 'Female', health: 'Healthy', classification: 'Florida Box Turtle' },
+  'TRT12': { name: 'Tank', age: 13, gender: 'Male', health: 'Recovering', classification: 'Desert Tortoise' },
+  'TRT13': { name: 'Sunny', age: 7, gender: 'Female', health: 'Healthy', classification: 'Sulcata Tortoise' }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Get URL parameters to pre-fill form if editing existing tortoise
+  const urlParams = new URLSearchParams(window.location.search);
+  const tortoiseId = urlParams.get('id');
+
+  if (tortoiseId && tortoiseData[tortoiseId]) {
+    // Pre-fill form with existing data
+    const tortoise = tortoiseData[tortoiseId];
+
+    document.getElementById('tortoise-id').value = tortoiseId;
+    document.getElementById('tortoise-name').value = tortoise.name;
+    document.getElementById('tortoise-age').value = tortoise.age;
+    document.getElementById('tortoise-gender').value = tortoise.gender;
+    document.getElementById('tortoise-health').value = tortoise.health;
+    document.getElementById('tortoise-classification').value = tortoise.classification;
+  }
+});
+</script>
+</body>
+</html>
