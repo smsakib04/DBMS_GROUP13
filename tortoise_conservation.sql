@@ -145,23 +145,27 @@ INSERT INTO `feeding_schedules` (`schedule_id`, `tortoise_id`, `feeding_time`, `
 -- Table structure for table `health_assessments`
 --
 
-CREATE TABLE health_assessments (
-  assessment_id INT NOT NULL AUTO_INCREMENT,
-  assessment_code VARCHAR(50) NOT NULL, -- This is where you type "ASS-2025-001"
-  assessment_date DATE NOT NULL,
-  remarks TEXT,
-  tortoise_id INT NOT NULL,
-  PRIMARY KEY (assessment_id),
-  CONSTRAINT fk_tortoise FOREIGN KEY (tortoise_id) REFERENCES tortoises(tortoise_id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `health_assessments` (
+  `assessment_id` INT NOT NULL AUTO_INCREMENT,
+  `assessment_code` VARCHAR(50) NOT NULL,
+  `tortoise_id` INT NOT NULL,
+  `vet_id` INT NOT NULL,
+  `assessment_date` DATE NOT NULL,
+  `diagnosis` TEXT,
+  `treatment` TEXT,
+  `remarks` TEXT,
+  `next_checkup_date` DATE,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`assessment_id`)
+) ENGINE=InnoDB;
 
 --
+INSERT INTO `health_assessments`
+(`assessment_id`,`tortoise_id`,`vet_id`,`assessment_date`,`diagnosis`,`treatment`,`remarks`,`next_checkup_date`,`created_at`)
+VALUES
+(1,3,7,'2026-04-10','Minor respiratory infection','Antibiotics for 5 days','Isolate and monitor',NULL,'2026-04-10 08:28:20');
 -- Dumping data for table `health_assessments`
 --
-
-INSERT INTO `health_assessments` (`assessment_id`, `tortoise_id`, `vet_id`, `assessment_date`, `diagnosis`, `treatment`, `remarks`, `next_checkup_date`, `created_at`) VALUES
-(1, 3, 7, '2026-04-10', 'Minor respiratory infection', 'Antibiotics for 5 days', 'Isolate and monitor', NULL, '2026-04-10 08:28:20');
-
 -- --------------------------------------------------------
 
 --
