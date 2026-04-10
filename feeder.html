@@ -533,33 +533,6 @@ tr:hover {
   text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-.home-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 16px;
-  transition: all 0.3s ease;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-}
-
-.home-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
-}
-
-.home-btn svg {
-  flex-shrink: 0;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .page-header {
@@ -610,6 +583,24 @@ tr:hover {
     margin-right: 5px;
   }
 }
+
+.btn {
+  background: #e98707;
+  color: white;
+  border: none;
+  padding: 11px 28px;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 18px;
+  transition: background 0.2s;
+  font-family: 'Source Sans 3', sans-serif;
+}
+
+.btn:hover {
+  background: #0a2a3a;
+}
 </style>
 </head>
 <body>
@@ -624,12 +615,7 @@ tr:hover {
     </h1>
     <p>Comprehensive animal feeding schedules and dietary management</p>
   </div>
-  <a href="homepage.html" class="home-btn" title="Back to Homepage">
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-    </svg>
-    <span>Home</span>
-  </a>
+  <button class="btn" onclick="window.location.href='homepage.html'">Home</button>
 </div>
 
 <div class="tabs-container">
@@ -739,7 +725,7 @@ tr:hover {
         <input type="text" id="new-time" placeholder="Time (e.g., 07:40 AM)" />
         <input type="text" id="new-tortoise-id" placeholder="Tortoise ID (e.g., T005)" />
         <input type="text" id="new-food-type" placeholder="Food Type" />
-        <button class="action-btn edit-btn" onclick="addToTodaysSchedule()">Add to Table</button>
+        <button class="action-btn" onclick="addToTodaysSchedule()">Add to Table</button>
       </div>
     </div>
   </div>
@@ -832,7 +818,7 @@ tr:hover {
       <div>
         <input type="text" id="new-food-name" placeholder="Food/Supplements Name" />
         <input type="text" id="new-amount" placeholder="Amount (e.g., 100 grams)" />
-        <button class="action-btn edit-btn" onclick="addToCurrentPlan()">Add to Table</button>
+        <button class="action-btn" onclick="addToCurrentPlan()">Add to Table</button>
       </div>
     </div>
   </div>
@@ -907,7 +893,7 @@ tr:hover {
         <input type="text" id="new-tortoise-id-special" placeholder="Tortoise ID (e.g., T005)" />
         <input type="text" id="new-restriction" placeholder="Restriction" />
         <input type="text" id="new-note" placeholder="Note" />
-        <button class="action-btn edit-btn" onclick="addToSpecialNeeds()">Add to Table</button>
+        <button class="action-btn" onclick="addToSpecialNeeds()">Add to Table</button>
       </div>
     </div>
   </div>
