@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html><head><title>Add Feeding Schedule</title></head>
+<body>
+<div class="form-card">
+    <h2>🍽️ Schedule Feeding</h2>
+    <form action="../process/add_feeding_schedule.php" method="POST">
+        <label>Tortoise ID</label><input type="number" name="tortoise_id" required>
+        <label>Feeding Time</label><input type="time" name="feeding_time" required>
+        <label>Food Type</label><input type="text" name="food_type" required>
+        <label>Amount (grams)</label><input type="number" step="0.01" name="amount_grams">
+        <label>Scheduled Date</label><input type="date" name="scheduled_date" required>
+        <label>Feeder ID (staff)</label><input type="number" name="feeder_id">
+        <label>Notes</label><textarea name="notes"></textarea>
+        <button type="submit">Schedule</button>
+    </form>
+</div>
+</body>
+</html>

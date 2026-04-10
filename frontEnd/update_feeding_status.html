@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html><head><title>Update Feeding Status</title></head>
+<body>
+<div class="form-card">
+    <h2>✅ Update Feeding Completion</h2>
+    <form action="../process/update_feeding_status.php" method="POST">
+        <label>Schedule ID</label><input type="number" name="schedule_id" required>
+        <label>Is Done?</label>
+        <select name="is_done">
+            <option value="1">Yes (completed)</option>
+            <option value="0">No (pending)</option>
+        </select>
+        <button type="submit">Update</button>
+    </form>
+</div>
+</body>
+</html>

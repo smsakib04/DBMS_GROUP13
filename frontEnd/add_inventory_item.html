@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html><head><title>Add Inventory Item</title></head>
+<body>
+<div class="form-card">
+    <h2>📦 Add Inventory Item</h2>
+    <form action="../process/add_inventory_item.php" method="POST">
+        <label>Item Name</label><input type="text" name="item_name" required>
+        <label>Category</label>
+        <select name="category">
+            <option>food</option><option>medical</option><option>cleaning</option><option>equipment</option><option>other</option>
+        </select>
+        <label>Quantity</label><input type="number" step="0.01" name="quantity">
+        <label>Unit</label><input type="text" name="unit">
+        <label>Reorder Level</label><input type="number" step="0.01" name="reorder_level">
+        <label>Supplier</label><input type="text" name="supplier">
+        <label>Last Updated</label><input type="date" name="last_updated">
+        <label>Managed By (staff ID)</label><input type="number" name="managed_by">
+        <button type="submit">Add Item</button>
+    </form>
+</div>
+</body>
+</html>

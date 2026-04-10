@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html><head><title>Add Nest</title></head>
+<body>
+<div class="form-card">
+    <h2>🥚 Register New Nest</h2>
+    <form action="../process/add_nest.php" method="POST">
+        <label>Nest Code</label><input type="text" name="nest_code">
+        <label>Pair ID</label><input type="number" name="pair_id" required>
+        <label>Nesting Date</label><input type="date" name="nesting_date" required>
+        <label>Egg Count</label><input type="number" name="egg_count" required>
+        <label>Fertile Eggs</label><input type="number" name="fertile_eggs">
+        <label>Incubator ID</label><input type="number" name="incubator_id">
+        <label>Estimated Hatch Date</label><input type="date" name="estimated_hatch_date">
+        <label>Notes</label><textarea name="notes"></textarea>
+        <button type="submit">Save Nest</button>
+    </form>
+</div>
+</body>
+</html>
