@@ -3,7 +3,7 @@ require_once '../includes/session.php';
 //requireLogin();
 require_once '../config/db.php';
 
-$staffSchedule = $conn->query("SELECT s.full_name, t.task_name, t.due_date, t.status, t.completion_notes FROM tasks t JOIN staff s ON t.assigned_to = s.staff_id ORDER BY t.due_date");
+$staffSchedule = $conn->query("SELECT t.task_id , s.full_name, t.task_name, t.due_date, t.status, t.completion_notes FROM tasks t JOIN staff s ON t.assigned_to = s.staff_id ORDER BY t.due_date");
 $inventory = $conn->query("SELECT item_name, quantity, unit, supplier, last_updated FROM inventory");
 $restockRequests = $conn->query("SELECT item_name, quantity_needed, priority, needed_by_date, status FROM restock_requests ORDER BY needed_by_date");
 ?>
