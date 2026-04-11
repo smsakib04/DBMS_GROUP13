@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // -------------------------------
 $pair_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($pair_id == 0) {
-    die("Invalid pair ID. Please go back and select a valid breeding pair.");
+    die("Invalid pair ID. Received: " . ($_GET['id'] ?? 'nothing'));
 }
 
 // Fetch the existing data

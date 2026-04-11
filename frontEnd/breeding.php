@@ -67,7 +67,6 @@ foreach ($breedingPairs as $pair) {
 foreach ($nests as $nest) {
     $totalEggs += $nest['egg_count'];
     $totalFertile += $nest['fertile'];
-    // Simple hatch detection: if est_hatch contains 'hatched' or actual_hatch_date is not null in DB
     if (strpos($nest['est_hatch'], 'hatched') !== false) {
         $totalHatched += $nest['egg_count'];
     }
@@ -98,8 +97,7 @@ for ($i = 5; $i >= 0; $i--) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tortoise Center · Breeding Officer Dashboard</title>
+    <title>Breeding Officer Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
@@ -126,7 +124,7 @@ for ($i = 5; $i >= 0; $i--) {
         .btn-add { background: #1e5f45; color: white; }
         .btn-search { background: #f0f6f2; color: #1b6144; }
         .btn-sm { padding: 0.3rem 0.8rem; font-size: 0.8rem; }
-        .btn-edit-row { background: #e6f0fe; border-color: #a9c9fa; color: #1e5090; margin-right: 0.5rem; }
+        .btn-edit-row { background: #e6f0fe; border-color: #a9c9fa; color: #1e5090; margin-right: 0.5rem; text-decoration: none; display: inline-block; }
         .btn-delete-row { background: #fef3e9; border-color: #f3bc9a; color: #9b4e20; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 0.85rem 0.5rem; border-bottom: 1px solid #dcf0e7; text-align: left; }
@@ -172,7 +170,7 @@ for ($i = 5; $i >= 0; $i--) {
         <div class="table-header">
             <h2><i class="fas fa-hand-holding-heart"></i> Breeding pairs</h2>
             <div class="action-bar">
-                <button class="btn btn-add" onclick="window.location.href='add_breeding_pair.html'"><i class="fas fa-plus"></i> Add pair</button>
+                <button class="btn btn-add" onclick="window.location.href='add_breeding_pair.php'"><i class="fas fa-plus"></i> Add pair</button>
                 <button class="btn btn-search" id="searchPairBtn"><i class="fas fa-search"></i> Search</button>
             </div>
         </div>
@@ -194,7 +192,7 @@ for ($i = 5; $i >= 0; $i--) {
                     <td><?php echo htmlspecialchars($pair['nest_id']); ?></td>
                     <td><span class="badge-status"><?php echo htmlspecialchars($pair['status']); ?></span></td>
                     <td>
-                        <button class="btn btn-sm btn-edit-row" data-id="<?php echo $pair['pair_id']; ?>" data-type="pair"><i class="fas fa-edit"></i> Edit</button>
+                        <a href="edit_breeding_pair.php?id=<?php echo $pair['pair_id']; ?>" class="btn btn-sm btn-edit-row"><i class="fas fa-edit"></i> Edit</a>
                         <button class="btn btn-sm btn-delete-row" data-id="<?php echo $pair['pair_id']; ?>" data-type="pair"><i class="fas fa-trash-alt"></i> Delete</button>
                     </td>
                 </tr>
@@ -212,7 +210,7 @@ for ($i = 5; $i >= 0; $i--) {
         <div class="table-header">
             <h2><i class="fas fa-egg"></i> Nesting & egg records</h2>
             <div class="action-bar">
-                <button class="btn btn-add" onclick="window.location.href='add_nest.html'"><i class="fas fa-plus"></i> Add nest</button>
+                <button class="btn btn-add" onclick="window.location.href='add_nest.php'"><i class="fas fa-plus"></i> Add nest</button>
                 <button class="btn btn-search" id="searchNestBtn"><i class="fas fa-search"></i> Search</button>
             </div>
         </div>
@@ -234,7 +232,7 @@ for ($i = 5; $i >= 0; $i--) {
                     <td><?php echo htmlspecialchars($nest['incubator'] ?? '—'); ?></td>
                     <td><?php echo htmlspecialchars($nest['est_hatch']); ?></td>
                     <td>
-                        <button class="btn btn-sm btn-edit-row" data-id="<?php echo $nest['nest_id']; ?>" data-type="nest"><i class="fas fa-edit"></i> Edit</button>
+                        <a href="edit_nest.php?id=<?php echo $nest['nest_id']; ?>" class="btn btn-sm btn-edit-row"><i class="fas fa-edit"></i> Edit</a>
                         <button class="btn btn-sm btn-delete-row" data-id="<?php echo $nest['nest_id']; ?>" data-type="nest"><i class="fas fa-trash-alt"></i> Delete</button>
                     </td>
                 </tr>
@@ -258,7 +256,6 @@ const fertileCounts = <?php echo json_encode(array_column($nests, 'fertile')); ?
 
 let pairsChart, eggsChart;
 
-// Initialize charts
 function initCharts() {
     const ctxPairs = document.getElementById('pairsTrendChart').getContext('2d');
     pairsChart = new Chart(ctxPairs, {
@@ -291,7 +288,6 @@ function initCharts() {
     });
 }
 
-// Navigation between tabs
 function initNavigation() {
     const navItems = document.querySelectorAll('.nav-item');
     const tables = {
@@ -310,7 +306,6 @@ function initNavigation() {
     });
 }
 
-// Search functionality
 function setupSearch() {
     const searchPairBtn = document.getElementById('searchPairBtn');
     const searchNestBtn = document.getElementById('searchNestBtn');
@@ -319,83 +314,90 @@ function setupSearch() {
     const pairInput = document.getElementById('pairSearchInput');
     const nestInput = document.getElementById('nestSearchInput');
 
-    searchPairBtn.addEventListener('click', () => {
-        pairSearchBox.style.display = pairSearchBox.style.display === 'none' ? 'flex' : 'none';
-        if (pairSearchBox.style.display === 'flex') pairInput.focus();
-    });
-    searchNestBtn.addEventListener('click', () => {
-        nestSearchBox.style.display = nestSearchBox.style.display === 'none' ? 'flex' : 'none';
-        if (nestSearchBox.style.display === 'flex') nestInput.focus();
-    });
+    if (searchPairBtn) {
+        searchPairBtn.addEventListener('click', () => {
+            pairSearchBox.style.display = pairSearchBox.style.display === 'none' ? 'flex' : 'none';
+            if (pairSearchBox.style.display === 'flex') pairInput.focus();
+        });
+    }
+    if (searchNestBtn) {
+        searchNestBtn.addEventListener('click', () => {
+            nestSearchBox.style.display = nestSearchBox.style.display === 'none' ? 'flex' : 'none';
+            if (nestSearchBox.style.display === 'flex') nestInput.focus();
+        });
+    }
 
-    pairInput.addEventListener('input', () => {
-        const term = pairInput.value.toLowerCase();
-        document.querySelectorAll('#pairsTableBody tr').forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+    if (pairInput) {
+        pairInput.addEventListener('input', () => {
+            const term = pairInput.value.toLowerCase();
+            document.querySelectorAll('#pairsTableBody tr').forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+            });
         });
-    });
-    nestInput.addEventListener('input', () => {
-        const term = nestInput.value.toLowerCase();
-        document.querySelectorAll('#nestsTableBody tr').forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+    }
+    if (nestInput) {
+        nestInput.addEventListener('input', () => {
+            const term = nestInput.value.toLowerCase();
+            document.querySelectorAll('#nestsTableBody tr').forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+            });
         });
-    });
+    }
 }
 
-// Handle edit & delete via AJAX
-function attachRowButtons() {
-    // Edit buttons -> redirect to edit forms
-    document.querySelectorAll('.btn-edit-row').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = btn.dataset.id;
-            const type = btn.dataset.type;
-            if (type === 'pair') {
-                window.location.href = `edit_breeding_pair.html?id=${id}`;
-            } else if (type === 'nest') {
-                window.location.href = `edit_nest.html?id=${id}`;
-            }
-        });
-    });
-
-    // Delete buttons -> AJAX call
+function attachDeleteButtons() {
     document.querySelectorAll('.btn-delete-row').forEach(btn => {
         btn.addEventListener('click', async () => {
-            if (!confirm('Delete this record permanently?')) return;
+            if (!confirm('Delete this record permanently? This action cannot be undone.')) return;
+            
             const id = btn.dataset.id;
             const type = btn.dataset.type;
             let url = '';
             let body = '';
+            
             if (type === 'pair') {
-                url = '../process/delete_breeding_pair.php';
+                url = '/DBMS_GROUP13/backEnd/process/delete_breeding_pair.php';
                 body = `pair_id=${id}`;
             } else if (type === 'nest') {
-                url = '../process/delete_nest.php';
+                url = '/DBMS_GROUP13/backEnd/process/delete_nest.php';
                 body = `nest_id=${id}`;
             }
+            
             try {
-                const res = await fetch(url, {
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: body
                 });
-                if (res.ok) {
-                    location.reload(); // Refresh page to reflect changes
-                } else {
-                    alert('Delete failed');
+                
+                // First check if response is OK (status 200-299)
+                if (!response.ok) {
+                    const text = await response.text();
+                    console.error('Server error response:', text.substring(0, 200));
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
-            } catch(err) {
-                alert('Error: ' + err.message);
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('✅ ' + data.message);
+                    location.reload();
+                } else {
+                    alert('❌ Delete failed: ' + (data.error || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error('Fetch error:', err);
+                alert('Error connecting to server.\n\n' + err.message);
             }
         });
     });
 }
 
-// Initial load
 window.addEventListener('DOMContentLoaded', () => {
     initCharts();
     initNavigation();
     setupSearch();
-    attachRowButtons();
+    attachDeleteButtons();
 });
 </script>
 </body>
