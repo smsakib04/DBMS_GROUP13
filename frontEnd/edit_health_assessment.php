@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 session_start();
-require_once '../config/db.php';
+require_once '../backEnd/config/db.php';
  
 // ── HANDLE POST: Save the updated assessment ──────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $remarks     = $_POST['remarks'] ?? '';
     $next        = !empty($_POST['next_checkup_date']) ? $_POST['next_checkup_date'] : null;
  
-    // 10 variables: s s i i s s s s s i
     $stmt = $conn->prepare("
         UPDATE health_assessments
         SET assessment_code=?, assessment_date=?, tortoise_id=?, vet_id=?,
@@ -25,22 +24,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         WHERE assessment_id=?
     ");
     $stmt->bind_param("ssiisssssi",
-        $code,
-        $date,
-        $tortoise_id,
-        $vet_id,
-        $condition,
-        $diagnosis,
-        $treatment,
-        $remarks,
-        $next,
-        $id
+        $code, $date, $tortoise_id, $vet_id,
+        $condition, $diagnosis, $treatment, $remarks, $next, $id
     );
  
     if ($stmt->execute()) {
-        header("Location: ../pages/veterenian.php?msg=updated");
+        header("Location: veterenian.php?msg=updated");
     } else {
-        header("Location: ../pages/veterenian.php?msg=error");
+        header("Location: veterenian.php?msg=error");
     }
     exit();
 }
@@ -48,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // ── HANDLE GET: Load existing record and show form ────────────────
 $id = (int)($_GET['id'] ?? 0);
 if ($id === 0) {
-    header("Location: ../pages/veterenian.php");
+    header("Location: veterenian.php");
     exit();
 }
  
@@ -58,7 +49,7 @@ $stmt->execute();
 $row = $stmt->get_result()->fetch_assoc();
  
 if (!$row) {
-    header("Location: ../pages/veterenian.php");
+    header("Location: veterenian.php");
     exit();
 }
  
@@ -155,7 +146,7 @@ $vet_list      = $conn->query("SELECT staff_id, full_name FROM staff WHERE role 
         </div>
  
         <div class="actions">
-            <a href="../pages/veterenian.php" class="btn btn-cancel">Cancel</a>
+            <a href="veterenian.php" class="btn btn-cancel">Cancel</a>
             <button type="submit" class="btn btn-save">Save Changes</button>
         </div>
     </form>

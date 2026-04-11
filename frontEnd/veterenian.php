@@ -2,9 +2,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
  
-require_once '../includes/session.php';
+require_once '../backEnd/includes/session.php';
 // requireLogin();
-require_once '../config/db.php';
+require_once '../backEnd/config/db.php';
  
 $tortoises     = $conn->query("SELECT t.tortoise_id, t.microchip_id, t.name, t.estimated_age_years, t.sex, t.health_status, s.common_name FROM tortoises t JOIN species s ON t.species_id = s.species_id");
 $assessments   = $conn->query("SELECT h.assessment_id, h.assessment_code, h.assessment_date, t.name AS tortoise_name, h.diagnosis, h.treatment, h.remarks FROM health_assessments h JOIN tortoises t ON h.tortoise_id = t.tortoise_id ORDER BY h.assessment_date DESC");
@@ -41,7 +41,7 @@ $msg = $_GET['msg'] ?? '';
         .btn:hover { background: #0a2a3a; }
         .btn-danger { background: #c0392b; }
         .btn-success { background: #27ae60; }
-        .alert { padding: 12px 18px; border-radius: 6px; margin: 0 24px 0; font-weight: 600; text-align: center; }
+        .alert { padding: 12px 18px; border-radius: 6px; font-weight: 600; text-align: center; }
         .alert-success { background: #d4edda; color: #155724; }
         .alert-error   { background: #f8d7da; color: #721c24; }
         .two-col { display: grid; grid-template-columns: 1fr 1.4fr; gap: 24px; }
@@ -99,7 +99,7 @@ $msg = $_GET['msg'] ?? '';
         <!-- ADD FORM -->
         <div class="card">
             <h2>🩺 Perform Health Assessment</h2>
-            <form action="../process/add_assessment.php" method="POST">
+            <form action="add_assessment.php" method="POST">
  
                 <label>Assessment Code</label>
                 <input type="text" name="assessment_code" placeholder="e.g. ASS-2026-002" required>
@@ -158,10 +158,10 @@ $msg = $_GET['msg'] ?? '';
                         <td><?= htmlspecialchars($row['diagnosis'] ?? '') ?></td>
                         <td><?= htmlspecialchars($row['remarks'] ?? '') ?></td>
                         <td>
-                            <a href="../process/edit_health_assessment.php?id=<?= $row['assessment_id'] ?>">
+                            <a href="edit_health_assessment.php?id=<?= $row['assessment_id'] ?>">
                                 <button class="btn" style="margin:0;padding:5px 10px">Edit</button>
                             </a>
-                            <a href="../process/delete_assessment.php?id=<?= $row['assessment_id'] ?>" onclick="return confirm('Delete this assessment?')">
+                            <a href="delete_assessment.php?id=<?= $row['assessment_id'] ?>" onclick="return confirm('Delete this assessment?')">
                                 <button class="btn btn-danger" style="margin:0;padding:5px 10px;margin-top:4px">Delete</button>
                             </a>
                         </td>
