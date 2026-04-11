@@ -1,6 +1,6 @@
 <?php
 require_once '../includes/session.php';
-requireLogin();
+//requireLogin();
 require_once '../config/db.php';
 
 // Fetch data for all sections
