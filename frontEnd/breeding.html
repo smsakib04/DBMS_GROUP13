@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tortoise Center · Breeding Officer Dashboard</title>
-    <!-- Font Awesome 6 (free) for icons -->
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js CDN for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -22,7 +24,7 @@
         }
 
         .dashboard {
-            max-width: 1600px;
+            max-width: 1400px;
             width: 100%;
         }
 
@@ -72,7 +74,7 @@
             border: 1px solid #bcddce;
         }
 
-        /* --- navigation bar (now under header) with table links & logout --- */
+        /* navigation bar */
         .navbar {
             background: white;
             border-radius: 60px;
@@ -127,18 +129,19 @@
             display: inline-flex;
             align-items: center;
             gap: 0.6rem;
-            cursor: default;  /* static demo */
-            box-shadow: 0 4px 8px rgba(150, 70, 20, 0.05);
+            cursor: pointer;
+            transition: 0.2s;
         }
 
-        .logout-btn i {
-            font-size: 1.1rem;
+        .logout-btn:hover {
+            background: #fde8dc;
+            transform: scale(0.98);
         }
 
-        /* quick summary cards (always visible) */
+        /* stats cards */
         .stats-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 1.2rem;
             margin-bottom: 2.5rem;
         }
@@ -175,7 +178,7 @@
             font-size: 0.9rem;
         }
 
-        /* table containers (hidden by default) */
+        /* table containers */
         .table-wrapper {
             background: white;
             border-radius: 28px;
@@ -183,11 +186,11 @@
             margin-bottom: 2.5rem;
             box-shadow: 0 18px 30px -8px rgba(28, 78, 58, 0.14);
             border: 1px solid #cfeadb;
-            display: none;  /* hidden until nav clicked */
+            display: none;
         }
 
         .table-wrapper.active-table {
-            display: block;  /* shown when active */
+            display: block;
         }
 
         .table-header {
@@ -207,11 +210,6 @@
             gap: 0.6rem;
         }
 
-        .table-header h2 i {
-            color: #307a5a;
-            font-size: 1.8rem;
-        }
-
         .action-bar {
             display: flex;
             gap: 0.8rem;
@@ -229,8 +227,8 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            cursor: default;
-            box-shadow: 0 2px 4px rgba(0, 30, 15, 0.02);
+            cursor: pointer;
+            transition: 0.2s;
         }
 
         .btn i {
@@ -262,7 +260,11 @@
             color: #1b6144;
         }
 
-        /* tables */
+        .btn:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -276,18 +278,12 @@
             font-weight: 700;
             color: #1f5b43;
             border-bottom: 2px solid #c6e2d4;
-            font-size: 0.9rem;
-            letter-spacing: 0.02rem;
         }
 
         td {
             padding: 0.85rem 0.5rem;
             border-bottom: 1px solid #dcf0e7;
             vertical-align: middle;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
         }
 
         .badge-status {
@@ -300,31 +296,24 @@
             display: inline-block;
         }
 
-        .badge-hatch {
-            background: #faeac9;
-            color: #8f5f24;
+        /* graph containers */
+        .graph-container {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f9fdfb;
+            border-radius: 20px;
+            border: 1px solid #d0e8dd;
         }
 
-        .badge-egg {
-            background: #e0defa;
-            color: #423d82;
+        .graph-container h3 {
+            color: #1f5b43;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
         }
 
-        .iot-tag {
-            background: #1b4d3b;
-            color: #cef0e0;
-            font-size: 0.7rem;
-            border-radius: 16px;
-            padding: 0.2rem 0.6rem;
-            font-weight: 600;
-            margin-left: 0.5rem;
-        }
-
-        .footer-note {
-            text-align: center;
-            color: #5e8b78;
-            font-size: 0.9rem;
-            margin: 2rem 0 0.5rem;
+        canvas {
+            max-height: 300px;
+            width: 100%;
         }
 
         hr {
@@ -346,230 +335,307 @@
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <!-- header (now above navbar) -->
-        <div class="header">
-            <div class="title-section">
-                <h1><i class="fas fa-leaf" style="color: #2c8f65; margin-right: 10px;"></i>Breeding Officer · Tortoise Center</h1>
-                <p><i class="fas fa-paw"></i> Pairing, nesting, incubation — full genetic management</p>
-            </div>
-            <div class="date-info">
-                <i class="far fa-calendar-alt"></i> 16 Mar 2026 · Incubation week 12
-                <span class="badge-role">BREEDING OFFICER</span>
-            </div>
+<div class="dashboard">
+    <!-- header -->
+    <div class="header">
+        <div class="title-section">
+            <h1><i class="fas fa-leaf" style="color: #2c8f65; margin-right: 10px;"></i>Breeding Officer · Tortoise Center</h1>
+            <p><i class="fas fa-paw"></i> Pairing, nesting, and incubation management</p>
         </div>
-
-        <!-- ========== NAVIGATION BAR (UNDER HEADER) ========== -->
-        <div class="navbar">
-            <div class="nav-links" id="navLinks">
-                <span class="nav-item active" data-table="pairs"><i class="fas fa-paw"></i> Breeding pairs</span>
-                <span class="nav-item" data-table="nesting"><i class="fas fa-egg"></i> Nesting</span>
-                <span class="nav-item" data-table="incubation"><i class="fas fa-chart-line"></i> Incubation</span>
-                <span class="nav-item" data-table="observations"><i class="fas fa-clipboard-list"></i> Observations</span>
-                <span class="nav-item" data-table="environment"><i class="fas fa-temperature-high"></i> IoT environment</span>
-                <span class="nav-item" data-table="food"><i class="fas fa-apple-alt"></i> Food</span>
-            </div>
-            <div class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </div>
+        <div class="date-info">
+            <i class="far fa-calendar-alt"></i> <span id="currentDate"></span>
+            <span class="badge-role">BREEDING OFFICER</span>
         </div>
-
-        <!-- mini cards (always visible) -->
-        <div class="stats-cards">
-            <div class="stat-card"><i class="fas fa-heart"></i><div class="stat-info"><h3>14</h3><span>active pairs</span></div></div>
-            <div class="stat-card"><i class="fas fa-egg"></i><div class="stat-info"><h3>39</h3><span>eggs incubating</span></div></div>
-            <div class="stat-card"><i class="fas fa-seedling"></i><div class="stat-info"><h3>87%</h3><span>hatch rate (2026)</span></div></div>
-            <div class="stat-card"><i class="fas fa-temperature-low"></i><div class="stat-info"><h3>6</h3><span>incubators active</span></div></div>
-        </div>
-
-        <!-- ========== ALL TABLE SECTIONS (hidden by default, shown via nav) ========== -->
-
-        <!-- TABLE 1 : BREEDING PAIRS -->
-        <div class="table-wrapper" id="pairs">
-            <div class="table-header">
-                <h2><i class="fas fa-hand-holding-heart"></i> Breeding pairs</h2>
-                <div class="action-bar">
-                    <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
-                    <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
-                    <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
-                    <button class="btn btn-search"><i class="fas fa-magnifying-glass"></i> Search</button>
-                </div>
-            </div>
-            <table>
-                <thead><tr><th>Pair ID</th><th>Male</th><th>Female</th><th>Species</th><th>Mating date</th><th>Nest ID</th><th>Status</th></tr></thead>
-                <tbody>
-                    <tr><td>BP-021</td><td>Thor (M23)</td><td>Shelly (F09)</td><td>Aldabra</td><td>10 Jan 2026</td><td>Nest-AA4</td><td><span class="badge-status">paired</span></td></tr>
-                    <tr><td>BP-022</td><td>Groot (M07)</td><td>Tess (F12)</td><td>Leopard</td><td>03 Feb 2026</td><td>Nest-BG2</td><td><span class="badge-status">incubating</span></td></tr>
-                    <tr><td>BP-019</td><td>Spike (M11)</td><td>Marble (F04)</td><td>Sulcata</td><td>18 Dec 2025</td><td>Nest-C1R</td><td><span class="badge-status">hatched</span></td></tr>
-                    <tr><td>BP-024</td><td>Yoshi (M03)</td><td>Dot (F16)</td><td>Galápagos</td><td>27 Feb 2026</td><td>—</td><td><span class="badge-status">courting</span></td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- TABLE 2 : NESTING & EGG COUNTS -->
-        <div class="table-wrapper" id="nesting">
-            <div class="table-header">
-                <h2><i class="fas fa-egg"></i> Nesting & egg records</h2>
-                <div class="action-bar">
-                    <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
-                    <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
-                    <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
-                    <button class="btn btn-search"><i class="fas fa-magnifying-glass"></i> Search</button>
-                </div>
-            </div>
-            <table>
-                <thead><tr><th>Nest ID</th><th>Pair ID</th><th>Nesting date</th><th>Egg count</th><th>Fertile</th><th>Incubator</th><th>Est. hatch</th></tr></thead>
-                <tbody>
-                    <tr><td>Nest-AA4</td><td>BP-021</td><td>12 Jan 2026</td><td>8</td><td>7</td><td>INC-3</td><td>14 Apr 2026</td></tr>
-                    <tr><td>Nest-BG2</td><td>BP-022</td><td>07 Feb 2026</td><td>12</td><td>10</td><td>INC-1</td><td>02 Jun 2026</td></tr>
-                    <tr><td>Nest-C1R</td><td>BP-019</td><td>20 Dec 2025</td><td>6</td><td>5</td><td>INC-2</td><td>hatched 03 Mar</td></tr>
-                    <tr><td>Nest-D44</td><td>—</td><td>01 Mar 2026</td><td>4</td><td>2</td><td>INC-4</td><td>20 May 2026</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- TABLE 3 : INCUBATION & HATCHING SUCCESS -->
-        <div class="table-wrapper" id="incubation">
-            <div class="table-header">
-                <h2><i class="fas fa-chart-line"></i> Incubation & hatching</h2>
-                <div class="action-bar">
-                    <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
-                    <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
-                    <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
-                    <button class="btn btn-search"><i class="fas fa-magnifying-glass"></i> Search</button>
-                </div>
-            </div>
-            <table>
-                <thead><tr><th>Incubator</th><th>Nest ID</th><th>Day</th><th>Temp</th><th>Humidity</th><th>Hatched</th><th>Success %</th></tr></thead>
-                <tbody>
-                    <tr><td>INC-1 <span class="iot-tag">IoT</span></td><td>BG2</td><td>38</td><td>29.5°C</td><td>74%</td><td>—</td><td>—</td></tr>
-                    <tr><td>INC-2 <span class="iot-tag">IoT</span></td><td>C1R</td><td>74</td><td>30.0°C</td><td>71%</td><td>5/6</td><td>83%</td></tr>
-                    <tr><td>INC-3</td><td>AA4</td><td>62</td><td>28.7°C</td><td>69%</td><td>—</td><td>—</td></tr>
-                    <tr><td>INC-4</td><td>D44</td><td>15</td><td>29.0°C</td><td>73%</td><td>—</td><td>—</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- TABLE 4 : BREEDING OBSERVATIONS / NOTES -->
-        <div class="table-wrapper" id="observations">
-            <div class="table-header">
-                <h2><i class="fas fa-clipboard-list"></i> Observations & history</h2>
-                <div class="action-bar">
-                    <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
-                    <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
-                    <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
-                    <button class="btn btn-search"><i class="fas fa-magnifying-glass"></i> Search</button>
-                </div>
-            </div>
-            <table>
-                <thead><tr><th>Date</th><th>Pair ID</th><th>Observer</th><th>Observation</th><th>Hatch note</th></tr></thead>
-                <tbody>
-                    <tr><td>15 Mar 2026</td><td>BP-022</td><td>Dr. Rivas</td><td>nest check, eggs viable</td><td><span class="badge-status badge-egg">incubating</span></td></tr>
-                    <tr><td>10 Mar 2026</td><td>BP-019</td><td>L. Chen</td><td>3 hatchlings emerged, 2 pipped</td><td><span class="badge-status badge-hatch">hatching</span></td></tr>
-                    <tr><td>02 Mar 2026</td><td>BP-021</td><td>Feeder/J.</td><td>female nesting behavior observed</td><td>—</td></tr>
-                    <tr><td>22 Feb 2026</td><td>—</td><td>IoT</td><td>incubator 3 temp spike (30.8°C), adjusted</td><td>automated</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- TABLE 5 : INCUBATOR ENVIRONMENT (IoT) -->
-        <div class="table-wrapper" id="environment">
-            <div class="table-header">
-                <h2><i class="fas fa-temperature-high"></i> Incubator environment (IoT)</h2>
-                <div class="action-bar">
-                    <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
-                    <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
-                    <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
-                    <button class="btn btn-search"><i class="fas fa-magnifying-glass"></i> Search</button>
-                </div>
-            </div>
-            <table>
-                <thead><tr><th>Incubator</th><th>Temp (°C)</th><th>Humidity</th><th>O₂</th><th>Last checked</th><th>Status</th></tr></thead>
-                <tbody>
-                    <tr><td>INC-1 <i class="fas fa-wifi" style="color:#318f67;"></i></td><td>29.4</td><td>74%</td><td>20.8%</td><td>08:30 today</td><td><span class="badge-status">stable</span></td></tr>
-                    <tr><td>INC-2 <i class="fas fa-wifi"></i></td><td>30.1</td><td>71%</td><td>20.5%</td><td>08:30 today</td><td><span class="badge-status">stable</span></td></tr>
-                    <tr><td>INC-3</td><td>28.5</td><td>69%</td><td>—</td><td>07:45 staff</td><td><span class="badge-status">monitor</span></td></tr>
-                    <tr><td>INC-4</td><td>29.0</td><td>73%</td><td>20.6%</td><td>08:15 IoT</td><td><span class="badge-status">stable</span></td></tr>
-                </tbody>
-            </table>
-            <hr>
-            <div style="margin-top: 0.5rem; color:#3a725b; display: flex; gap: 2rem; font-weight: 500;">
-                <span><i class="far fa-clock"></i> next rotation check: 16 Mar 14:00</span>
-                <span><i class="fas fa-tasks"></i> assigned: candling (INC‑2), nest monitoring</span>
-            </div>
-        </div>
-
-        <!-- TABLE 6 : FOOD INVENTORY (breeder supplement) -->
-        <div class="table-wrapper" id="food">
-            <div class="table-header">
-                <h2><i class="fas fa-apple-alt"></i> breeder supplement / food</h2>
-                <div class="action-bar">
-                    <button class="btn btn-edit"><i class="fas fa-pen"></i> Edit</button>
-                    <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
-                    <button class="btn btn-add"><i class="fas fa-plus"></i> Add</button>
-                    <button class="btn btn-search"><i class="fas fa-magnifying-glass"></i> Search</button>
-                </div>
-            </div>
-            <table>
-                <thead><tr><th>Item</th><th>For species</th><th>Current (kg)</th><th>Reorder at</th><th>Last ordered</th></tr></thead>
-                <tbody>
-                    <tr><td>Calcium blocks</td><td>all gravid ♀</td><td>3.8 kg</td><td>2 kg</td><td>01 Mar 2026</td></tr>
-                    <tr><td>Leaf eater gel</td><td>Aldabra</td><td>12 kg</td><td>5 kg</td><td>10 Mar 2026</td></tr>
-                    <tr><td>Protein mix</td><td>hatchlings</td><td>2.1 kg</td><td>3 kg</td><td>05 Mar 2026</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        
-       
     </div>
 
-    <!-- simple JavaScript to toggle tables + active class -->
-    <script>
-        (function() {
-            const navItems = document.querySelectorAll('.nav-item');
-            const tables = {
-                pairs: document.getElementById('pairs'),
-                nesting: document.getElementById('nesting'),
-                incubation: document.getElementById('incubation'),
-                observations: document.getElementById('observations'),
-                environment: document.getElementById('environment'),
-                food: document.getElementById('food')
-            };
+    <!-- navigation bar (only two tabs) -->
+    <div class="navbar">
+        <div class="nav-links" id="navLinks">
+            <span class="nav-item active" data-table="pairs"><i class="fas fa-paw"></i> Breeding pairs</span>
+            <span class="nav-item" data-table="nesting"><i class="fas fa-egg"></i> Nesting</span>
+        </div>
+        <div class="logout-btn" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </div>
+    </div>
 
-            // Hide all tables, remove active class from nav items
-            function deactivateAll() {
-                Object.values(tables).forEach(tbl => {
-                    if (tbl) tbl.classList.remove('active-table');
-                });
-                navItems.forEach(item => item.classList.remove('active'));
-            }
+    <!-- stats cards (relevant to breeding) -->
+    <div class="stats-cards">
+        <div class="stat-card"><i class="fas fa-heart"></i><div class="stat-info"><h3 id="activePairsCount">0</h3><span>active pairs</span></div></div>
+        <div class="stat-card"><i class="fas fa-egg"></i><div class="stat-info"><h3 id="totalEggsCount">0</h3><span>total eggs (active nests)</span></div></div>
+        <div class="stat-card"><i class="fas fa-seedling"></i><div class="stat-info"><h3 id="fertileRate">0%</h3><span>fertility rate</span></div></div>
+        <div class="stat-card"><i class="fas fa-chart-line"></i><div class="stat-info"><h3 id="hatchRate">0%</h3><span>hatch success (last 12m)</span></div></div>
+    </div>
 
-            // Show table by id and set active nav
-            function showTable(tableId, activeItem) {
-                deactivateAll();
-                if (tables[tableId]) {
-                    tables[tableId].classList.add('active-table');
+    <!-- ========== BREEDING PAIRS SECTION ========== -->
+    <div class="table-wrapper" id="pairs">
+        <div class="table-header">
+            <h2><i class="fas fa-hand-holding-heart"></i> Breeding pairs</h2>
+            <div class="action-bar">
+                <button class="btn btn-edit" id="editPairBtn"><i class="fas fa-pen"></i> Edit</button>
+                <button class="btn btn-remove" id="removePairBtn"><i class="fas fa-trash-alt"></i> Remove</button>
+                <button class="btn btn-add" id="addPairBtn"><i class="fas fa-plus"></i> Add</button>
+                <button class="btn btn-search" id="searchPairBtn"><i class="fas fa-magnifying-glass"></i> Search</button>
+            </div>
+        </div>
+        <table id="pairsTable">
+            <thead>
+                <tr><th>Pair ID</th><th>Male</th><th>Female</th><th>Species</th><th>Mating date</th><th>Nest ID</th><th>Status</th></tr>
+            </thead>
+            <tbody id="pairsTableBody">
+                <!-- dynamic data will be loaded here -->
+            </tbody>
+        </table>
+
+        <!-- Graph for breeding pairs trend -->
+        <div class="graph-container">
+            <h3><i class="fas fa-chart-line"></i> Active breeding pairs trend (last 6 months)</h3>
+            <canvas id="pairsTrendChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- ========== NESTING SECTION ========== -->
+    <div class="table-wrapper" id="nesting">
+        <div class="table-header">
+            <h2><i class="fas fa-egg"></i> Nesting & egg records</h2>
+            <div class="action-bar">
+                <button class="btn btn-edit" id="editNestBtn"><i class="fas fa-pen"></i> Edit</button>
+                <button class="btn btn-remove" id="removeNestBtn"><i class="fas fa-trash-alt"></i> Remove</button>
+                <button class="btn btn-add" id="addNestBtn"><i class="fas fa-plus"></i> Add</button>
+                <button class="btn btn-search" id="searchNestBtn"><i class="fas fa-magnifying-glass"></i> Search</button>
+            </div>
+        </div>
+        <table id="nestsTable">
+            <thead>
+                <tr><th>Nest ID</th><th>Pair ID</th><th>Nesting date</th><th>Egg count</th><th>Fertile</th><th>Incubator</th><th>Est. hatch</th></tr>
+            </thead>
+            <tbody id="nestsTableBody">
+                <!-- dynamic data -->
+            </tbody>
+        </table>
+
+        <!-- Graph for egg production & fertility -->
+        <div class="graph-container">
+            <h3><i class="fas fa-chart-bar"></i> Egg production & fertility (by nest)</h3>
+            <canvas id="eggsChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---------- Helper: format date ----------
+    function formatDate(date) {
+        return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+    document.getElementById('currentDate').innerText = formatDate(new Date());
+
+    // ---------- SAMPLE DATA (to be replaced by backend API calls) ----------
+    let breedingPairsData = [
+        { pair_id: 1, pair_code: "BP-021", male: "Thor (M23)", female: "Shelly (F09)", species: "Aldabra", mating_date: "2026-01-10", nest_id: "Nest-AA4", status: "paired" },
+        { pair_id: 2, pair_code: "BP-022", male: "Groot (M07)", female: "Tess (F12)", species: "Leopard", mating_date: "2026-02-03", nest_id: "Nest-BG2", status: "incubating" },
+        { pair_id: 3, pair_code: "BP-019", male: "Spike (M11)", female: "Marble (F04)", species: "Sulcata", mating_date: "2025-12-18", nest_id: "Nest-C1R", status: "hatched" },
+        { pair_id: 4, pair_code: "BP-024", male: "Yoshi (M03)", female: "Dot (F16)", species: "Galápagos", mating_date: "2026-02-27", nest_id: "—", status: "courting" }
+    ];
+
+    let nestsData = [
+        { nest_id: 1, nest_code: "Nest-AA4", pair_code: "BP-021", nesting_date: "2026-01-12", egg_count: 8, fertile: 7, incubator: "INC-3", est_hatch: "2026-04-14" },
+        { nest_id: 2, nest_code: "Nest-BG2", pair_code: "BP-022", nesting_date: "2026-02-07", egg_count: 12, fertile: 10, incubator: "INC-1", est_hatch: "2026-06-02" },
+        { nest_id: 3, nest_code: "Nest-C1R", pair_code: "BP-019", nesting_date: "2025-12-20", egg_count: 6, fertile: 5, incubator: "INC-2", est_hatch: "hatched 03 Mar" },
+        { nest_id: 4, nest_code: "Nest-D44", pair_code: "—", nesting_date: "2026-03-01", egg_count: 4, fertile: 2, incubator: "INC-4", est_hatch: "2026-05-20" }
+    ];
+
+    // ---------- Render tables ----------
+    function renderPairsTable() {
+        const tbody = document.getElementById('pairsTableBody');
+        tbody.innerHTML = '';
+        breedingPairsData.forEach(pair => {
+            const row = `
+                <tr>
+                    <td>${pair.pair_code}</td>
+                    <td>${pair.male}</td>
+                    <td>${pair.female}</td>
+                    <td>${pair.species}</td>
+                    <td>${pair.mating_date}</td>
+                    <td>${pair.nest_id}</td>
+                    <td><span class="badge-status">${pair.status}</span></td>
+                </tr>`;
+            tbody.innerHTML += row;
+        });
+        // update stats
+        const activeCount = breedingPairsData.filter(p => p.status === 'paired' || p.status === 'incubating' || p.status === 'courting').length;
+        document.getElementById('activePairsCount').innerText = activeCount;
+    }
+
+    function renderNestsTable() {
+        const tbody = document.getElementById('nestsTableBody');
+        tbody.innerHTML = '';
+        let totalEggs = 0, totalFertile = 0;
+        nestsData.forEach(nest => {
+            totalEggs += nest.egg_count;
+            totalFertile += nest.fertile;
+            const row = `
+                <tr>
+                    <td>${nest.nest_code}</td>
+                    <td>${nest.pair_code}</td>
+                    <td>${nest.nesting_date}</td>
+                    <td>${nest.egg_count}</td>
+                    <td>${nest.fertile}</td>
+                    <td>${nest.incubator}</td>
+                    <td>${nest.est_hatch}</td>
+                </tr>`;
+            tbody.innerHTML += row;
+        });
+        const fertilityRate = totalEggs ? ((totalFertile / totalEggs) * 100).toFixed(1) : 0;
+        document.getElementById('totalEggsCount').innerText = totalEggs;
+        document.getElementById('fertileRate').innerText = fertilityRate + '%';
+        // dummy hatch rate (would be computed from real data)
+        document.getElementById('hatchRate').innerText = '87%';
+    }
+
+    // ---------- Graphs ----------
+    let pairsChart, eggsChart;
+
+    function initPairsChart() {
+        const ctx = document.getElementById('pairsTrendChart').getContext('2d');
+        // sample trend data: last 6 months (Oct-Mar)
+        const months = ['Oct 2025', 'Nov 2025', 'Dec 2025', 'Jan 2026', 'Feb 2026', 'Mar 2026'];
+        const activePairsCounts = [3, 3, 4, 4, 5, 4]; // replace with real data from backend
+        pairsChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Active breeding pairs',
+                    data: activePairsCounts,
+                    borderColor: '#2c7a5a',
+                    backgroundColor: 'rgba(44, 122, 90, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'top' }
                 }
-                if (activeItem) {
-                    activeItem.classList.add('active');
+            }
+        });
+    }
+
+    function initEggsChart() {
+        const ctx = document.getElementById('eggsChart').getContext('2d');
+        const nestLabels = nestsData.map(n => n.nest_code);
+        const eggCounts = nestsData.map(n => n.egg_count);
+        const fertileCounts = nestsData.map(n => n.fertile);
+        eggsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: nestLabels,
+                datasets: [
+                    {
+                        label: 'Total eggs',
+                        data: eggCounts,
+                        backgroundColor: '#34855e',
+                        borderRadius: 8
+                    },
+                    {
+                        label: 'Fertile eggs',
+                        data: fertileCounts,
+                        backgroundColor: '#f3bc9a',
+                        borderRadius: 8
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'top' }
                 }
             }
+        });
+    }
 
-            // Add click listeners
-            navItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    const tableId = this.getAttribute('data-table'); // pairs, nesting, ...
-                    showTable(tableId, this);
-                });
+    // ---------- Navigation (toggle tables) ----------
+    function initNavigation() {
+        const navItems = document.querySelectorAll('.nav-item');
+        const tables = {
+            pairs: document.getElementById('pairs'),
+            nesting: document.getElementById('nesting')
+        };
+        function deactivateAll() {
+            Object.values(tables).forEach(tbl => tbl?.classList.remove('active-table'));
+            navItems.forEach(item => item.classList.remove('active'));
+        }
+        function showTable(tableId, activeItem) {
+            deactivateAll();
+            if (tables[tableId]) tables[tableId].classList.add('active-table');
+            if (activeItem) activeItem.classList.add('active');
+            // resize charts after showing container (fixes canvas sizing)
+            setTimeout(() => {
+                if (pairsChart) pairsChart.resize();
+                if (eggsChart) eggsChart.resize();
+            }, 100);
+        }
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const tableId = item.getAttribute('data-table');
+                showTable(tableId, item);
             });
+        });
+        // show pairs by default
+        const defaultNav = document.querySelector('.nav-item[data-table="pairs"]');
+        if (defaultNav) showTable('pairs', defaultNav);
+    }
 
-            // Initial: show first table (pairs) and set active class on first nav
-            const firstNav = document.querySelector('.nav-item[data-table="pairs"]');
-            if (firstNav) {
-                showTable('pairs', firstNav);
-            }
-        })();
-    </script>
+    // ---------- Dummy action handlers (replace with backend calls) ----------
+    function attachActionHandlers() {
+        document.getElementById('addPairBtn').addEventListener('click', () => alert('Add pair: integrate backend call'));
+        document.getElementById('editPairBtn').addEventListener('click', () => alert('Edit pair: implement with API'));
+        document.getElementById('removePairBtn').addEventListener('click', () => alert('Remove pair: send DELETE request'));
+        document.getElementById('searchPairBtn').addEventListener('click', () => alert('Search functionality'));
+
+        document.getElementById('addNestBtn').addEventListener('click', () => alert('Add nest: integrate backend'));
+        document.getElementById('editNestBtn').addEventListener('click', () => alert('Edit nest'));
+        document.getElementById('removeNestBtn').addEventListener('click', () => alert('Remove nest'));
+        document.getElementById('searchNestBtn').addEventListener('click', () => alert('Search nests'));
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            if (confirm('Log out?')) window.location.href = 'login.html';
+        });
+    }
+
+    // ---------- Load data from backend (replace with fetch) ----------
+    async function loadDataFromBackend() {
+        // Example: fetch breeding pairs
+        // const res = await fetch('../backEnd/breeding_officer.php?action=get_breeding_pairs');
+        // const data = await res.json();
+        // if (data.success) breedingPairsData = data.data;
+        // similarly for nests
+        renderPairsTable();
+        renderNestsTable();
+        // update charts with real data after fetching
+        if (pairsChart) {
+            pairsChart.data.datasets[0].data = [3,3,4,4,5,4]; // replace with real trend
+            pairsChart.update();
+        }
+        if (eggsChart) {
+            eggsChart.data.labels = nestsData.map(n => n.nest_code);
+            eggsChart.data.datasets[0].data = nestsData.map(n => n.egg_count);
+            eggsChart.data.datasets[1].data = nestsData.map(n => n.fertile);
+            eggsChart.update();
+        }
+    }
+
+    // ---------- Initialization ----------
+    window.addEventListener('DOMContentLoaded', () => {
+        initPairsChart();
+        initEggsChart();
+        loadDataFromBackend();
+        initNavigation();
+        attachActionHandlers();
+    });
+</script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 <?php
 require_once '../includes/session.php';
-requireLogin();
+
 require_once '../config/db.php';
 
 $pairs = $conn->query("SELECT bp.pair_id, bp.pair_code, m.name as male, f.name as female, bp.pairing_date, bp.status FROM breeding_pairs bp JOIN tortoises m ON bp.male_tortoise_id = m.tortoise_id JOIN tortoises f ON bp.female_tortoise_id = f.tortoise_id");
