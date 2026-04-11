@@ -354,9 +354,9 @@ function attachRowButtons() {
             const type = btn.dataset.type;
             if (type === 'pair') {
                 // Redirect to edit form (you need edit_breeding_pair.html?id=...)
-                window.location.href = `edit_breeding_pair.html?id=${id}`;
+                window.location.href = `edit_breeding_pair.php?id=${id}`;
             } else if (type === 'nest') {
-                window.location.href = `edit_nest.html?id=${id}`;
+                window.location.href = `edit_nest.php?id=${id}`;
             }
         });
     });
