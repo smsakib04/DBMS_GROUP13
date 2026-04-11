@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html><head><title>Add Transport Log</title></head>
+<body>
+<div class="form-card">
+    <h2>🚚 Transport Log</h2>
+    <form action="../process/add_transport_log.php" method="POST">
+        <label>Tortoise ID</label><input type="number" name="tortoise_id" required>
+        <label>Vehicle ID</label><input type="text" name="vehicle_id">
+        <label>From Location</label><input type="text" name="from_location">
+        <label>To Location</label><input type="text" name="to_location">
+        <label>Transport Date</label><input type="date" name="transport_date" required>
+        <label>Status</label>
+        <select name="status">
+            <option>Scheduled</option><option>Ongoing</option><option>Completed</option><option>Delayed</option>
+        </select>
+        <label>Notes</label><textarea name="notes"></textarea>
+        <button type="submit">Add Log</button>
+    </form>
+</div>
+</body>
+</html>

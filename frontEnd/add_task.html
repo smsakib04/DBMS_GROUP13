@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html><head><title>Create Task</title></head>
+<body>
+<div class="form-card">
+    <h2>📋 Assign New Task</h2>
+    <form action="../process/add_task.php" method="POST">
+        <label>Task Name</label><input type="text" name="task_name" required>
+        <label>Assigned To (staff ID)</label><input type="number" name="assigned_to" required>
+        <label>Assigned By (staff ID)</label><input type="number" name="assigned_by">
+        <label>Due Date</label><input type="date" name="due_date" required>
+        <label>Status</label>
+        <select name="status">
+            <option>Pending</option><option>In Progress</option><option>Completed</option><option>Cancelled</option>
+        </select>
+        <label>Completion Notes</label><textarea name="completion_notes"></textarea>
+        <button type="submit">Create Task</button>
+    </form>
+</div>
+</body>
+</html>

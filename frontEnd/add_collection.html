@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html><head><title>Add Collection Record</title></head>
+<body>
+<div class="form-card">
+    <h2>📝 New Tortoise Collection</h2>
+    <form action="../process/add_collection.php" method="POST">
+        <label>Tortoise ID</label><input type="number" name="tortoise_id">
+        <label>Collection Date</label><input type="date" name="collection_date" required>
+        <label>Source Type</label>
+        <select name="source_type">
+            <option>Wild</option><option>Rescue</option><option>Donation</option>
+        </select>
+        <label>Location</label><input type="text" name="location">
+        <label>Initial Health</label>
+        <select name="initial_health">
+            <option>Healthy</option><option>Weak</option><option>Injured</option>
+        </select>
+        <label>Notes</label><textarea name="notes"></textarea>
+        <label>Collected By (staff ID)</label><input type="number" name="collected_by">
+        <button type="submit">Save Collection</button>
+    </form>
+</div>
+</body>
+</html>

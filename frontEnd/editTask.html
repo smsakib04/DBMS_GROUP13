@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Task | Supervisor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --bg: #f6f1ec;
+      --surface: #ffffff;
+      --panel: #f3e5de;
+      --text: #382f2b;
+      --muted: #7a675f;
+      --primary: #6a3a2d;
+      --accent: #2a6b5f;
+      --border: rgba(90, 69, 61, 0.15);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #f8f3ee 0%, #ece2db 100%);
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .page-header {
+      background: linear-gradient(135deg, #2a1a1a 0%, #6a3a2d 100%);
+      color: white;
+      padding: 34px 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .page-header h1 {
+      margin: 0;
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+    }
+
+    .page-header p {
+      margin: 8px 0 0;
+      color: rgba(255,255,255,0.88);
+      max-width: 520px;
+      line-height: 1.65;
+    }
+
+    .container {
+      width: min(1000px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      box-shadow: 0 24px 50px rgba(84, 64, 55, 0.08);
+      padding: 32px;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card-title h2 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: -0.02em;
+    }
+
+    .card-description {
+      margin: 8px 0 0;
+      color: var(--muted);
+      max-width: 620px;
+      line-height: 1.75;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    label {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 14px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid rgba(90, 69, 61, 0.16);
+      border-radius: 16px;
+      font-size: 15px;
+      outline: none;
+      background: #fbf5f1;
+      color: var(--text);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(106, 58, 45, 0.35);
+      box-shadow: 0 0 0 4px rgba(106, 58, 45, 0.08);
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 24px;
+      justify-content: flex-end;
+    }
+
+    .btn,
+    .btn-secondary {
+      border-radius: 16px;
+      padding: 14px 24px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+      border: none;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #2a6b5f 0%, #1f5a4f 100%);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #f4ebe7;
+      color: var(--text);
+    }
+
+    .btn:hover,
+    .btn-secondary:hover {
+      transform: translateY(-1px);
+    }
+
+    .back-link {
+      color: #f8e4df;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    @media (max-width: 860px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-header,
+      .card {
+        padding: 24px;
+      }
+
+      .card-title {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <div>
+      <h1>Edit Task</h1>
+      <p>Update the assignment details for the team, then save the task to keep the schedule current and consistent.</p>
+    </div>
+    <a class="back-link" href="supervisor.html"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <div class="card-title">
+        <div>
+          <h2>Task Details</h2>
+          <p class="card-description">Adjust task name, assignee, due time, and status for the selected entry.</p>
+        </div>
+      </div>
+
+      <form>
+        <div class="form-grid">
+          <div class="field">
+            <label for="task-title">Task Title</label>
+            <input id="task-title" type="text" placeholder="Substrate cleaning" value="Substrate Cleaning" required>
+          </div>
+
+          <div class="field">
+            <label for="caretaker">Caretaker</label>
+            <input id="caretaker" type="text" placeholder="Assigned caretaker" value="Salman" required>
+          </div>
+
+          <div class="field">
+            <label for="date">Date</label>
+            <input id="date" type="date" value="2026-04-10" required>
+          </div>
+
+          <div class="field">
+            <label for="time">Time</label>
+            <input id="time" type="time" value="09:00" required>
+          </div>
+
+          <div class="field">
+            <label for="status">Status</label>
+            <select id="status" required>
+              <option value="pending">Pending</option>
+              <option value="in-progress" selected>In Progress</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="priority">Priority</label>
+            <select id="priority" required>
+              <option value="normal">Normal</option>
+              <option value="high" selected>High</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+
+          <div class="field" style="grid-column: span 2;">
+            <label for="notes">Task Notes</label>
+            <textarea id="notes" placeholder="Enter notes or specific instructions">Verify humidity levels and record tank temperature readings before 09:30 AM.</textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn">Save Changes</button>
+          <a href="supervisor.html" class="btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>
+'''
+Path('frontEnd/editTask.html').write_text(content, encoding='utf-8')
+PY

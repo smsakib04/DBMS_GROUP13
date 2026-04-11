@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head><title>Delete Tortoise</title></head>
+<body>
+<div class="form-card">
+    <h2>🗑️ Delete Tortoise</h2>
+    <form action="../process/delete_tortoise.php" method="POST" onsubmit="return confirm('Permanent delete?')">
+        <label>Tortoise ID</label>
+        <input type="number" name="tortoise_id" required>
+        <button type="submit">Delete</button>
+    </form>
+</div>
+</body>
+</html>
