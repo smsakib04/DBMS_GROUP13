@@ -2,7 +2,9 @@
 require_once '../backEnd/config/db.php';
 session_start();
 
-// If form submitted, process the update
+// -------------------------------
+// Handle form submission (POST)
+// -------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['pair_id'];
     $code = $_POST['pair_code'];
@@ -14,31 +16,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt = $conn->prepare("UPDATE breeding_pairs SET pair_code=?, male_tortoise_id=?, female_tortoise_id=?, pairing_date=?, status=?, notes=? WHERE pair_id=?");
     $stmt->bind_param("siisssi", $code, $male, $female, $date, $status, $notes, $id);
+
     if ($stmt->execute()) {
+        // Success: redirect to breeding dashboard with success message
         header("Location: breeding.php?msg=pair_updated");
         exit();
     } else {
-        die("Error: " . $stmt->error);
+        die("Error updating pair: " . $stmt->error);
     }
     $stmt->close();
     $conn->close();
 }
 
-// Otherwise, display the edit form with existing data
+// -------------------------------
+// Display edit form (GET request)
+// -------------------------------
 $pair_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($pair_id == 0) {
-    die("Invalid pair ID.");
+    die("Invalid pair ID. Please go back and select a valid breeding pair.");
 }
 
+// Fetch the existing data
 $stmt = $conn->prepare("SELECT * FROM breeding_pairs WHERE pair_id = ?");
 $stmt->bind_param("i", $pair_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $pair = $result->fetch_assoc();
-if (!$pair) {
-    die("Breeding pair not found.");
-}
 $stmt->close();
+
+if (!$pair) {
+    die("Breeding pair not found for ID: " . $pair_id);
+}
 ?>
 <!DOCTYPE html>
 <html>
