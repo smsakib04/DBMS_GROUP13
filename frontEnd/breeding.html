@@ -4,31 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tortoise Center · Breeding Officer Dashboard</title>
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Chart.js CDN for graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
+        /* (same styles as before, kept intact) */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-
         body {
             background: #e7f0ea;
             display: flex;
             justify-content: center;
             padding: 2rem 1.5rem;
         }
-
         .dashboard {
             max-width: 1400px;
             width: 100%;
         }
-
-        /* header */
         .header {
             display: flex;
             align-items: center;
@@ -37,14 +32,12 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
-
         .title-section h1 {
             font-size: 2.2rem;
             font-weight: 600;
             color: #1f4f3d;
             letter-spacing: -0.02em;
         }
-
         .title-section p {
             color: #3d6b58;
             font-weight: 500;
@@ -53,7 +46,6 @@
             align-items: center;
             gap: 0.5rem;
         }
-
         .badge-role {
             background: #cfe8db;
             padding: 0.25rem 1rem;
@@ -63,7 +55,6 @@
             color: #0f4633;
             border: 1px solid #a2cdbb;
         }
-
         .date-info {
             background: white;
             padding: 0.6rem 1.5rem;
@@ -73,8 +64,6 @@
             color: #23634b;
             border: 1px solid #bcddce;
         }
-
-        /* navigation bar */
         .navbar {
             background: white;
             border-radius: 60px;
@@ -87,14 +76,12 @@
             align-items: center;
             justify-content: space-between;
         }
-
         .nav-links {
             display: flex;
             flex-wrap: wrap;
             gap: 1.8rem;
             align-items: center;
         }
-
         .nav-item {
             display: flex;
             align-items: center;
@@ -107,17 +94,14 @@
             transition: 0.1s;
             cursor: pointer;
         }
-
         .nav-item i {
             color: #34855e;
             font-size: 1.2rem;
         }
-
         .nav-item.active {
             border-bottom-color: #2a7254;
             color: #0c402e;
         }
-
         .logout-btn {
             background: #fff3ec;
             border: 1.5px solid #f3bc9a;
@@ -132,20 +116,16 @@
             cursor: pointer;
             transition: 0.2s;
         }
-
         .logout-btn:hover {
             background: #fde8dc;
             transform: scale(0.98);
         }
-
-        /* stats cards */
         .stats-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 1.2rem;
             margin-bottom: 2.5rem;
         }
-
         .stat-card {
             background: white;
             padding: 1.2rem 1rem;
@@ -156,7 +136,6 @@
             align-items: center;
             gap: 0.8rem;
         }
-
         .stat-card i {
             font-size: 2rem;
             color: #2c7a5a;
@@ -164,21 +143,17 @@
             padding: 0.8rem;
             border-radius: 50%;
         }
-
         .stat-info h3 {
             font-size: 1.6rem;
             font-weight: 700;
             color: #144b38;
             line-height: 1.2;
         }
-
         .stat-info span {
             color: #487a64;
             font-weight: 500;
             font-size: 0.9rem;
         }
-
-        /* table containers */
         .table-wrapper {
             background: white;
             border-radius: 28px;
@@ -188,11 +163,9 @@
             border: 1px solid #cfeadb;
             display: none;
         }
-
         .table-wrapper.active-table {
             display: block;
         }
-
         .table-header {
             display: flex;
             flex-wrap: wrap;
@@ -200,7 +173,6 @@
             justify-content: space-between;
             margin-bottom: 1.5rem;
         }
-
         .table-header h2 {
             font-size: 1.7rem;
             font-weight: 600;
@@ -209,13 +181,11 @@
             align-items: center;
             gap: 0.6rem;
         }
-
         .action-bar {
             display: flex;
             gap: 0.8rem;
             flex-wrap: wrap;
         }
-
         .btn {
             background: white;
             border: 1.5px solid #c0ddcf;
@@ -230,48 +200,41 @@
             cursor: pointer;
             transition: 0.2s;
         }
-
         .btn i {
             font-size: 1rem;
         }
-
         .btn-add {
             background: #1e5f45;
             border-color: #1e5f45;
             color: white;
             box-shadow: 0 6px 12px rgba(30, 95, 69, 0.2);
         }
-
-        .btn-remove {
-            background: #fef3e9;
-            border-color: #f3bc9a;
-            color: #9b4e20;
-        }
-
-        .btn-edit {
-            background: #e6f0fe;
-            border-color: #a9c9fa;
-            color: #1e5090;
-        }
-
         .btn-search {
             background: #f0f6f2;
             border-color: #b0d5c2;
             color: #1b6144;
         }
-
-        .btn:hover {
-            opacity: 0.85;
-            transform: translateY(-1px);
+        .btn-sm {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
         }
-
+        .btn-edit-row {
+            background: #e6f0fe;
+            border-color: #a9c9fa;
+            color: #1e5090;
+            margin-right: 0.5rem;
+        }
+        .btn-delete-row {
+            background: #fef3e9;
+            border-color: #f3bc9a;
+            color: #9b4e20;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.95rem;
             color: #173e2f;
         }
-
         th {
             text-align: left;
             padding: 1rem 0.5rem 0.8rem 0.5rem;
@@ -279,13 +242,11 @@
             color: #1f5b43;
             border-bottom: 2px solid #c6e2d4;
         }
-
         td {
             padding: 0.85rem 0.5rem;
             border-bottom: 1px solid #dcf0e7;
             vertical-align: middle;
         }
-
         .badge-status {
             background: #daf1e8;
             color: #176a48;
@@ -295,8 +256,6 @@
             font-size: 0.8rem;
             display: inline-block;
         }
-
-        /* graph containers */
         .graph-container {
             margin-top: 2rem;
             padding: 1rem;
@@ -304,23 +263,31 @@
             border-radius: 20px;
             border: 1px solid #d0e8dd;
         }
-
         .graph-container h3 {
             color: #1f5b43;
             margin-bottom: 1rem;
             font-size: 1.2rem;
         }
-
         canvas {
             max-height: 300px;
             width: 100%;
         }
-
         hr {
             border: 1px solid #bfe0d1;
             margin: 1rem 0;
         }
-
+        .search-container {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .search-input {
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            border: 1px solid #c0ddcf;
+            width: 250px;
+            margin-right: 0.5rem;
+        }
         @media (max-width: 700px) {
             .navbar {
                 flex-direction: column;
@@ -336,7 +303,6 @@
 </head>
 <body>
 <div class="dashboard">
-    <!-- header -->
     <div class="header">
         <div class="title-section">
             <h1><i class="fas fa-leaf" style="color: #2c8f65; margin-right: 10px;"></i>Breeding Officer · Tortoise Center</h1>
@@ -348,7 +314,6 @@
         </div>
     </div>
 
-    <!-- navigation bar (only two tabs) -->
     <div class="navbar">
         <div class="nav-links" id="navLinks">
             <span class="nav-item active" data-table="pairs"><i class="fas fa-paw"></i> Breeding pairs</span>
@@ -359,7 +324,6 @@
         </div>
     </div>
 
-    <!-- stats cards (relevant to breeding) -->
     <div class="stats-cards">
         <div class="stat-card"><i class="fas fa-heart"></i><div class="stat-info"><h3 id="activePairsCount">0</h3><span>active pairs</span></div></div>
         <div class="stat-card"><i class="fas fa-egg"></i><div class="stat-info"><h3 id="totalEggsCount">0</h3><span>total eggs (active nests)</span></div></div>
@@ -367,54 +331,48 @@
         <div class="stat-card"><i class="fas fa-chart-line"></i><div class="stat-info"><h3 id="hatchRate">0%</h3><span>hatch success (last 12m)</span></div></div>
     </div>
 
-    <!-- ========== BREEDING PAIRS SECTION ========== -->
+    <!-- BREEDING PAIRS SECTION -->
     <div class="table-wrapper" id="pairs">
         <div class="table-header">
             <h2><i class="fas fa-hand-holding-heart"></i> Breeding pairs</h2>
             <div class="action-bar">
-                <button class="btn btn-edit" id="editPairBtn"><i class="fas fa-pen"></i> Edit</button>
-                <button class="btn btn-remove" id="removePairBtn"><i class="fas fa-trash-alt"></i> Remove</button>
-                <button class="btn btn-add" id="addPairBtn"><i class="fas fa-plus"></i> Add</button>
+                <button class="btn btn-add" id="addPairBtn"><i class="fas fa-plus"></i> Add pair</button>
                 <button class="btn btn-search" id="searchPairBtn"><i class="fas fa-magnifying-glass"></i> Search</button>
             </div>
         </div>
+        <div class="search-container" id="pairSearchBox" style="display: none;">
+            <input type="text" id="pairSearchInput" class="search-input" placeholder="Search by Pair ID, Male, Female...">
+        </div>
         <table id="pairsTable">
             <thead>
-                <tr><th>Pair ID</th><th>Male</th><th>Female</th><th>Species</th><th>Mating date</th><th>Nest ID</th><th>Status</th></tr>
+                <tr><th>Pair ID</th><th>Male</th><th>Female</th><th>Species</th><th>Mating date</th><th>Nest ID</th><th>Status</th><th>Actions</th></tr>
             </thead>
-            <tbody id="pairsTableBody">
-                <!-- dynamic data will be loaded here -->
-            </tbody>
+            <tbody id="pairsTableBody"></tbody>
         </table>
-
-        <!-- Graph for breeding pairs trend -->
         <div class="graph-container">
             <h3><i class="fas fa-chart-line"></i> Active breeding pairs trend (last 6 months)</h3>
             <canvas id="pairsTrendChart" width="400" height="200"></canvas>
         </div>
     </div>
 
-    <!-- ========== NESTING SECTION ========== -->
+    <!-- NESTING SECTION -->
     <div class="table-wrapper" id="nesting">
         <div class="table-header">
             <h2><i class="fas fa-egg"></i> Nesting & egg records</h2>
             <div class="action-bar">
-                <button class="btn btn-edit" id="editNestBtn"><i class="fas fa-pen"></i> Edit</button>
-                <button class="btn btn-remove" id="removeNestBtn"><i class="fas fa-trash-alt"></i> Remove</button>
-                <button class="btn btn-add" id="addNestBtn"><i class="fas fa-plus"></i> Add</button>
+                <button class="btn btn-add" id="addNestBtn"><i class="fas fa-plus"></i> Add nest</button>
                 <button class="btn btn-search" id="searchNestBtn"><i class="fas fa-magnifying-glass"></i> Search</button>
             </div>
         </div>
+        <div class="search-container" id="nestSearchBox" style="display: none;">
+            <input type="text" id="nestSearchInput" class="search-input" placeholder="Search by Nest ID, Pair ID...">
+        </div>
         <table id="nestsTable">
             <thead>
-                <tr><th>Nest ID</th><th>Pair ID</th><th>Nesting date</th><th>Egg count</th><th>Fertile</th><th>Incubator</th><th>Est. hatch</th></tr>
+                <tr><th>Nest ID</th><th>Pair ID</th><th>Nesting date</th><th>Egg count</th><th>Fertile</th><th>Incubator</th><th>Est. hatch</th><th>Actions</th></tr>
             </thead>
-            <tbody id="nestsTableBody">
-                <!-- dynamic data -->
-            </tbody>
+            <tbody id="nestsTableBody"></tbody>
         </table>
-
-        <!-- Graph for egg production & fertility -->
         <div class="graph-container">
             <h3><i class="fas fa-chart-bar"></i> Egg production & fertility (by nest)</h3>
             <canvas id="eggsChart" width="400" height="200"></canvas>
@@ -423,47 +381,50 @@
 </div>
 
 <script>
-    // ---------- Helper: format date ----------
+    // Helper: format date
     function formatDate(date) {
         return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
     }
     document.getElementById('currentDate').innerText = formatDate(new Date());
 
-    // ---------- SAMPLE DATA (to be replaced by backend API calls) ----------
+    // Sample data (replace with API calls)
     let breedingPairsData = [
-        { pair_id: 1, pair_code: "BP-021", male: "Thor (M23)", female: "Shelly (F09)", species: "Aldabra", mating_date: "2026-01-10", nest_id: "Nest-AA4", status: "paired" },
-        { pair_id: 2, pair_code: "BP-022", male: "Groot (M07)", female: "Tess (F12)", species: "Leopard", mating_date: "2026-02-03", nest_id: "Nest-BG2", status: "incubating" },
-        { pair_id: 3, pair_code: "BP-019", male: "Spike (M11)", female: "Marble (F04)", species: "Sulcata", mating_date: "2025-12-18", nest_id: "Nest-C1R", status: "hatched" },
-        { pair_id: 4, pair_code: "BP-024", male: "Yoshi (M03)", female: "Dot (F16)", species: "Galápagos", mating_date: "2026-02-27", nest_id: "—", status: "courting" }
+        { id: 1, pair_code: "BP-021", male: "Thor (M23)", female: "Shelly (F09)", species: "Aldabra", mating_date: "2026-01-10", nest_id: "Nest-AA4", status: "paired" },
+        { id: 2, pair_code: "BP-022", male: "Groot (M07)", female: "Tess (F12)", species: "Leopard", mating_date: "2026-02-03", nest_id: "Nest-BG2", status: "incubating" },
+        { id: 3, pair_code: "BP-019", male: "Spike (M11)", female: "Marble (F04)", species: "Sulcata", mating_date: "2025-12-18", nest_id: "Nest-C1R", status: "hatched" },
+        { id: 4, pair_code: "BP-024", male: "Yoshi (M03)", female: "Dot (F16)", species: "Galápagos", mating_date: "2026-02-27", nest_id: "—", status: "courting" }
     ];
 
     let nestsData = [
-        { nest_id: 1, nest_code: "Nest-AA4", pair_code: "BP-021", nesting_date: "2026-01-12", egg_count: 8, fertile: 7, incubator: "INC-3", est_hatch: "2026-04-14" },
-        { nest_id: 2, nest_code: "Nest-BG2", pair_code: "BP-022", nesting_date: "2026-02-07", egg_count: 12, fertile: 10, incubator: "INC-1", est_hatch: "2026-06-02" },
-        { nest_id: 3, nest_code: "Nest-C1R", pair_code: "BP-019", nesting_date: "2025-12-20", egg_count: 6, fertile: 5, incubator: "INC-2", est_hatch: "hatched 03 Mar" },
-        { nest_id: 4, nest_code: "Nest-D44", pair_code: "—", nesting_date: "2026-03-01", egg_count: 4, fertile: 2, incubator: "INC-4", est_hatch: "2026-05-20" }
+        { id: 1, nest_code: "Nest-AA4", pair_code: "BP-021", nesting_date: "2026-01-12", egg_count: 8, fertile: 7, incubator: "INC-3", est_hatch: "2026-04-14" },
+        { id: 2, nest_code: "Nest-BG2", pair_code: "BP-022", nesting_date: "2026-02-07", egg_count: 12, fertile: 10, incubator: "INC-1", est_hatch: "2026-06-02" },
+        { id: 3, nest_code: "Nest-C1R", pair_code: "BP-019", nesting_date: "2025-12-20", egg_count: 6, fertile: 5, incubator: "INC-2", est_hatch: "hatched 03 Mar" },
+        { id: 4, nest_code: "Nest-D44", pair_code: "—", nesting_date: "2026-03-01", egg_count: 4, fertile: 2, incubator: "INC-4", est_hatch: "2026-05-20" }
     ];
 
-    // ---------- Render tables ----------
+    // Render tables with Edit/Delete per row
     function renderPairsTable() {
         const tbody = document.getElementById('pairsTableBody');
         tbody.innerHTML = '';
         breedingPairsData.forEach(pair => {
-            const row = `
-                <tr>
-                    <td>${pair.pair_code}</td>
-                    <td>${pair.male}</td>
-                    <td>${pair.female}</td>
-                    <td>${pair.species}</td>
-                    <td>${pair.mating_date}</td>
-                    <td>${pair.nest_id}</td>
-                    <td><span class="badge-status">${pair.status}</span></td>
-                </tr>`;
-            tbody.innerHTML += row;
+            const row = tbody.insertRow();
+            row.insertCell(0).innerText = pair.pair_code;
+            row.insertCell(1).innerText = pair.male;
+            row.insertCell(2).innerText = pair.female;
+            row.insertCell(3).innerText = pair.species;
+            row.insertCell(4).innerText = pair.mating_date;
+            row.insertCell(5).innerText = pair.nest_id;
+            row.insertCell(6).innerHTML = `<span class="badge-status">${pair.status}</span>`;
+            const actionsCell = row.insertCell(7);
+            actionsCell.innerHTML = `
+                <button class="btn btn-sm btn-edit-row" data-id="${pair.id}" data-type="pair"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-sm btn-delete-row" data-id="${pair.id}" data-type="pair"><i class="fas fa-trash-alt"></i> Delete</button>
+            `;
         });
-        // update stats
-        const activeCount = breedingPairsData.filter(p => p.status === 'paired' || p.status === 'incubating' || p.status === 'courting').length;
+        // Update stats
+        const activeCount = breedingPairsData.filter(p => ['paired','incubating','courting'].includes(p.status)).length;
         document.getElementById('activePairsCount').innerText = activeCount;
+        attachRowButtons();
     }
 
     function renderNestsTable() {
@@ -473,56 +434,183 @@
         nestsData.forEach(nest => {
             totalEggs += nest.egg_count;
             totalFertile += nest.fertile;
-            const row = `
-                <tr>
-                    <td>${nest.nest_code}</td>
-                    <td>${nest.pair_code}</td>
-                    <td>${nest.nesting_date}</td>
-                    <td>${nest.egg_count}</td>
-                    <td>${nest.fertile}</td>
-                    <td>${nest.incubator}</td>
-                    <td>${nest.est_hatch}</td>
-                </tr>`;
-            tbody.innerHTML += row;
+            const row = tbody.insertRow();
+            row.insertCell(0).innerText = nest.nest_code;
+            row.insertCell(1).innerText = nest.pair_code;
+            row.insertCell(2).innerText = nest.nesting_date;
+            row.insertCell(3).innerText = nest.egg_count;
+            row.insertCell(4).innerText = nest.fertile;
+            row.insertCell(5).innerText = nest.incubator;
+            row.insertCell(6).innerText = nest.est_hatch;
+            const actionsCell = row.insertCell(7);
+            actionsCell.innerHTML = `
+                <button class="btn btn-sm btn-edit-row" data-id="${nest.id}" data-type="nest"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-sm btn-delete-row" data-id="${nest.id}" data-type="nest"><i class="fas fa-trash-alt"></i> Delete</button>
+            `;
         });
         const fertilityRate = totalEggs ? ((totalFertile / totalEggs) * 100).toFixed(1) : 0;
         document.getElementById('totalEggsCount').innerText = totalEggs;
         document.getElementById('fertileRate').innerText = fertilityRate + '%';
-        // dummy hatch rate (would be computed from real data)
         document.getElementById('hatchRate').innerText = '87%';
+        attachRowButtons();
     }
 
-    // ---------- Graphs ----------
-    let pairsChart, eggsChart;
-
-    function initPairsChart() {
-        const ctx = document.getElementById('pairsTrendChart').getContext('2d');
-        // sample trend data: last 6 months (Oct-Mar)
-        const months = ['Oct 2025', 'Nov 2025', 'Dec 2025', 'Jan 2026', 'Feb 2026', 'Mar 2026'];
-        const activePairsCounts = [3, 3, 4, 4, 5, 4]; // replace with real data from backend
-        pairsChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: months,
-                datasets: [{
-                    label: 'Active breeding pairs',
-                    data: activePairsCounts,
-                    borderColor: '#2c7a5a',
-                    backgroundColor: 'rgba(44, 122, 90, 0.1)',
-                    tension: 0.3,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: { position: 'top' }
-                }
-            }
+    // Attach event listeners to dynamically created Edit/Delete buttons
+    function attachRowButtons() {
+        document.querySelectorAll('.btn-edit-row').forEach(btn => {
+            btn.removeEventListener('click', handleEdit);
+            btn.addEventListener('click', handleEdit);
+        });
+        document.querySelectorAll('.btn-delete-row').forEach(btn => {
+            btn.removeEventListener('click', handleDelete);
+            btn.addEventListener('click', handleDelete);
         });
     }
 
+    function handleEdit(e) {
+        const btn = e.currentTarget;
+        const id = parseInt(btn.getAttribute('data-id'));
+        const type = btn.getAttribute('data-type');
+        if (type === 'pair') {
+            const pair = breedingPairsData.find(p => p.id === id);
+            if (pair) {
+                // Simple inline edit example: prompt for new status
+                const newStatus = prompt('Edit status (paired, courting, incubating, hatched, separated):', pair.status);
+                if (newStatus && ['paired','courting','incubating','hatched','separated'].includes(newStatus)) {
+                    pair.status = newStatus;
+                    renderPairsTable();
+                    updateCharts();  // update chart if needed
+                } else if (newStatus) alert('Invalid status');
+            }
+        } else if (type === 'nest') {
+            const nest = nestsData.find(n => n.id === id);
+            if (nest) {
+                const newEggCount = prompt('Edit egg count:', nest.egg_count);
+                if (newEggCount && !isNaN(parseInt(newEggCount))) {
+                    nest.egg_count = parseInt(newEggCount);
+                    const newFertile = prompt('Edit fertile eggs:', nest.fertile);
+                    if (newFertile && !isNaN(parseInt(newFertile))) nest.fertile = parseInt(newFertile);
+                    renderNestsTable();
+                    updateCharts();
+                }
+            }
+        }
+    }
+
+    function handleDelete(e) {
+        const btn = e.currentTarget;
+        const id = parseInt(btn.getAttribute('data-id'));
+        const type = btn.getAttribute('data-type');
+        if (confirm(`Delete this ${type}? This action cannot be undone.`)) {
+            if (type === 'pair') {
+                breedingPairsData = breedingPairsData.filter(p => p.id !== id);
+                renderPairsTable();
+            } else if (type === 'nest') {
+                nestsData = nestsData.filter(n => n.id !== id);
+                renderNestsTable();
+            }
+            updateCharts();
+        }
+    }
+
+    // Add new pair (global add)
+    function addNewPair() {
+        const newId = breedingPairsData.length ? Math.max(...breedingPairsData.map(p => p.id)) + 1 : 5;
+        const pairCode = prompt('Enter Pair Code (e.g., BP-025):');
+        if (!pairCode) return;
+        const male = prompt('Male name/ID:');
+        const female = prompt('Female name/ID:');
+        const species = prompt('Species:');
+        const matingDate = prompt('Mating date (YYYY-MM-DD):');
+        const status = prompt('Status (paired/courting/incubating/hatched/separated):', 'paired');
+        if (male && female && species && matingDate) {
+            breedingPairsData.push({
+                id: newId,
+                pair_code: pairCode,
+                male: male,
+                female: female,
+                species: species,
+                mating_date: matingDate,
+                nest_id: '—',
+                status: status
+            });
+            renderPairsTable();
+            updateCharts();
+        }
+    }
+
+    function addNewNest() {
+        const newId = nestsData.length ? Math.max(...nestsData.map(n => n.id)) + 1 : 5;
+        const nestCode = prompt('Enter Nest Code:');
+        if (!nestCode) return;
+        const pairCode = prompt('Pair ID (e.g., BP-021):');
+        const nestingDate = prompt('Nesting date (YYYY-MM-DD):');
+        const eggCount = parseInt(prompt('Egg count:') || '0');
+        const fertile = parseInt(prompt('Fertile eggs:') || '0');
+        const incubator = prompt('Incubator ID:');
+        const estHatch = prompt('Estimated hatch date (YYYY-MM-DD or text):');
+        nestsData.push({
+            id: newId,
+            nest_code: nestCode,
+            pair_code: pairCode,
+            nesting_date: nestingDate,
+            egg_count: eggCount,
+            fertile: fertile,
+            incubator: incubator,
+            est_hatch: estHatch
+        });
+        renderNestsTable();
+        updateCharts();
+    }
+
+    // Search/filter functionality
+    function setupSearch() {
+        const searchPairBtn = document.getElementById('searchPairBtn');
+        const searchNestBtn = document.getElementById('searchNestBtn');
+        const pairSearchBox = document.getElementById('pairSearchBox');
+        const nestSearchBox = document.getElementById('nestSearchBox');
+        const pairInput = document.getElementById('pairSearchInput');
+        const nestInput = document.getElementById('nestSearchInput');
+
+        searchPairBtn.addEventListener('click', () => {
+            pairSearchBox.style.display = pairSearchBox.style.display === 'none' ? 'flex' : 'none';
+            if (pairSearchBox.style.display === 'flex') pairInput.focus();
+        });
+        searchNestBtn.addEventListener('click', () => {
+            nestSearchBox.style.display = nestSearchBox.style.display === 'none' ? 'flex' : 'none';
+            if (nestSearchBox.style.display === 'flex') nestInput.focus();
+        });
+
+        pairInput.addEventListener('input', () => {
+            const term = pairInput.value.toLowerCase();
+            const rows = document.querySelectorAll('#pairsTableBody tr');
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(term) ? '' : 'none';
+            });
+        });
+        nestInput.addEventListener('input', () => {
+            const term = nestInput.value.toLowerCase();
+            const rows = document.querySelectorAll('#nestsTableBody tr');
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(term) ? '' : 'none';
+            });
+        });
+    }
+
+    // Charts
+    let pairsChart, eggsChart;
+    function initPairsChart() {
+        const ctx = document.getElementById('pairsTrendChart').getContext('2d');
+        const months = ['Oct 2025', 'Nov 2025', 'Dec 2025', 'Jan 2026', 'Feb 2026', 'Mar 2026'];
+        const activePairsCounts = [3,3,4,4,5,4];
+        pairsChart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: months, datasets: [{ label: 'Active breeding pairs', data: activePairsCounts, borderColor: '#2c7a5a', backgroundColor: 'rgba(44,122,90,0.1)', tension: 0.3, fill: true }] },
+            options: { responsive: true, maintainAspectRatio: true }
+        });
+    }
     function initEggsChart() {
         const ctx = document.getElementById('eggsChart').getContext('2d');
         const nestLabels = nestsData.map(n => n.nest_code);
@@ -530,94 +618,13 @@
         const fertileCounts = nestsData.map(n => n.fertile);
         eggsChart = new Chart(ctx, {
             type: 'bar',
-            data: {
-                labels: nestLabels,
-                datasets: [
-                    {
-                        label: 'Total eggs',
-                        data: eggCounts,
-                        backgroundColor: '#34855e',
-                        borderRadius: 8
-                    },
-                    {
-                        label: 'Fertile eggs',
-                        data: fertileCounts,
-                        backgroundColor: '#f3bc9a',
-                        borderRadius: 8
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: { position: 'top' }
-                }
-            }
+            data: { labels: nestLabels, datasets: [{ label: 'Total eggs', data: eggCounts, backgroundColor: '#34855e' }, { label: 'Fertile eggs', data: fertileCounts, backgroundColor: '#f3bc9a' }] },
+            options: { responsive: true, maintainAspectRatio: true }
         });
     }
-
-    // ---------- Navigation (toggle tables) ----------
-    function initNavigation() {
-        const navItems = document.querySelectorAll('.nav-item');
-        const tables = {
-            pairs: document.getElementById('pairs'),
-            nesting: document.getElementById('nesting')
-        };
-        function deactivateAll() {
-            Object.values(tables).forEach(tbl => tbl?.classList.remove('active-table'));
-            navItems.forEach(item => item.classList.remove('active'));
-        }
-        function showTable(tableId, activeItem) {
-            deactivateAll();
-            if (tables[tableId]) tables[tableId].classList.add('active-table');
-            if (activeItem) activeItem.classList.add('active');
-            // resize charts after showing container (fixes canvas sizing)
-            setTimeout(() => {
-                if (pairsChart) pairsChart.resize();
-                if (eggsChart) eggsChart.resize();
-            }, 100);
-        }
-        navItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const tableId = item.getAttribute('data-table');
-                showTable(tableId, item);
-            });
-        });
-        // show pairs by default
-        const defaultNav = document.querySelector('.nav-item[data-table="pairs"]');
-        if (defaultNav) showTable('pairs', defaultNav);
-    }
-
-    // ---------- Dummy action handlers (replace with backend calls) ----------
-    function attachActionHandlers() {
-        document.getElementById('addPairBtn').addEventListener('click', () => alert('Add pair: integrate backend call'));
-        document.getElementById('editPairBtn').addEventListener('click', () => alert('Edit pair: implement with API'));
-        document.getElementById('removePairBtn').addEventListener('click', () => alert('Remove pair: send DELETE request'));
-        document.getElementById('searchPairBtn').addEventListener('click', () => alert('Search functionality'));
-
-        document.getElementById('addNestBtn').addEventListener('click', () => alert('Add nest: integrate backend'));
-        document.getElementById('editNestBtn').addEventListener('click', () => alert('Edit nest'));
-        document.getElementById('removeNestBtn').addEventListener('click', () => alert('Remove nest'));
-        document.getElementById('searchNestBtn').addEventListener('click', () => alert('Search nests'));
-
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            if (confirm('Log out?')) window.location.href = 'login.html';
-        });
-    }
-
-    // ---------- Load data from backend (replace with fetch) ----------
-    async function loadDataFromBackend() {
-        // Example: fetch breeding pairs
-        // const res = await fetch('../backEnd/breeding_officer.php?action=get_breeding_pairs');
-        // const data = await res.json();
-        // if (data.success) breedingPairsData = data.data;
-        // similarly for nests
-        renderPairsTable();
-        renderNestsTable();
-        // update charts with real data after fetching
+    function updateCharts() {
         if (pairsChart) {
-            pairsChart.data.datasets[0].data = [3,3,4,4,5,4]; // replace with real trend
+            // Update trend data (placeholder)
             pairsChart.update();
         }
         if (eggsChart) {
@@ -628,13 +635,39 @@
         }
     }
 
-    // ---------- Initialization ----------
+    // Navigation
+    function initNavigation() {
+        const navItems = document.querySelectorAll('.nav-item');
+        const tables = { pairs: document.getElementById('pairs'), nesting: document.getElementById('nesting') };
+        function deactivateAll() {
+            Object.values(tables).forEach(tbl => tbl?.classList.remove('active-table'));
+            navItems.forEach(item => item.classList.remove('active'));
+        }
+        function showTable(tableId, activeItem) {
+            deactivateAll();
+            if (tables[tableId]) tables[tableId].classList.add('active-table');
+            if (activeItem) activeItem.classList.add('active');
+            setTimeout(() => { if (pairsChart) pairsChart.resize(); if (eggsChart) eggsChart.resize(); }, 100);
+        }
+        navItems.forEach(item => {
+            item.addEventListener('click', () => showTable(item.getAttribute('data-table'), item));
+        });
+        showTable('pairs', document.querySelector('.nav-item[data-table="pairs"]'));
+    }
+
+    // Global add buttons
+    document.getElementById('addPairBtn').addEventListener('click', addNewPair);
+    document.getElementById('addNestBtn').addEventListener('click', addNewNest);
+    document.getElementById('logoutBtn').addEventListener('click', () => { if(confirm('Logout?')) window.location.href='login.html'; });
+
+    // Initial load
     window.addEventListener('DOMContentLoaded', () => {
+        renderPairsTable();
+        renderNestsTable();
         initPairsChart();
         initEggsChart();
-        loadDataFromBackend();
         initNavigation();
-        attachActionHandlers();
+        setupSearch();
     });
 </script>
 </body>
