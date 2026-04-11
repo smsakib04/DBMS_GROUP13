@@ -1,6 +1,6 @@
 <?php
 require_once '../includes/session.php';
-requireLogin();
+
 require_once '../config/db.php';
 
 // -------------------------------
