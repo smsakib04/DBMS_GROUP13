@@ -1,6 +1,6 @@
 <?php
 require_once '../includes/session.php';
-requireLogin();
+//requireLogin();
 require_once '../config/db.php';
 
 $staffSchedule = $conn->query("SELECT s.full_name, t.task_name, t.due_date, t.status, t.completion_notes FROM tasks t JOIN staff s ON t.assigned_to = s.staff_id ORDER BY t.due_date");
