@@ -1,21 +1,46 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 session_start();
 require_once '../config/db.php';
-
+ 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $code    = $_POST['assessment_code'];
-    $date    = $_POST['assessment_date'];
-    $t_id    = (int)$_POST['tortoise_id'];
-    $remarks = $_POST['remarks'];
-
-    // SQL command to insert into our new 4-column table
-    $stmt = $conn->prepare("INSERT INTO health_assessments (assessment_code, assessment_date, remarks, tortoise_id) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("sssi", $code, $date, $remarks, $t_id);
-
+ 
+    $assessment_code  = $_POST['assessment_code'] ?? '';
+    $assessment_date  = $_POST['assessment_date'] ?? '';
+    $tortoise_id      = (int)($_POST['tortoise_id'] ?? 0);
+    $vet_id           = !empty($_POST['vet_id']) ? (int)$_POST['vet_id'] : null;  // null if not selected
+    $health_condition = $_POST['health_condition'] ?? '';
+    $diagnosis        = $_POST['diagnosis'] ?? '';
+    $treatment        = $_POST['treatment'] ?? '';
+    $remarks          = $_POST['remarks'] ?? '';
+    $next_checkup     = !empty($_POST['next_checkup_date']) ? $_POST['next_checkup_date'] : null;
+ 
+    $stmt = $conn->prepare("
+        INSERT INTO health_assessments
+            (assessment_code, assessment_date, tortoise_id, vet_id, health_condition, diagnosis, treatment, remarks, next_checkup_date)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+ 
+    // i = integer, s = string
+    $stmt->bind_param("ssiisssss",
+        $assessment_code,
+        $assessment_date,
+        $tortoise_id,
+        $vet_id,
+        $health_condition,
+        $diagnosis,
+        $treatment,
+        $remarks,
+        $next_checkup
+    );
+ 
     if ($stmt->execute()) {
         header("Location: ../pages/veterenian.php?msg=added");
     } else {
         header("Location: ../pages/veterenian.php?msg=error");
     }
+    exit();
 }
 ?>
+ 
