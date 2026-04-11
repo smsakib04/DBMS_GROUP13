@@ -158,7 +158,7 @@ $msg = $_GET['msg'] ?? '';
                         <td><?= htmlspecialchars($row['diagnosis'] ?? '') ?></td>
                         <td><?= htmlspecialchars($row['remarks'] ?? '') ?></td>
                         <td>
-                            <a href="formEditAssessment.php?id=<?= $row['assessment_id'] ?>">
+                            <a href="../process/edit_health_assessment.php?id=<?= $row['assessment_id'] ?>">
                                 <button class="btn" style="margin:0;padding:5px 10px">Edit</button>
                             </a>
                             <a href="../process/delete_assessment.php?id=<?= $row['assessment_id'] ?>" onclick="return confirm('Delete this assessment?')">
