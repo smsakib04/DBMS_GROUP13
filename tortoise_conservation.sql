@@ -5,18 +5,11 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
  
--- ------------------------------------------------------------
---  Create the database (safe: won't overwrite if it exists)
--- ------------------------------------------------------------
 CREATE DATABASE IF NOT EXISTS `tortoise_conservation`
   DEFAULT CHARACTER SET utf8mb4
   COLLATE utf8mb4_general_ci;
  
 USE `tortoise_conservation`;
- 
--- ============================================================
---  TABLES  (drop order respects FK deps)
--- ============================================================
  
 DROP TABLE IF EXISTS `water_quality_logs`;
 DROP TABLE IF EXISTS `transport_logs`;
