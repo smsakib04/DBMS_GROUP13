@@ -1,10 +1,10 @@
 <?php
 require_once '../includes/session.php';
-
+requireLogin();
 require_once '../config/db.php';
 
 // -------------------------------
-// Fetch breeding pairs with male/female names and species
+// Fetch all breeding pairs with details
 // -------------------------------
 $pairsQuery = "
     SELECT 
@@ -30,7 +30,7 @@ while ($row = $pairsResult->fetch_assoc()) {
 }
 
 // -------------------------------
-// Fetch nests with pair codes
+// Fetch all nests with pair codes
 // -------------------------------
 $nestsQuery = "
     SELECT 
@@ -60,8 +60,6 @@ $activePairs = 0;
 $totalEggs = 0;
 $totalFertile = 0;
 $totalHatched = 0;
-$totalNestsWithHatch = 0;
-
 foreach ($breedingPairs as $pair) {
     if (in_array($pair['status'], ['paired', 'incubating', 'courting'])) {
         $activePairs++;
@@ -70,26 +68,22 @@ foreach ($breedingPairs as $pair) {
 foreach ($nests as $nest) {
     $totalEggs += $nest['egg_count'];
     $totalFertile += $nest['fertile'];
-    // If actual_hatch_date exists and hatch_success_rate is available (we approximate)
-    // For simplicity, we count nests that have 'hatched' in est_hatch or actual date not null
-    // In real DB, you would have actual_hatch_date column and hatch_success_rate.
-    // We'll assume nests with 'hatched' text in est_hatch are successful.
+    // Simple hatch detection: if est_hatch contains 'hatched' or actual_hatch_date is not null in DB
     if (strpos($nest['est_hatch'], 'hatched') !== false) {
         $totalHatched += $nest['egg_count'];
-        $totalNestsWithHatch++;
     }
 }
 $fertilityRate = $totalEggs > 0 ? round(($totalFertile / $totalEggs) * 100, 1) : 0;
 $hatchRate = $totalFertile > 0 ? round(($totalHatched / $totalFertile) * 100, 1) : 0;
 
-// For trend chart: count active pairs per month (last 6 months)
+// -------------------------------
+// Trend data: active pairs per month (last 6 months)
+// -------------------------------
 $months = [];
 $monthlyActive = [];
 for ($i = 5; $i >= 0; $i--) {
     $month = date('M Y', strtotime("-$i months"));
     $months[] = $month;
-    // Query to count pairs active in that month (pairing_date <= end of month and status not separated)
-    $start = date('Y-m-01', strtotime("-$i months"));
     $end = date('Y-m-t', strtotime("-$i months"));
     $countQuery = $conn->prepare("
         SELECT COUNT(*) as cnt FROM breeding_pairs 
@@ -110,8 +104,8 @@ for ($i = 5; $i >= 0; $i--) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        /* Copy all CSS from the original breeding.html – omitted for brevity. 
-           In production, keep the exact same styles as provided. */
+        /* Copy all CSS from the updated breeding.html – omitted for brevity. 
+           Use the same styles as provided in the user's breeding.html file. */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #e7f0ea; display: flex; justify-content: center; padding: 2rem 1.5rem; }
         .dashboard { max-width: 1400px; width: 100%; }
@@ -133,14 +127,18 @@ for ($i = 5; $i >= 0; $i--) {
         .table-header { display: flex; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; }
         .btn { background: white; border: 1.5px solid #c0ddcf; padding: 0.6rem 1.3rem; border-radius: 40px; cursor: pointer; }
         .btn-add { background: #1e5f45; color: white; }
-        .btn-edit { background: #e6f0fe; color: #1e5090; }
-        .btn-remove { background: #fef3e9; color: #9b4e20; }
+        .btn-search { background: #f0f6f2; color: #1b6144; }
+        .btn-sm { padding: 0.3rem 0.8rem; font-size: 0.8rem; }
+        .btn-edit-row { background: #e6f0fe; border-color: #a9c9fa; color: #1e5090; margin-right: 0.5rem; }
+        .btn-delete-row { background: #fef3e9; border-color: #f3bc9a; color: #9b4e20; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 0.85rem 0.5rem; border-bottom: 1px solid #dcf0e7; text-align: left; }
         th { color: #1f5b43; border-bottom: 2px solid #c6e2d4; }
         .badge-status { background: #daf1e8; padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.8rem; }
         .graph-container { margin-top: 2rem; padding: 1rem; background: #f9fdfb; border-radius: 20px; }
         canvas { max-height: 300px; width: 100%; }
+        .search-container { margin-bottom: 1rem; display: flex; justify-content: flex-end; }
+        .search-input { padding: 0.5rem 1rem; border-radius: 40px; border: 1px solid #c0ddcf; width: 250px; margin-right: 0.5rem; }
         @media (max-width: 700px) { .navbar { flex-direction: column; } }
     </style>
 </head>
@@ -172,19 +170,22 @@ for ($i = 5; $i >= 0; $i--) {
         <div class="stat-card"><i class="fas fa-chart-line"></i><div class="stat-info"><h3><?php echo $hatchRate; ?>%</h3><span>hatch success (last 12m)</span></div></div>
     </div>
 
-    <!-- Breeding Pairs Section -->
+    <!-- BREEDING PAIRS SECTION -->
     <div class="table-wrapper active-table" id="pairs">
         <div class="table-header">
             <h2><i class="fas fa-hand-holding-heart"></i> Breeding pairs</h2>
             <div class="action-bar">
-                <button class="btn btn-edit" onclick="editPair()"><i class="fas fa-pen"></i> Edit</button>
-                <button class="btn btn-remove" onclick="deletePair()"><i class="fas fa-trash-alt"></i> Remove</button>
-                <button class="btn btn-add" onclick="window.location.href='add_breeding_pair.html'"><i class="fas fa-plus"></i> Add</button>
-                <button class="btn btn-search" onclick="searchPairs()"><i class="fas fa-search"></i> Search</button>
+                <button class="btn btn-add" onclick="window.location.href='add_breeding_pair.html'"><i class="fas fa-plus"></i> Add pair</button>
+                <button class="btn btn-search" id="searchPairBtn"><i class="fas fa-search"></i> Search</button>
             </div>
         </div>
+        <div class="search-container" id="pairSearchBox" style="display: none;">
+            <input type="text" id="pairSearchInput" class="search-input" placeholder="Search by Pair ID, Male, Female...">
+        </div>
         <table id="pairsTable">
-            <thead><tr><th>Pair ID</th><th>Male</th><th>Female</th><th>Species</th><th>Mating date</th><th>Nest ID</th><th>Status</th></tr></thead>
+            <thead>
+                <tr><th>Pair ID</th><th>Male</th><th>Female</th><th>Species</th><th>Mating date</th><th>Nest ID</th><th>Status</th><th>Actions</th></tr>
+            </thead>
             <tbody id="pairsTableBody">
                 <?php foreach ($breedingPairs as $pair): ?>
                 <tr data-id="<?php echo $pair['pair_id']; ?>">
@@ -195,6 +196,10 @@ for ($i = 5; $i >= 0; $i--) {
                     <td><?php echo htmlspecialchars($pair['mating_date']); ?></td>
                     <td><?php echo htmlspecialchars($pair['nest_id']); ?></td>
                     <td><span class="badge-status"><?php echo htmlspecialchars($pair['status']); ?></span></td>
+                    <td>
+                        <button class="btn btn-sm btn-edit-row" data-id="<?php echo $pair['pair_id']; ?>" data-type="pair"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="btn btn-sm btn-delete-row" data-id="<?php echo $pair['pair_id']; ?>" data-type="pair"><i class="fas fa-trash-alt"></i> Delete</button>
+                    </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -205,19 +210,22 @@ for ($i = 5; $i >= 0; $i--) {
         </div>
     </div>
 
-    <!-- Nesting Section -->
+    <!-- NESTING SECTION -->
     <div class="table-wrapper" id="nesting">
         <div class="table-header">
             <h2><i class="fas fa-egg"></i> Nesting & egg records</h2>
             <div class="action-bar">
-                <button class="btn btn-edit" onclick="editNest()"><i class="fas fa-pen"></i> Edit</button>
-                <button class="btn btn-remove" onclick="deleteNest()"><i class="fas fa-trash-alt"></i> Remove</button>
-                <button class="btn btn-add" onclick="window.location.href='add_nest.html'"><i class="fas fa-plus"></i> Add</button>
-                <button class="btn btn-search" onclick="searchNests()"><i class="fas fa-search"></i> Search</button>
+                <button class="btn btn-add" onclick="window.location.href='add_nest.html'"><i class="fas fa-plus"></i> Add nest</button>
+                <button class="btn btn-search" id="searchNestBtn"><i class="fas fa-search"></i> Search</button>
             </div>
         </div>
+        <div class="search-container" id="nestSearchBox" style="display: none;">
+            <input type="text" id="nestSearchInput" class="search-input" placeholder="Search by Nest ID, Pair ID...">
+        </div>
         <table id="nestsTable">
-            <thead><tr><th>Nest ID</th><th>Pair ID</th><th>Nesting date</th><th>Egg count</th><th>Fertile</th><th>Incubator</th><th>Est. hatch</th></tr></thead>
+            <thead>
+                <tr><th>Nest ID</th><th>Pair ID</th><th>Nesting date</th><th>Egg count</th><th>Fertile</th><th>Incubator</th><th>Est. hatch</th><th>Actions</th></tr>
+            </thead>
             <tbody id="nestsTableBody">
                 <?php foreach ($nests as $nest): ?>
                 <tr data-id="<?php echo $nest['nest_id']; ?>">
@@ -228,6 +236,10 @@ for ($i = 5; $i >= 0; $i--) {
                     <td><?php echo $nest['fertile']; ?></td>
                     <td><?php echo htmlspecialchars($nest['incubator'] ?? '—'); ?></td>
                     <td><?php echo htmlspecialchars($nest['est_hatch']); ?></td>
+                    <td>
+                        <button class="btn btn-sm btn-edit-row" data-id="<?php echo $nest['nest_id']; ?>" data-type="nest"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="btn btn-sm btn-delete-row" data-id="<?php echo $nest['nest_id']; ?>" data-type="nest"><i class="fas fa-trash-alt"></i> Delete</button>
+                    </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -240,16 +252,16 @@ for ($i = 5; $i >= 0; $i--) {
 </div>
 
 <script>
-// Data for charts (passed from PHP)
+// Pass PHP data to JavaScript for charts
 const months = <?php echo json_encode($months); ?>;
 const monthlyActive = <?php echo json_encode($monthlyActive); ?>;
 const nestLabels = <?php echo json_encode(array_column($nests, 'nest_code')); ?>;
 const eggCounts = <?php echo json_encode(array_column($nests, 'egg_count')); ?>;
 const fertileCounts = <?php echo json_encode(array_column($nests, 'fertile')); ?>;
 
-// Initialize charts
 let pairsChart, eggsChart;
 
+// Initialize charts
 function initCharts() {
     const ctxPairs = document.getElementById('pairsTrendChart').getContext('2d');
     pairsChart = new Chart(ctxPairs, {
@@ -294,7 +306,6 @@ function initNavigation() {
         navItems.forEach(i => i.classList.remove('active'));
         tables[tableId].classList.add('active-table');
         el.classList.add('active');
-        // Resize charts after showing container
         setTimeout(() => { if (pairsChart) pairsChart.resize(); if (eggsChart) eggsChart.resize(); }, 100);
     }
     navItems.forEach(item => {
@@ -302,73 +313,93 @@ function initNavigation() {
     });
 }
 
-// Simple CRUD placeholders – you can replace with fetch to your API endpoints
-function editPair() {
-    const selected = document.querySelector('#pairsTableBody tr.selected');
-    if (!selected) { alert('Please select a row first'); return; }
-    const id = selected.dataset.id;
-    window.location.href = `edit_breeding_pair.html?id=${id}`;
-}
-function deletePair() {
-    const selected = document.querySelector('#pairsTableBody tr.selected');
-    if (!selected) { alert('Please select a row'); return; }
-    if (confirm('Delete this breeding pair? All related nests will also be removed.')) {
-        const id = selected.dataset.id;
-        fetch(`../process/delete_breeding_pair.php`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `pair_id=${id}`
-        }).then(() => location.reload());
-    }
-}
-function searchPairs() {
-    const keyword = prompt('Enter Pair ID or species to search:');
-    if (!keyword) return;
-    const rows = document.querySelectorAll('#pairsTableBody tr');
-    rows.forEach(row => {
-        const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(keyword.toLowerCase()) ? '' : 'none';
+// Search functionality
+function setupSearch() {
+    const searchPairBtn = document.getElementById('searchPairBtn');
+    const searchNestBtn = document.getElementById('searchNestBtn');
+    const pairSearchBox = document.getElementById('pairSearchBox');
+    const nestSearchBox = document.getElementById('nestSearchBox');
+    const pairInput = document.getElementById('pairSearchInput');
+    const nestInput = document.getElementById('nestSearchInput');
+
+    searchPairBtn.addEventListener('click', () => {
+        pairSearchBox.style.display = pairSearchBox.style.display === 'none' ? 'flex' : 'none';
+        if (pairSearchBox.style.display === 'flex') pairInput.focus();
     });
-}
-function editNest() {
-    const selected = document.querySelector('#nestsTableBody tr.selected');
-    if (!selected) { alert('Select a nest row'); return; }
-    const id = selected.dataset.id;
-    window.location.href = `edit_nest.html?id=${id}`;
-}
-function deleteNest() {
-    const selected = document.querySelector('#nestsTableBody tr.selected');
-    if (!selected) { alert('Select a nest'); return; }
-    if (confirm('Delete this nest?')) {
-        const id = selected.dataset.id;
-        fetch(`../process/delete_nest.php`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `nest_id=${id}`
-        }).then(() => location.reload());
-    }
-}
-function searchNests() {
-    const keyword = prompt('Search by Nest ID or Pair ID:');
-    if (!keyword) return;
-    const rows = document.querySelectorAll('#nestsTableBody tr');
-    rows.forEach(row => {
-        const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(keyword.toLowerCase()) ? '' : 'none';
+    searchNestBtn.addEventListener('click', () => {
+        nestSearchBox.style.display = nestSearchBox.style.display === 'none' ? 'flex' : 'none';
+        if (nestSearchBox.style.display === 'flex') nestInput.focus();
+    });
+
+    pairInput.addEventListener('input', () => {
+        const term = pairInput.value.toLowerCase();
+        document.querySelectorAll('#pairsTableBody tr').forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+        });
+    });
+    nestInput.addEventListener('input', () => {
+        const term = nestInput.value.toLowerCase();
+        document.querySelectorAll('#nestsTableBody tr').forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+        });
     });
 }
 
-// Row selection for edit/delete
-document.querySelectorAll('#pairsTableBody tr, #nestsTableBody tr').forEach(tr => {
-    tr.addEventListener('click', function() {
-        document.querySelectorAll('#pairsTableBody tr, #nestsTableBody tr').forEach(r => r.classList.remove('selected'));
-        this.classList.add('selected');
+// Handle edit & delete via AJAX
+function attachRowButtons() {
+    // Edit buttons
+    document.querySelectorAll('.btn-edit-row').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const id = btn.dataset.id;
+            const type = btn.dataset.type;
+            if (type === 'pair') {
+                // Redirect to edit form (you need edit_breeding_pair.html?id=...)
+                window.location.href = `edit_breeding_pair.html?id=${id}`;
+            } else if (type === 'nest') {
+                window.location.href = `edit_nest.html?id=${id}`;
+            }
+        });
     });
-});
 
+    // Delete buttons
+    document.querySelectorAll('.btn-delete-row').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            if (!confirm('Delete this record permanently?')) return;
+            const id = btn.dataset.id;
+            const type = btn.dataset.type;
+            let url = '';
+            let body = '';
+            if (type === 'pair') {
+                url = '../process/delete_breeding_pair.php';
+                body = `pair_id=${id}`;
+            } else if (type === 'nest') {
+                url = '../process/delete_nest.php';
+                body = `nest_id=${id}`;
+            }
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: body
+                });
+                if (res.ok) {
+                    location.reload();
+                } else {
+                    alert('Delete failed');
+                }
+            } catch(err) {
+                alert('Error: ' + err.message);
+            }
+        });
+    });
+}
+
+// Initial load
 window.addEventListener('DOMContentLoaded', () => {
     initCharts();
     initNavigation();
+    setupSearch();
+    attachRowButtons();
 });
 </script>
 </body>
