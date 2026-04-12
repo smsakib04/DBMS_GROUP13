@@ -1,9 +1,7 @@
 <?php
 require_once '../backEnd/config/db.php';
 
-// -------------------------------
 // Fetch real statistics
-// -------------------------------
 $total_tortoises = $conn->query("SELECT COUNT(*) AS cnt FROM tortoises")->fetch_assoc()['cnt'];
 $total_species = $conn->query("SELECT COUNT(*) AS cnt FROM species")->fetch_assoc()['cnt'];
 $successful_hatchlings = $conn->query("SELECT SUM(egg_count) AS cnt FROM nests WHERE actual_hatch_date IS NOT NULL")->fetch_assoc()['cnt'] ?: 0;
@@ -59,30 +57,33 @@ for ($i = 5; $i >= 0; $i--) {
             min-height: 100vh;
         }
 
-        /* Hero Section with Image */
+        /* Hero Section with gradient (no external image) */
         .hero {
-            background: linear-gradient(rgba(31, 110, 79, 0.85), rgba(44, 143, 104, 0.85)), url('https://images.unsplash.com/photo-1617056575801-87a4ddc6dd5d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
-            background-size: cover;
-            background-position: center;
+            background: linear-gradient(120deg, #1f6e4f, #2c8f68);
             color: white;
             text-align: center;
-            padding: 5rem 2rem;
+            padding: 4rem 2rem;
             border-radius: 0 0 48px 48px;
             margin-bottom: 2rem;
+        }
+
+        .hero i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #ffd966;
         }
 
         .hero h1 {
             font-size: 3rem;
             font-weight: 700;
             margin-bottom: 1rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .hero p {
             font-size: 1.2rem;
             max-width: 800px;
             margin: 0 auto;
-            opacity: 0.95;
+            opacity: 0.9;
         }
 
         .container {
@@ -151,37 +152,42 @@ for ($i = 5; $i >= 0; $i--) {
             gap: 0.8rem;
         }
 
-        /* Gallery */
-        .gallery-grid {
+        /* Gallery replaced with icon grid */
+        .icon-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1.5rem;
             margin-top: 1.5rem;
         }
 
-        .gallery-item {
+        .icon-item {
             background: #f9fdfb;
             border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
-        }
-
-        .gallery-item:hover {
-            transform: scale(1.02);
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .gallery-item .caption {
-            padding: 1rem;
-            font-weight: 600;
-            color: #1b6349;
+            padding: 1.5rem;
             text-align: center;
+            transition: transform 0.2s;
+            border: 1px solid #d0e8dd;
+        }
+
+        .icon-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        .icon-item i {
+            font-size: 3rem;
+            color: #2a7f5c;
+            margin-bottom: 0.8rem;
+        }
+
+        .icon-item h4 {
+            color: #1b6349;
+            margin-bottom: 0.3rem;
+        }
+
+        .icon-item p {
+            color: #5a8874;
+            font-size: 0.85rem;
         }
 
         /* Two‑column layout for charts */
@@ -212,7 +218,7 @@ for ($i = 5; $i >= 0; $i--) {
             width: 100%;
         }
 
-        /* Role cards (same as before) */
+        /* Role cards */
         .roles-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -296,7 +302,8 @@ for ($i = 5; $i >= 0; $i--) {
 <body>
 
 <div class="hero">
-    <h1><i class="fas fa-shield-tortoise"></i> Tortoise Conservation Center</h1>
+    <i class="fas fa-shield-tortoise"></i>
+    <h1>Tortoise Conservation Center</h1>
     <p>Preserving giants, protecting futures – an integrated management system for tortoise welfare and species survival.</p>
 </div>
 
@@ -325,28 +332,32 @@ for ($i = 5; $i >= 0; $i--) {
         </div>
     </div>
 
-    <!-- Gallery Section -->
+    <!-- Featured Species (Icon Grid instead of images) -->
     <div class="info-section">
-        <h2><i class="fas fa-images"></i> Our Tortoises</h2>
-        <div class="gallery-grid">
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1622079520100-4a6f8b9b5e3d?w=400&h=250&fit=crop" alt="Aldabra Giant Tortoise">
-                <div class="caption">Aldabra Giant Tortoise</div>
+        <h2><i class="fas fa-star-of-life"></i> Featured Species</h2>
+        <div class="icon-grid">
+            <div class="icon-item">
+                <i class="fas fa-turtle"></i>
+                <h4>Aldabra Giant</h4>
+                <p>One of the largest tortoise species, native to the Aldabra Atoll.</p>
             </div>
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1617056575801-87a4ddc6dd5d?w=400&h=250&fit=crop" alt="African Spurred Tortoise">
-                <div class="caption">African Spurred Tortoise</div>
+            <div class="icon-item">
+                <i class="fas fa-paw"></i>
+                <h4>African Spurred</h4>
+                <p>Third-largest species, known for its distinctive spurred legs.</p>
             </div>
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1605902711622-cfb43c4437d5?w=400&h=250&fit=crop" alt="Leopard Tortoise">
-                <div class="caption">Leopard Tortoise</div>
+            <div class="icon-item">
+                <i class="fas fa-leaf"></i>
+                <h4>Leopard Tortoise</h4>
+                <p>Named for its beautiful shell patterns resembling a leopard.</p>
             </div>
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1584897231718-72a2b82c7a2c?w=400&h=250&fit=crop" alt="Galapagos Tortoise">
-                <div class="caption">Galapagos Tortoise</div>
+            <div class="icon-item">
+                <i class="fas fa-globe"></i>
+                <h4>Galápagos</h4>
+                <p>Iconic giant tortoises from the Galápagos Islands.</p>
             </div>
         </div>
-        <p style="margin-top: 1rem; font-size: 0.9rem; color: #5a8874;"><i class="fas fa-camera"></i> Images for illustration – actual tortoises in our care may vary.</p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; color: #5a8874;"><i class="fas fa-info-circle"></i> These species are part of our conservation and breeding programs.</p>
     </div>
 
     <!-- Charts Row -->
