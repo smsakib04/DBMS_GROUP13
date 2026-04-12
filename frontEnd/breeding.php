@@ -120,12 +120,12 @@ for ($i = 5; $i >= 0; $i--) {
         .table-wrapper { background: white; border-radius: 28px; padding: 1.5rem; margin-bottom: 2.5rem; display: none; }
         .table-wrapper.active-table { display: block; }
         .table-header { display: flex; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; }
-        .btn { background: white; border: 1.5px solid #c0ddcf; padding: 0.6rem 1.3rem; border-radius: 40px; cursor: pointer; }
+        .btn { background: white; border: 1.5px solid #c0ddcf; padding: 0.6rem 1.3rem; border-radius: 40px; cursor: pointer; text-decoration: none; display: inline-block; }
         .btn-add { background: #1e5f45; color: white; }
         .btn-search { background: #f0f6f2; color: #1b6144; }
         .btn-sm { padding: 0.3rem 0.8rem; font-size: 0.8rem; }
         .btn-edit-row { background: #e6f0fe; border-color: #a9c9fa; color: #1e5090; margin-right: 0.5rem; text-decoration: none; display: inline-block; }
-        .btn-delete-row { background: #fef3e9; border-color: #f3bc9a; color: #9b4e20; }
+        .btn-delete-row { background: #fef3e9; border-color: #f3bc9a; color: #9b4e20; text-decoration: none; display: inline-block; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 0.85rem 0.5rem; border-bottom: 1px solid #dcf0e7; text-align: left; }
         th { color: #1f5b43; border-bottom: 2px solid #c6e2d4; }
@@ -170,7 +170,7 @@ for ($i = 5; $i >= 0; $i--) {
         <div class="table-header">
             <h2><i class="fas fa-hand-holding-heart"></i> Breeding pairs</h2>
             <div class="action-bar">
-                <button class="btn btn-add" onclick="window.location.href='add_breeding_pair.html'"><i class="fas fa-plus"></i> Add pair</button>
+                <button class="btn btn-add" onclick="window.location.href='add_breeding_pair.php'"><i class="fas fa-plus"></i> Add pair</button>
                 <button class="btn btn-search" id="searchPairBtn"><i class="fas fa-search"></i> Search</button>
             </div>
         </div>
@@ -193,7 +193,7 @@ for ($i = 5; $i >= 0; $i--) {
                     <td><span class="badge-status"><?php echo htmlspecialchars($pair['status']); ?></span></td>
                     <td>
                         <a href="edit_breeding_pair.php?id=<?php echo $pair['pair_id']; ?>" class="btn btn-sm btn-edit-row"><i class="fas fa-edit"></i> Edit</a>
-                        <button class="btn btn-sm btn-delete-row" data-id="<?php echo $pair['pair_id']; ?>" data-type="pair"><i class="fas fa-trash-alt"></i> Delete</button>
+                        <a href="delete_breeding_pair.php?id=<?php echo $pair['pair_id']; ?>" class="btn btn-sm btn-delete-row"><i class="fas fa-trash-alt"></i> Delete</a>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -210,7 +210,7 @@ for ($i = 5; $i >= 0; $i--) {
         <div class="table-header">
             <h2><i class="fas fa-egg"></i> Nesting & egg records</h2>
             <div class="action-bar">
-                <button class="btn btn-add" onclick="window.location.href='add_nest.html'"><i class="fas fa-plus"></i> Add nest</button>
+                <button class="btn btn-add" onclick="window.location.href='add_nest.php'"><i class="fas fa-plus"></i> Add nest</button>
                 <button class="btn btn-search" id="searchNestBtn"><i class="fas fa-search"></i> Search</button>
             </div>
         </div>
@@ -233,7 +233,7 @@ for ($i = 5; $i >= 0; $i--) {
                     <td><?php echo htmlspecialchars($nest['est_hatch']); ?></td>
                     <td>
                         <a href="edit_nest.php?id=<?php echo $nest['nest_id']; ?>" class="btn btn-sm btn-edit-row"><i class="fas fa-edit"></i> Edit</a>
-                        <button class="btn btn-sm btn-delete-row" data-id="<?php echo $nest['nest_id']; ?>" data-type="nest"><i class="fas fa-trash-alt"></i> Delete</button>
+                        <a href="delete_nest.php?id=<?php echo $nest['nest_id']; ?>" class="btn btn-sm btn-delete-row"><i class="fas fa-trash-alt"></i> Delete</a>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -314,67 +314,41 @@ function setupSearch() {
     const pairInput = document.getElementById('pairSearchInput');
     const nestInput = document.getElementById('nestSearchInput');
 
-    searchPairBtn.addEventListener('click', () => {
-        pairSearchBox.style.display = pairSearchBox.style.display === 'none' ? 'flex' : 'none';
-        if (pairSearchBox.style.display === 'flex') pairInput.focus();
-    });
-    searchNestBtn.addEventListener('click', () => {
-        nestSearchBox.style.display = nestSearchBox.style.display === 'none' ? 'flex' : 'none';
-        if (nestSearchBox.style.display === 'flex') nestInput.focus();
-    });
+    if (searchPairBtn) {
+        searchPairBtn.addEventListener('click', () => {
+            pairSearchBox.style.display = pairSearchBox.style.display === 'none' ? 'flex' : 'none';
+            if (pairSearchBox.style.display === 'flex') pairInput.focus();
+        });
+    }
+    if (searchNestBtn) {
+        searchNestBtn.addEventListener('click', () => {
+            nestSearchBox.style.display = nestSearchBox.style.display === 'none' ? 'flex' : 'none';
+            if (nestSearchBox.style.display === 'flex') nestInput.focus();
+        });
+    }
 
-    pairInput.addEventListener('input', () => {
-        const term = pairInput.value.toLowerCase();
-        document.querySelectorAll('#pairsTableBody tr').forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+    if (pairInput) {
+        pairInput.addEventListener('input', () => {
+            const term = pairInput.value.toLowerCase();
+            document.querySelectorAll('#pairsTableBody tr').forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+            });
         });
-    });
-    nestInput.addEventListener('input', () => {
-        const term = nestInput.value.toLowerCase();
-        document.querySelectorAll('#nestsTableBody tr').forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+    }
+    if (nestInput) {
+        nestInput.addEventListener('input', () => {
+            const term = nestInput.value.toLowerCase();
+            document.querySelectorAll('#nestsTableBody tr').forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+            });
         });
-    });
-}
-
-function attachDeleteButtons() {
-    document.querySelectorAll('.btn-delete-row').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            if (!confirm('Delete this record permanently?')) return;
-            const id = btn.dataset.id;
-            const type = btn.dataset.type;
-            let url = '';
-            let body = '';
-            if (type === 'pair') {
-                url = '../process/delete_breeding_pair.php';
-                body = `pair_id=${id}`;
-            } else if (type === 'nest') {
-                url = '../process/delete_nest.php';
-                body = `nest_id=${id}`;
-            }
-            try {
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: body
-                });
-                if (res.ok) {
-                    location.reload();
-                } else {
-                    alert('Delete failed');
-                }
-            } catch(err) {
-                alert('Error: ' + err.message);
-            }
-        });
-    });
+    }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
     initCharts();
     initNavigation();
     setupSearch();
-    attachDeleteButtons();
 });
 </script>
 </body>
