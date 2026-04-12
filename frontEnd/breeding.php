@@ -356,10 +356,10 @@ function attachDeleteButtons() {
             let body = '';
             
             if (type === 'pair') {
-                url = '../backEnd/process/delete_breeding_pair.php';
+                url = '/DBMS_GROUP13/backEnd/process/delete_breeding_pair.php';
                 body = `pair_id=${id}`;
             } else if (type === 'nest') {
-                url = '../backEnd/process/delete_nest.php';
+                url = '/DBMS_GROUP13/backEnd/process/delete_nest.php';
                 body = `nest_id=${id}`;
             }
             
@@ -370,9 +370,10 @@ function attachDeleteButtons() {
                     body: body
                 });
                 
+                // First check if response is OK (status 200-299)
                 if (!response.ok) {
                     const text = await response.text();
-                    console.error('Server response:', text);
+                    console.error('Server error response:', text.substring(0, 200));
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 
@@ -386,7 +387,7 @@ function attachDeleteButtons() {
                 }
             } catch (err) {
                 console.error('Fetch error:', err);
-                alert('Error connecting to server. Please check the console for details.\n\n' + err.message);
+                alert('Error connecting to server.\n\n' + err.message);
             }
         });
     });
