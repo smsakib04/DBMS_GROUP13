@@ -1,5 +1,6 @@
 <?php
 require_once '../backEnd/includes/session.php';
+requireLogin();
 require_once '../backEnd/config/db.php';
 
 // -------------------------------
@@ -155,7 +156,10 @@ for ($i = 5; $i >= 0; $i--) {
             <span class="nav-item active" data-table="pairs"><i class="fas fa-paw"></i> Breeding pairs</span>
             <span class="nav-item" data-table="nesting"><i class="fas fa-egg"></i> Nesting</span>
         </div>
-        <div class="logout-btn" onclick="window.location.href='../logout.php'"><i class="fas fa-sign-out-alt"></i> Logout</div>
+        <!-- Updated logout button pointing to logout.php -->
+        <div class="logout-btn" onclick="window.location.href='logout.php'">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </div>
     </div>
 
     <div class="stats-cards">
