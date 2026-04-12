@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Schedule · Caretaker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: #ecf6f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .form-container {
+            max-width: 650px;
+            width: 100%;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            border: 1px solid #d0e8dd;
+        }
+        .form-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .form-header h1 {
+            font-size: 2rem;
+            color: #1a6d4e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        .form-header p {
+            color: #4a7b64;
+            margin-top: 0.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            color: #1b5e44;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        label i {
+            margin-right: 0.5rem;
+            color: #368f6b;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1.5px solid #cae5d9;
+            border-radius: 20px;
+            font-size: 1rem;
+            background: white;
+            transition: all 0.2s;
+            outline: none;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #2a8b65;
+            box-shadow: 0 0 0 3px rgba(42, 139, 101, 0.1);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .btn-submit {
+            background: #1f7356;
+            color: white;
+            border: none;
+            padding: 0.9rem;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+        }
+        .btn-submit:hover {
+            background: #0f5e45;
+            transform: translateY(-2px);
+        }
+        .btn-back {
+            background: #eaf3fe;
+            border: 1.5px solid #b9d4fa;
+            color: #2a6291;
+            padding: 0.7rem 1.5rem;
+            border-radius: 40px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: 0.2s;
+        }
+        .btn-back:hover {
+            background: #d6e6fd;
+        }
+        .error-message {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 0.8rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .success-message {
+            background: #dcfce7;
+            color: #166534;
+            padding: 0.8rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .required-star {
+            color: #e53e3e;
+            margin-left: 0.2rem;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <div class="form-header">
+        <h1><i class="fas fa-calendar-plus"></i> Add New Schedule</h1>
+        <p>Create a task or schedule entry for caretaker duties</p>
+    </div>
+
+    <div id="messageArea"></div>
+
+    <form id="scheduleForm" action="../backEnd/add_schedule.php" method="POST">
+        <div class="form-group">
+            <label><i class="fas fa-tasks"></i> Task name <span class="required-star">*</span></label>
+            <input type="text" name="task_name" placeholder="e.g., Deep clean enclosure E-Arid-01" required>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-user-check"></i> Assigned to <span class="required-star">*</span></label>
+            <input type="text" name="assigned_to" placeholder="e.g., L. Miller, J. Chen" required>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-calendar-day"></i> Due date <span class="required-star">*</span></label>
+            <input type="date" name="due_date" required>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-flag-checkered"></i> Status</label>
+            <select name="status">
+                <option value="Pending">Pending</option>
+                <option value="In progress">In progress</option>
+                <option value="Scheduled">Scheduled</option>
+                <option value="Completed">Completed</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-sticky-note"></i> Completion notes (optional)</label>
+            <textarea name="completion_notes" placeholder="Any additional remarks..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Save Schedule</button>
+    </form>
+
+    <div style="text-align: center; margin-top: 1.5rem;">
+        <a href="caretaker.html" class="btn-back"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+</div>
+
+<script>
+    // Show message if redirected with success/error parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const msg = urlParams.get('msg');
+    const type = urlParams.get('type');
+    const messageArea = document.getElementById('messageArea');
+    if (msg) {
+        const div = document.createElement('div');
+        div.className = type === 'success' ? 'success-message' : 'error-message';
+        div.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i> ${decodeURIComponent(msg)}`;
+        messageArea.appendChild(div);
+        setTimeout(() => div.remove(), 5000);
+    }
+</script>
+</body>
+</html>

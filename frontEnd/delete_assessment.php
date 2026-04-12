@@ -1,13 +1,15 @@
 <?php
 session_start();
-require_once '../config/db.php';
-
+require_once '../backEnd/config/db.php';
+ 
 $id = (int)($_GET['id'] ?? 0);
-
+ 
 if ($id > 0) {
     $stmt = $conn->prepare("DELETE FROM health_assessments WHERE assessment_id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
 }
-header("Location: ../pages/veterenian.php?msg=deleted");
+header("Location: veterenian.php?msg=deleted");
+exit();
 ?>
+ 

@@ -1,15 +1,18 @@
+
+Copy
+
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 session_start();
-require_once '../config/db.php';
+require_once '../backEnd/config/db.php';
  
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  
     $assessment_code  = $_POST['assessment_code'] ?? '';
     $assessment_date  = $_POST['assessment_date'] ?? '';
     $tortoise_id      = (int)($_POST['tortoise_id'] ?? 0);
-    $vet_id           = !empty($_POST['vet_id']) ? (int)$_POST['vet_id'] : null;  // null if not selected
+    $vet_id           = !empty($_POST['vet_id']) ? (int)$_POST['vet_id'] : null;
     $health_condition = $_POST['health_condition'] ?? '';
     $diagnosis        = $_POST['diagnosis'] ?? '';
     $treatment        = $_POST['treatment'] ?? '';
@@ -21,8 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             (assessment_code, assessment_date, tortoise_id, vet_id, health_condition, diagnosis, treatment, remarks, next_checkup_date)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
- 
-    // i = integer, s = string
     $stmt->bind_param("ssiisssss",
         $assessment_code,
         $assessment_date,
@@ -36,11 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
  
     if ($stmt->execute()) {
-        header("Location: ../pages/veterenian.php?msg=added");
+        header("Location: veterenian.php?msg=added");
     } else {
-        header("Location: ../pages/veterenian.php?msg=error");
+        header("Location: veterenian.php?msg=error");
     }
     exit();
 }
 ?>
- 
