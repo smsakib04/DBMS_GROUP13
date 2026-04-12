@@ -170,7 +170,7 @@ for ($i = 5; $i >= 0; $i--) {
         <div class="table-header">
             <h2><i class="fas fa-hand-holding-heart"></i> Breeding pairs</h2>
             <div class="action-bar">
-                <button class="btn btn-add" onclick="window.location.href='add_breeding_pair.php'"><i class="fas fa-plus"></i> Add pair</button>
+                <button class="btn btn-add" onclick="window.location.href='add_breeding_pair.html'"><i class="fas fa-plus"></i> Add pair</button>
                 <button class="btn btn-search" id="searchPairBtn"><i class="fas fa-search"></i> Search</button>
             </div>
         </div>
@@ -210,7 +210,7 @@ for ($i = 5; $i >= 0; $i--) {
         <div class="table-header">
             <h2><i class="fas fa-egg"></i> Nesting & egg records</h2>
             <div class="action-bar">
-                <button class="btn btn-add" onclick="window.location.href='add_nest.php'"><i class="fas fa-plus"></i> Add nest</button>
+                <button class="btn btn-add" onclick="window.location.href='add_nest.html'"><i class="fas fa-plus"></i> Add nest</button>
                 <button class="btn btn-search" id="searchNestBtn"><i class="fas fa-search"></i> Search</button>
             </div>
         </div>
@@ -314,80 +314,57 @@ function setupSearch() {
     const pairInput = document.getElementById('pairSearchInput');
     const nestInput = document.getElementById('nestSearchInput');
 
-    if (searchPairBtn) {
-        searchPairBtn.addEventListener('click', () => {
-            pairSearchBox.style.display = pairSearchBox.style.display === 'none' ? 'flex' : 'none';
-            if (pairSearchBox.style.display === 'flex') pairInput.focus();
-        });
-    }
-    if (searchNestBtn) {
-        searchNestBtn.addEventListener('click', () => {
-            nestSearchBox.style.display = nestSearchBox.style.display === 'none' ? 'flex' : 'none';
-            if (nestSearchBox.style.display === 'flex') nestInput.focus();
-        });
-    }
+    searchPairBtn.addEventListener('click', () => {
+        pairSearchBox.style.display = pairSearchBox.style.display === 'none' ? 'flex' : 'none';
+        if (pairSearchBox.style.display === 'flex') pairInput.focus();
+    });
+    searchNestBtn.addEventListener('click', () => {
+        nestSearchBox.style.display = nestSearchBox.style.display === 'none' ? 'flex' : 'none';
+        if (nestSearchBox.style.display === 'flex') nestInput.focus();
+    });
 
-    if (pairInput) {
-        pairInput.addEventListener('input', () => {
-            const term = pairInput.value.toLowerCase();
-            document.querySelectorAll('#pairsTableBody tr').forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
-            });
+    pairInput.addEventListener('input', () => {
+        const term = pairInput.value.toLowerCase();
+        document.querySelectorAll('#pairsTableBody tr').forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
         });
-    }
-    if (nestInput) {
-        nestInput.addEventListener('input', () => {
-            const term = nestInput.value.toLowerCase();
-            document.querySelectorAll('#nestsTableBody tr').forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
-            });
+    });
+    nestInput.addEventListener('input', () => {
+        const term = nestInput.value.toLowerCase();
+        document.querySelectorAll('#nestsTableBody tr').forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
         });
-    }
+    });
 }
 
 function attachDeleteButtons() {
     document.querySelectorAll('.btn-delete-row').forEach(btn => {
         btn.addEventListener('click', async () => {
-            if (!confirm('Delete this record permanently? This action cannot be undone.')) return;
-            
+            if (!confirm('Delete this record permanently?')) return;
             const id = btn.dataset.id;
             const type = btn.dataset.type;
             let url = '';
             let body = '';
-            
             if (type === 'pair') {
-                url = '/DBMS_GROUP13/backEnd/process/delete_breeding_pair.php';
+                url = '../process/delete_breeding_pair.php';
                 body = `pair_id=${id}`;
             } else if (type === 'nest') {
-                url = '/DBMS_GROUP13/backEnd/process/delete_nest.php';
+                url = '../process/delete_nest.php';
                 body = `nest_id=${id}`;
             }
-            
             try {
-                const response = await fetch(url, {
+                const res = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: body
                 });
-                
-                // First check if response is OK (status 200-299)
-                if (!response.ok) {
-                    const text = await response.text();
-                    console.error('Server error response:', text.substring(0, 200));
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    alert('✅ ' + data.message);
+                if (res.ok) {
                     location.reload();
                 } else {
-                    alert('❌ Delete failed: ' + (data.error || 'Unknown error'));
+                    alert('Delete failed');
                 }
-            } catch (err) {
-                console.error('Fetch error:', err);
-                alert('Error connecting to server.\n\n' + err.message);
+            } catch(err) {
+                alert('Error: ' + err.message);
             }
         });
     });
