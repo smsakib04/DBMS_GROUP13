@@ -1,7 +1,7 @@
 <?php
-require_once '../includes/session.php';
-requireLogin();
-require_once '../config/db.php';
+require_once '../backEnd/includes/session.php';
+//requireLogin();
+require_once '../backEnd/config/db.php';
 
 // Fetch stats
 $total_tortoises = $conn->query("SELECT COUNT(*) AS cnt FROM tortoises")->fetch_assoc()['cnt'];
