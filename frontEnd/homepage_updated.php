@@ -57,33 +57,40 @@ for ($i = 5; $i >= 0; $i--) {
             min-height: 100vh;
         }
 
-        /* Hero Section with gradient (no external image) */
+        /* Hero Section – solid colour #103227, logo fills full height on the left */
         .hero {
-            background: linear-gradient(120deg, #1f6e4f, #2c8f68);
+            background: #103227;
             color: white;
             text-align: center;
-            padding: 4rem 2rem;
+            padding: 2rem 2rem 3rem;
             border-radius: 0 0 48px 48px;
             margin-bottom: 2rem;
+            position: relative;
+            min-height: 220px;
+            padding-left: 140px;
         }
 
-        .hero i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            color: #ffd966;
+        .hero-logo {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: auto;
+            object-fit: cover;
         }
 
         .hero h1 {
-            font-size: 3rem;
+            font-size: 2.8rem;
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
+            padding-top: 0.5rem;
         }
 
-        .hero p {
+        .hero .tagline {
             font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto;
+            font-style: italic;
             opacity: 0.9;
+            letter-spacing: 1px;
         }
 
         .container {
@@ -112,6 +119,15 @@ for ($i = 5; $i >= 0; $i--) {
 
         .stat-card:hover {
             transform: translateY(-4px);
+        }
+
+        /* For the stat card icon (image or font icon) */
+        .stat-card .stat-icon {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+            display: inline-block;
         }
 
         .stat-card i {
@@ -152,7 +168,7 @@ for ($i = 5; $i >= 0; $i--) {
             gap: 0.8rem;
         }
 
-        /* Gallery replaced with icon grid */
+        /* Icon grid for species */
         .icon-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -296,22 +312,26 @@ for ($i = 5; $i >= 0; $i--) {
             }
             .hero h1 { font-size: 2rem; }
             .container { padding: 1rem; }
+            .hero {
+                padding-left: 100px;
+            }
         }
     </style>
 </head>
 <body>
 
 <div class="hero">
-    <i class="fas fa-shield-tortoise"></i>
+    <img src="images/logo.png" alt="Tortoise Conservation Center Logo" class="hero-logo">
     <h1>Tortoise Conservation Center</h1>
-    <p>Preserving giants, protecting futures – an integrated management system for tortoise welfare and species survival.</p>
+    <div class="tagline">PROTECTING THE SLOWEST SINCE 1995</div>
 </div>
 
 <div class="container">
     <!-- Stats Cards (dynamic) -->
     <div class="stats-grid">
         <div class="stat-card">
-            <i class="fas fa-turtle"></i>
+            <!-- Tortoise logo image (replace with your actual image path) -->
+            <img src="images/tortoise-icon.png" alt="Tortoise Logo" class="stat-icon">
             <h3><?php echo $total_tortoises; ?></h3>
             <p>Total Tortoises</p>
         </div>
@@ -332,7 +352,7 @@ for ($i = 5; $i >= 0; $i--) {
         </div>
     </div>
 
-    <!-- Featured Species (Icon Grid instead of images) -->
+    <!-- Featured Species (Icon Grid) -->
     <div class="info-section">
         <h2><i class="fas fa-star-of-life"></i> Featured Species</h2>
         <div class="icon-grid">
