@@ -6,7 +6,6 @@ session_start();
 // Handle form submission (POST)
 // -------------------------------
 $error = '';
-$success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pair_code = trim($_POST['pair_code']);
@@ -34,10 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param("siisss", $pair_code, $male_id, $female_id, $pairing_date, $status, $notes);
 
             if ($stmt->execute()) {
-                $success = "Breeding pair added successfully!";
-                // Clear form fields after success (optional)
-                // header("Location: breeding.php?msg=pair_added");
-                // exit();
+                // Redirect to breeding dashboard with success message
+                header("Location: breeding.php?msg=pair_added");
+                exit();
             } else {
                 $error = "Database error: " . $stmt->error;
             }
@@ -52,12 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // -------------------------------
 $males = $conn->query("SELECT tortoise_id, name, microchip_id, species_id FROM tortoises WHERE sex = 'Male' OR sex = 'Unknown' ORDER BY name");
 $females = $conn->query("SELECT tortoise_id, name, microchip_id, species_id FROM tortoises WHERE sex = 'Female' OR sex = 'Unknown' ORDER BY name");
-
-// Helper to get species name (optional, for display)
-function getSpeciesName($conn, $species_id) {
-    $result = $conn->query("SELECT common_name FROM species WHERE species_id = $species_id");
-    return $result->fetch_assoc()['common_name'] ?? 'Unknown';
-}
 ?>
 <!DOCTYPE html>
 <html>
@@ -70,7 +62,6 @@ function getSpeciesName($conn, $species_id) {
         .form-card{max-width:650px;width:100%;background:white;border-radius:28px;padding:2rem;box-shadow:0 12px 28px rgba(0,0,0,0.08);}
         h2{margin-bottom:1.5rem;color:#1a6d4e; display:flex; align-items:center; gap:0.5rem;}
         .alert{padding:0.8rem; border-radius:12px; margin-bottom:1rem;}
-        .alert-success{background:#d4edda; color:#155724; border:1px solid #c3e6cb;}
         .alert-error{background:#f8d7da; color:#721c24; border:1px solid #f5c6cb;}
         label{display:block;margin-top:1rem;font-weight:600;color:#2b6e53;}
         input,select,textarea{width:100%;padding:0.7rem;margin-top:0.3rem;border-radius:12px;border:1px solid #cae5d9;background:#fefefe;}
@@ -83,12 +74,6 @@ function getSpeciesName($conn, $species_id) {
 <body>
 <div class="form-card">
     <h2><i class="fas fa-paw"></i> Add New Breeding Pair</h2>
-
-    <?php if ($success): ?>
-        <div class="alert alert-success">✅ <?php echo htmlspecialchars($success); ?> 
-            <a href="breeding.php" style="float:right; color:#155724;">Go back to dashboard →</a>
-        </div>
-    <?php endif; ?>
 
     <?php if ($error): ?>
         <div class="alert alert-error">❌ <?php echo htmlspecialchars($error); ?></div>
