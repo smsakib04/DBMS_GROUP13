@@ -2,9 +2,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
  
-require_once '../backEnd/includes/session.php';
+require_once '../includes/session.php';
 // requireLogin();
-require_once '../backEnd/config/db.php';
+require_once '../config/db.php';
  
 $tortoises     = $conn->query("SELECT t.tortoise_id, t.microchip_id, t.name, t.estimated_age_years, t.sex, t.health_status, s.common_name FROM tortoises t JOIN species s ON t.species_id = s.species_id");
 $assessments   = $conn->query("SELECT h.assessment_id, h.assessment_code, h.assessment_date, t.name AS tortoise_name, h.diagnosis, h.treatment, h.remarks FROM health_assessments h JOIN tortoises t ON h.tortoise_id = t.tortoise_id ORDER BY h.assessment_date DESC");
@@ -41,10 +41,7 @@ $msg = $_GET['msg'] ?? '';
         .btn:hover { background: #0a2a3a; }
         .btn-danger { background: #c0392b; }
         .btn-success { background: #27ae60; }
-        .search-box { margin-bottom: 16px; }
-        .search-input { width: 100%; max-width: 420px; padding: 10px 14px; border: 1.5px solid #c0c8c6; border-radius: 8px; font-size: 14px; color: #1a1a1a; background: #fdfdfb; }
-        .search-input:focus { outline: none; border-color: #52b788; box-shadow: 0 0 0 3px rgba(82,183,136,0.12); }
-        .alert { padding: 12px 18px; border-radius: 6px; font-weight: 600; text-align: center; }
+        .alert { padding: 12px 18px; border-radius: 6px; margin: 0 24px 0; font-weight: 600; text-align: center; }
         .alert-success { background: #d4edda; color: #155724; }
         .alert-error   { background: #f8d7da; color: #721c24; }
         .two-col { display: grid; grid-template-columns: 1fr 1.4fr; gap: 24px; }
@@ -75,10 +72,7 @@ $msg = $_GET['msg'] ?? '';
 <div id="tab-records" class="tab-content active">
     <div class="card">
         <h2>📋 Registered Tortoises</h2>
-        <div class="search-box">
-            <input type="text" id="tortoise-search" class="search-input" placeholder="Search tortoises by name, microchip, species, sex, or health status" oninput="filterTortoises()">
-        </div>
-        <table id="tortoise-table">
+        <table>
             <thead>
                 <tr><th>Microchip ID</th><th>Name</th><th>Species</th><th>Age</th><th>Sex</th><th>Health Status</th></tr>
             </thead>
@@ -105,7 +99,7 @@ $msg = $_GET['msg'] ?? '';
         <!-- ADD FORM -->
         <div class="card">
             <h2>🩺 Perform Health Assessment</h2>
-            <form action="add_assessment.php" method="POST">
+            <form action="../process/add_assessment.php" method="POST">
  
                 <label>Assessment Code</label>
                 <input type="text" name="assessment_code" placeholder="e.g. ASS-2026-002" required>
@@ -164,10 +158,10 @@ $msg = $_GET['msg'] ?? '';
                         <td><?= htmlspecialchars($row['diagnosis'] ?? '') ?></td>
                         <td><?= htmlspecialchars($row['remarks'] ?? '') ?></td>
                         <td>
-                            <a href="edit_health_assessment.php?id=<?= $row['assessment_id'] ?>">
+                            <a href="../process/edit_health_assessment.php?id=<?= $row['assessment_id'] ?>">
                                 <button class="btn" style="margin:0;padding:5px 10px">Edit</button>
                             </a>
-                            <a href="delete_assessment.php?id=<?= $row['assessment_id'] ?>" onclick="return confirm('Delete this assessment?')">
+                            <a href="../process/delete_assessment.php?id=<?= $row['assessment_id'] ?>" onclick="return confirm('Delete this assessment?')">
                                 <button class="btn btn-danger" style="margin:0;padding:5px 10px;margin-top:4px">Delete</button>
                             </a>
                         </td>
@@ -186,15 +180,6 @@ function switchTab(name, el) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
     el.classList.add('active');
-}
-
-function filterTortoises() {
-    const query = document.getElementById('tortoise-search').value.toLowerCase().trim();
-    const rows = document.querySelectorAll('#tortoise-table tbody tr');
-    rows.forEach(row => {
-        const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(query) ? '' : 'none';
-    });
 }
 </script>
 </body>
