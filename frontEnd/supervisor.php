@@ -31,51 +31,35 @@ $restockRequests = $conn->query("SELECT item_name, quantity_needed, priority, ne
     <div class="tab-buttons">
         <button class="tab-button active" onclick="showTab('staff-schedule')">Staff Schedule</button>
         <button class="tab-button" onclick="showTab('inventory')">Inventory</button>
-        <button style="margin-left:auto;" onclick="window.location.href='logout.php'">Logout</button>
+        <button class="tab-button" onclick="showTab('request-restock')">Request Restock</button>
+        <button style="margin-left:auto;" onclick="window.location.href='../logout.php'">Logout</button>
     </div>
     <div id="staff-schedule" class="tab-content active">
         <h2>Staff Tasks</h2>
         <button class="btn" onclick="window.location.href='add_task.html'">Add Task</button>
-        <table>
-            <thead><tr><th>Staff</th><th>Task</th><th>Due Date</th><th>Status</th><th>Notes</th><th>Actions</th></tr></thead>
-            <tbody>
-                <?php while($row = $staffSchedule->fetch_assoc()): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($row['full_name']); ?></td>
-                    <td><?php echo htmlspecialchars($row['task_name']); ?></td>
-                    <td><?php echo htmlspecialchars($row['due_date']); ?></td>
-                    <td><?php echo htmlspecialchars($row['status']); ?></td>
-                    <td><?php echo htmlspecialchars($row['completion_notes']); ?></td>
-                    <td>
-                        <a href="editTask.html?id=<?= $row['task_id'] ?>"><button class="btn">Edit</button></a>
-                        <a href="delete_task.php?id=<?= $row['task_id'] ?>" onclick="return confirm('Delete this task?')"><button class="btn" style="background:#dc3545;">Delete</button></a>
-                    </td>
-                </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+        <table><thead><tr><th>Staff</th><th>Task</th><th>Due Date</th><th>Status</th><th>Notes</th></tr></thead><tbody>
+        <?php while($row = $staffSchedule->fetch_assoc()): ?>
+            <tr><td><?php echo $row['full_name']; ?></td><td><?php echo $row['task_name']; ?></td><td><?php echo $row['due_date']; ?></td><td><?php echo $row['status']; ?></td><td><?php echo $row['completion_notes']; ?></td></tr>
+        <?php endwhile; ?>
+        </tbody></table>
     </div>
     <div id="inventory" class="tab-content">
         <h2>Inventory Items</h2>
         <button class="btn" onclick="window.location.href='add_inventory_item.html'">Add Item</button>
-        <table>
-            <thead><tr><th>Item</th><th>Quantity</th><th>Unit</th><th>Supplier</th><th>Last Updated</th><th>Actions</th></tr></thead>
-            <tbody>
-                <?php while($row = $inventory->fetch_assoc()): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($row['item_name']); ?></td>
-                    <td><?php echo $row['quantity']; ?></td>
-                    <td><?php echo htmlspecialchars($row['unit']); ?></td>
-                    <td><?php echo htmlspecialchars($row['supplier']); ?></td>
-                    <td><?php echo htmlspecialchars($row['last_updated']); ?></td>
-                    <td>
-                        <a href="edit_inventory_item.html?id=<?= $row['inventory_id'] ?>"><button class="btn">Edit</button></a>
-                        <a href="delete_inventory_item.php?id=<?= $row['inventory_id'] ?>" onclick="return confirm('Delete this item?')"><button class="btn" style="background:#dc3545;">Delete</button></a>
-                    </td>
-                </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+        <table><thead><tr><th>Item</th><th>Quantity</th><th>Unit</th><th>Supplier</th><th>Last Updated</th></tr></thead><tbody>
+        <?php while($row = $inventory->fetch_assoc()): ?>
+            <tr><td><?php echo $row['item_name']; ?></td><td><?php echo $row['quantity']; ?></td><td><?php echo $row['unit']; ?></td><td><?php echo $row['supplier']; ?></td><td><?php echo $row['last_updated']; ?></td></tr>
+        <?php endwhile; ?>
+        </tbody></table>
+    </div>
+    <div id="request-restock" class="tab-content">
+        <h2>Restock Requests</h2>
+        <button class="btn" onclick="window.location.href='add_restock_request.html'">New Request</button>
+        <table><thead><tr><th>Item</th><th>Qty Needed</th><th>Priority</th><th>Needed By</th><th>Status</th></tr></thead><tbody>
+        <?php while($row = $restockRequests->fetch_assoc()): ?>
+            <tr><td><?php echo $row['item_name']; ?></td><td><?php echo $row['quantity_needed']; ?></td><td><?php echo $row['priority']; ?></td><td><?php echo $row['needed_by_date']; ?></td><td><?php echo $row['status']; ?></td></tr>
+        <?php endwhile; ?>
+        </tbody></table>
     </div>
 </div>
 <script>
