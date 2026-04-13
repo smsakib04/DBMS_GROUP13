@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Delete Breeding Pair</title>
+    <title>Delete Nest</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
         body{background:#ecf6f1;padding:2rem;display:flex;justify-content:center;}
@@ -13,29 +13,26 @@
         button{background:#dc3545;color:white;border:none;padding:0.8rem 1.5rem;border-radius:40px;margin-top:1.5rem;cursor:pointer;}
         .cancel-btn{background:#6c757d;margin-left:1rem;}
         .button-group{display:flex;gap:1rem;justify-content:flex-end;}
-        .info-text{font-size:0.8rem;color:#6c8b7a;margin-top:0.2rem;}
     </style>
     <script>
-        // Read id from URL and fill the input field
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
             if (id) {
-                document.getElementById('pair_id').value = id;
-                document.getElementById('pair_id').readOnly = true;
+                document.getElementById('nest_id').value = id;
+                document.getElementById('nest_id').readOnly = true;
             }
         }
     </script>
 </head>
 <body>
 <div class="form-card">
-    <h2>🗑️ Delete Breeding Pair</h2>
-    <form action="../backEnd/process/delete_breeding_pair.php" method="POST">
-        <label>Pair ID</label>
-        <input type="number" name="pair_id" id="pair_id" placeholder="Enter the pair ID (e.g., 1)" required>
-        <div class="info-text">⚠️ This will also delete all related nests (if any).</div>
+    <h2>🗑️ Delete Nest</h2>
+    <form action="../backEnd/process/delete_nest.php" method="POST">
+        <label>Nest ID</label>
+        <input type="number" name="nest_id" id="nest_id" placeholder="Enter the nest ID (e.g., 2)" required>
         <div class="button-group">
-            <button type="submit">Delete Pair</button>
+            <button type="submit">Delete Nest</button>
             <button type="button" class="cancel-btn" onclick="window.location.href='breeding.php'">Cancel</button>
         </div>
     </form>

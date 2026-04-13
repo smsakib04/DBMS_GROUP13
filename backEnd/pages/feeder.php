@@ -1,6 +1,6 @@
 <?php
 require_once '../includes/session.php';
-requireLogin();
+
 require_once '../config/db.php';
 
 $todayFeedings = $conn->query("SELECT f.schedule_id, f.feeding_time, t.name, f.food_type, f.amount_grams, f.is_done FROM feeding_schedules f JOIN tortoises t ON f.tortoise_id = t.tortoise_id WHERE f.scheduled_date = CURDATE() ORDER BY f.feeding_time");
