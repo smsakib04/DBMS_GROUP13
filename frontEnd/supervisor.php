@@ -2,18 +2,55 @@
 require_once '../backEnd/includes/session.php';
 requireLogin();
 require_once '../backEnd/config/db.php';
- 
+
+// Fetch staff schedule tasks
 $staffSchedule = $conn->query("
     SELECT t.task_id, s.full_name, t.task_name, t.due_date, t.status, t.completion_notes
     FROM tasks t
     JOIN staff s ON t.assigned_to = s.staff_id
     ORDER BY t.due_date
 ");
- 
+
+// Fetch inventory items
 $inventory = $conn->query("
     SELECT inventory_id, item_name, quantity, supplier, last_updated
     FROM inventory
 ");
+
+// --- Bar Chart Data: Count tasks per status ---
+$statusCounts = [
+    'Pending' => 0,
+    'In-Progress' => 0,
+    'Completed' => 0,
+    'Cancelled' => 0
+];
+
+$statusQuery = $conn->query("SELECT status, COUNT(*) as cnt FROM tasks GROUP BY status");
+if ($statusQuery && $statusQuery->num_rows > 0) {
+    while ($row = $statusQuery->fetch_assoc()) {
+        $status = $row['status'];
+        if (array_key_exists($status, $statusCounts)) {
+            $statusCounts[$status] = (int)$row['cnt'];
+        }
+    }
+}
+$taskChartLabels = json_encode(array_keys($statusCounts));
+$taskChartData = json_encode(array_values($statusCounts));
+$totalTasks = array_sum($statusCounts);
+
+// --- Bar Chart Data: Inventory quantities (top 10 items by quantity) ---
+$inventoryItems = [];
+$inventoryQuantities = [];
+$inventoryQuery = $conn->query("SELECT item_name, quantity FROM inventory ORDER BY quantity DESC LIMIT 10");
+if ($inventoryQuery && $inventoryQuery->num_rows > 0) {
+    while ($row = $inventoryQuery->fetch_assoc()) {
+        $inventoryItems[] = $row['item_name'];
+        $inventoryQuantities[] = (int)$row['quantity'];
+    }
+}
+$invChartLabels = json_encode($inventoryItems);
+$invChartData = json_encode($inventoryQuantities);
+$hasInventory = !empty($inventoryItems);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,6 +60,8 @@ $inventory = $conn->query("
   <title>Supervisor Dashboard | TCCMS</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
       --bg: #f5f1ed;
@@ -70,7 +109,7 @@ $inventory = $conn->query("
       margin: 0 auto;
       padding: 28px 0 48px;
     }
-    /* Success/error message */
+    /* Alert messages */
     .alert {
       padding: 14px 20px;
       border-radius: 12px;
@@ -79,6 +118,43 @@ $inventory = $conn->query("
     }
     .alert-success { background: #d8f1dd; color: #2d6a3f; }
     .alert-error   { background: #fde7e4; color: #c94f3f; }
+    
+    /* Chart Cards (inside panels) */
+    .chart-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 20px 24px 24px;
+      margin-bottom: 32px;
+    }
+    .chart-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--primary);
+    }
+    .chart-title i {
+      font-size: 22px;
+      color: var(--accent);
+    }
+    .chart-wrapper {
+      position: relative;
+      height: 280px;
+      width: 100%;
+    }
+    .no-data-message {
+      text-align: center;
+      padding: 40px 20px;
+      background: #faf7f4;
+      border-radius: 28px;
+      color: var(--muted);
+      font-style: italic;
+    }
+    
+    /* Tabs */
     .tab-buttons {
       display: flex;
       flex-wrap: wrap;
@@ -226,6 +302,7 @@ $inventory = $conn->query("
       .logout-btn { width: 100%; justify-content: center; }
       .search-section { flex-direction: column; }
       .search-btn, .action-btn.add { width: 100%; }
+      .chart-wrapper { height: 220px; }
     }
   </style>
 </head>
@@ -239,9 +316,9 @@ $inventory = $conn->query("
     <i class="fas fa-sign-out-alt"></i> Logout
   </button>
 </header>
- 
+
 <main class="container">
- 
+
   <?php if (isset($_GET['msg'])): ?>
     <?php if ($_GET['msg'] === 'added'): ?>
       <div class="alert alert-success">✅ Task added successfully.</div>
@@ -251,14 +328,31 @@ $inventory = $conn->query("
       <div class="alert alert-success">✅ Task deleted successfully.</div>
     <?php endif; ?>
   <?php endif; ?>
- 
+
   <div class="tab-buttons">
     <button class="tab-button active" onclick="showTab('staff-schedule', event)">Staff Schedule</button>
     <button class="tab-button" onclick="showTab('inventory', event)">Inventory</button>
   </div>
- 
-  <!-- STAFF SCHEDULE -->
+
+  <!-- STAFF SCHEDULE PANEL (with task status bar chart) -->
   <section id="staff-schedule" class="panel active">
+    <!-- Bar Chart for Task Status -->
+    <div class="chart-card">
+      <div class="chart-title">
+        <i class="fas fa-chart-simple"></i>
+        <span>Task Status Distribution</span>
+      </div>
+      <?php if ($totalTasks === 0): ?>
+        <div class="no-data-message">
+          <i class="fas fa-info-circle" style="margin-right: 10px;"></i> No tasks available. Add tasks to see the distribution chart.
+        </div>
+      <?php else: ?>
+        <div class="chart-wrapper">
+          <canvas id="taskStatusChart" width="800" height="280" style="max-width:100%; height:auto; display: block;"></canvas>
+        </div>
+      <?php endif; ?>
+    </div>
+
     <div class="panel-card">
       <div class="card-title">
         <h2>Staff Schedule</h2>
@@ -315,9 +409,26 @@ $inventory = $conn->query("
       </div>
     </div>
   </section>
- 
-  <!-- INVENTORY -->
+
+  <!-- INVENTORY PANEL (with inventory quantity bar chart) -->
   <section id="inventory" class="panel">
+    <!-- Bar Chart for Inventory Quantities -->
+    <div class="chart-card">
+      <div class="chart-title">
+        <i class="fas fa-boxes"></i>
+        <span>Inventory Stock Levels (Top 10 Items)</span>
+      </div>
+      <?php if (!$hasInventory): ?>
+        <div class="no-data-message">
+          <i class="fas fa-info-circle" style="margin-right: 10px;"></i> No inventory items. Add items to see stock levels.
+        </div>
+      <?php else: ?>
+        <div class="chart-wrapper">
+          <canvas id="inventoryChart" width="800" height="280" style="max-width:100%; height:auto; display: block;"></canvas>
+        </div>
+      <?php endif; ?>
+    </div>
+
     <div class="panel-card">
       <div class="card-title">
         <h2>Inventory</h2>
@@ -371,15 +482,17 @@ $inventory = $conn->query("
     </div>
   </section>
 </main>
- 
+
 <script>
+  // Tabs functionality
   function showTab(tabId, event) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
     document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
     if (event && event.currentTarget) event.currentTarget.classList.add('active');
   }
- 
+
+  // Search filter for both tables
   function filterTable(tableId, inputId) {
     const query = document.getElementById(inputId).value.toLowerCase().trim();
     document.querySelectorAll('#' + tableId + ' tbody tr').forEach(row => {
@@ -387,6 +500,80 @@ $inventory = $conn->query("
       row.style.display = text.includes(query) ? '' : 'none';
     });
   }
+
+  // Task Status Bar Chart (only if tasks exist)
+  <?php if ($totalTasks > 0): ?>
+  document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('taskStatusChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: <?= $taskChartLabels ?>,
+        datasets: [{
+          label: 'Number of Tasks',
+          data: <?= $taskChartData ?>,
+          backgroundColor: ['#c94f3f', '#b86f26', '#2d6a3f', '#7d6b64'],
+          borderRadius: 8,
+          barPercentage: 0.65,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { position: 'top', labels: { font: { size: 12 } } },
+          tooltip: {
+            backgroundColor: '#2a1a1a',
+            callbacks: {
+              label: function(context) {
+                let value = context.raw;
+                let total = <?= $totalTasks ?>;
+                let percent = ((value / total) * 100).toFixed(1);
+                return `${context.dataset.label}: ${value} (${percent}%)`;
+              }
+            }
+          }
+        },
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: 'Task Count' }, ticks: { stepSize: 1, precision: 0 } },
+          x: { title: { display: true, text: 'Task Status' } }
+        }
+      }
+    });
+  });
+  <?php endif; ?>
+
+  // Inventory Bar Chart (only if inventory exists)
+  <?php if ($hasInventory): ?>
+  document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('inventoryChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: <?= $invChartLabels ?>,
+        datasets: [{
+          label: 'Quantity in Stock',
+          data: <?= $invChartData ?>,
+          backgroundColor: '#2a6b5f',
+          borderRadius: 8,
+          barPercentage: 0.7,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { position: 'top', labels: { font: { size: 12 } } },
+          tooltip: { backgroundColor: '#2a1a1a' }
+        },
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: 'Quantity' }, ticks: { stepSize: 1, precision: 0 } },
+          x: { title: { display: true, text: 'Item Name' }, ticks: { autoSkip: true, maxRotation: 45, minRotation: 30 } }
+        }
+      }
+    });
+  });
+  <?php endif; ?>
 </script>
 </body>
 </html>
