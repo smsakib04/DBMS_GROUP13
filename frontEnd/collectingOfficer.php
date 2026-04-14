@@ -3,32 +3,73 @@ require_once '../backEnd/includes/session.php';
 requireLogin();
 require_once '../backEnd/config/db.php';
 
-// -------------------------------
-// Handle form submission for new collection
-// -------------------------------
 $message = '';
+
+// Handle new collection & tortoise insertion
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_collection') {
-    $tortoise_id = !empty($_POST['tortoise_id']) ? intval($_POST['tortoise_id']) : null;
-    $collection_date = $_POST['collection_date'];
-    $source_type = $_POST['source_type'];
-    $location = $_POST['location'];
-    $initial_health = $_POST['initial_health'];
-    $notes = $_POST['notes'];
+    // Get form data
+    $tortoise_name = trim($_POST['tortoise_name'] ?? '');
+    $species_name = trim($_POST['species'] ?? '');
+    $estimated_age = intval($_POST['estimated_age'] ?? 0);
+    $sex = $_POST['sex'] ?? 'Unknown';
+    $source_type = $_POST['source_type'] ?? '';
+    $location = trim($_POST['location'] ?? '');
+    $collection_date = $_POST['collection_date'] ?? '';
+    $initial_health = $_POST['initial_health'] ?? '';
+    $notes = trim($_POST['notes'] ?? '');
     $collected_by = !empty($_POST['collected_by']) ? intval($_POST['collected_by']) : null;
 
-    $stmt = $conn->prepare("INSERT INTO collections (tortoise_id, collection_date, source_type, location, initial_health, notes, collected_by) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("isssssi", $tortoise_id, $collection_date, $source_type, $location, $initial_health, $notes, $collected_by);
-    if ($stmt->execute()) {
-        $message = "Collection record saved successfully!";
+    // Validate required fields
+    if (empty($species_name) || empty($collection_date) || empty($source_type) || empty($location) || empty($initial_health)) {
+        $message = "All required fields must be filled.";
     } else {
-        $message = "Error: " . $stmt->error;
+        // Get species_id from species table (or insert new species? We'll assume it exists)
+        $species_id = null;
+        $speciesStmt = $conn->prepare("SELECT species_id FROM species WHERE common_name LIKE ?");
+        $likeName = "%$species_name%";
+        $speciesStmt->bind_param("s", $likeName);
+        $speciesStmt->execute();
+        $speciesRes = $speciesStmt->get_result();
+        if ($speciesRes->num_rows > 0) {
+            $species_id = $speciesRes->fetch_assoc()['species_id'];
+        } else {
+            // If not found, insert a new species (simplified)
+            $insertSpecies = $conn->prepare("INSERT INTO species (common_name, scientific_name) VALUES (?, ?)");
+            $scientific = "Unknown";
+            $insertSpecies->bind_param("ss", $species_name, $scientific);
+            $insertSpecies->execute();
+            $species_id = $insertSpecies->insert_id;
+            $insertSpecies->close();
+        }
+        $speciesStmt->close();
+
+        // Insert into tortoises
+        $microchip = 'COL-' . time(); // temporary microchip
+        $acquisition_source = $source_type;
+        $health_status = ($initial_health == 'Healthy') ? 'Healthy' : (($initial_health == 'Weak') ? 'Under observation' : 'Minor injury');
+        $tortoiseStmt = $conn->prepare("INSERT INTO tortoises (microchip_id, name, species_id, sex, estimated_age_years, health_status, acquisition_source, acquisition_date, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $tortoiseStmt->bind_param("ssissssss", $microchip, $tortoise_name, $species_id, $sex, $estimated_age, $health_status, $acquisition_source, $collection_date, $notes);
+        if ($tortoiseStmt->execute()) {
+            $new_tortoise_id = $tortoiseStmt->insert_id;
+            $tortoiseStmt->close();
+
+            // Insert into collections
+            $colStmt = $conn->prepare("INSERT INTO collections (tortoise_id, collection_date, source_type, location, initial_health, notes, collected_by) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $colStmt->bind_param("isssssi", $new_tortoise_id, $collection_date, $source_type, $location, $initial_health, $notes, $collected_by);
+            if ($colStmt->execute()) {
+                $message = "New tortoise and collection record saved successfully!";
+            } else {
+                $message = "Error saving collection: " . $colStmt->error;
+            }
+            $colStmt->close();
+        } else {
+            $message = "Error saving tortoise: " . $tortoiseStmt->error;
+            $tortoiseStmt->close();
+        }
     }
-    $stmt->close();
 }
 
-// -------------------------------
-// Fetch collection records
-// -------------------------------
+// Fetch collection records with tortoise names
 $collectionsQuery = "
     SELECT c.collection_id, 
            COALESCE(t.name, 'N/A') AS tortoise_name, 
@@ -42,12 +83,10 @@ $collectionsQuery = "
 ";
 $collectionsResult = $conn->query($collectionsQuery);
 
-// -------------------------------
-// Fetch transport logs
-// -------------------------------
+// Fetch transport logs (fixed SQL)
 $transportQuery = "
     SELECT tl.transport_id, 
-           COALESCE(t.name, 'ID: ' . tl.tortoise_id) AS tortoise_name,
+           COALESCE(t.name, CONCAT('ID: ', tl.tortoise_id)) AS tortoise_name,
            tl.vehicle_id, 
            tl.from_location, 
            tl.to_location, 
@@ -58,6 +97,9 @@ $transportQuery = "
     ORDER BY tl.transport_date DESC
 ";
 $transportResult = $conn->query($transportQuery);
+if (!$transportResult) {
+    die("Transport query error: " . $conn->error);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -189,16 +231,23 @@ th{
 
 <!-- ================= NEW COLLECTION ================= -->
 <div id="collection" class="section active">
-    <h2>Add New Collection Record</h2>
+    <h2>Add New Tortoise & Collection Record</h2>
     <?php if ($message): ?>
         <div class="message"><?php echo htmlspecialchars($message); ?></div>
     <?php endif; ?>
     <form method="POST" action="">
         <input type="hidden" name="action" value="add_collection">
-        <input type="number" name="tortoise_id" placeholder="Tortoise ID (optional)">
-        <input type="text" name="species" placeholder="Species" required>
-        <input type="number" name="estimated_age" placeholder="Estimated Age" required>
         
+        <input type="text" name="tortoise_name" placeholder="Tortoise Name (optional)">
+        <input type="text" name="species" placeholder="Species (e.g., Aldabra Giant Tortoise)" required>
+        <input type="number" name="estimated_age" placeholder="Estimated Age (years)" required>
+        
+        <select name="sex">
+            <option value="Unknown">Sex (Unknown)</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
+
         <select name="source_type" required>
             <option value="">Source Type</option>
             <option>Wild</option>
@@ -303,44 +352,6 @@ function searchTable(){
         row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
     });
 }
-</script>
-<!-- Code injected by live-server -->
-<script>
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
 </script>
 </body>
 </html>
