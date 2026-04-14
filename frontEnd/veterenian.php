@@ -479,6 +479,8 @@ textarea.form-ctrl { min-height: 84px; resize: vertical; }
     </div>
   </a>
   <div class="header-right">
+    <a href="http://localhost/DBMS_GROUP13/frontEnd/homepage_updated.php" class="btn btn-outline">Go to Homepage</a>
+    <a href="http://localhost/DBMS_GROUP13/frontEnd/login.php" class="btn btn-danger">Logout</a>
     <span class="header-date" id="hdate"></span>
   </div>
 </header>
